@@ -39,7 +39,6 @@ const eventByPath = new Map(dashboard.events.map((event) => [event.markdownPath,
 const eventByLooseKey = new Map(
   dashboard.events.map((event) => [`${event.person}|${event.date}|${event.title}`.toLowerCase(), event]),
 );
-const personById = new Map(dashboard.people.map((person) => [person.slug, person]));
 const metricGroups = dashboard.metricGroups || [];
 
 const records = [...(watchlist.records || [])].sort((a, b) => {
@@ -48,26 +47,20 @@ const records = [...(watchlist.records || [])].sort((a, b) => {
   return String(a.topic).localeCompare(String(b.topic), "ru");
 });
 
-const recordViews = records.map((record) => {
-  const people = recordPeople(record);
-  const sources = record.sources || [];
-  const primarySources = sources.slice(0, 6).map((source) => ({
-    ...source,
-    event: sourceEvent(source),
-    evidence: source.evidence || [],
-  }));
-  const personIds = record.person_ids?.length ? record.person_ids : record.person_id ? [record.person_id] : [];
-  const metrics = (record.related_metric_ids || []).flatMap((id) =>
-    metricGroups.filter((group) => group.metricId === id && personIds.includes(group.personId)),
-  );
+const personViews = dashboard.people.map((person) => {
+  const topics = records
+    .map((record) => buildPersonTopic(record, person))
+    .filter((topic): topic is NonNullable<typeof topic> => Boolean(topic))
+    .sort((a, b) => {
+      const dateCompare = String(a.nextDate || "9999-99-99").localeCompare(String(b.nextDate || "9999-99-99"));
+      if (dateCompare !== 0) return dateCompare;
+      return String(a.record.topic).localeCompare(String(b.record.topic), "ru");
+    });
 
   return {
-    record,
-    people,
-    sources,
-    primarySources,
-    hiddenCount: Math.max(0, sources.length - primarySources.length),
-    metrics,
+    person,
+    topics,
+    sourceCount: topics.reduce((sum, topic) => sum + topic.sources.length, 0),
   };
 });
 
@@ -80,9 +73,37 @@ function sourceEvent(source: WatchSource) {
   return eventByLooseKey.get(`${source.person || ""}|${source.date || ""}|${source.title || ""}`.toLowerCase());
 }
 
-function recordPeople(record: WatchRecord) {
-  const ids = record.person_ids?.length ? record.person_ids : record.person_id ? [record.person_id] : [];
-  return ids.map((id) => personById.get(id)).filter((person): person is NonNullable<typeof person> => Boolean(person));
+function buildPersonTopic(record: WatchRecord, person: (typeof dashboard.people)[number]) {
+  const recordPersonIds = record.person_ids?.length ? record.person_ids : record.person_id ? [record.person_id] : [];
+  const belongsToPerson = recordPersonIds.includes(person.slug);
+  const personSources = (record.sources || []).filter((source) => source.person === person.name);
+
+  if (!belongsToPerson && personSources.length === 0) return undefined;
+  if (personSources.length === 0) return undefined;
+
+  const sources = personSources.map((source) => ({
+    ...source,
+    event: sourceEvent(source),
+    evidence: source.evidence || [],
+  }));
+  const primarySources = sources.slice(0, 6);
+  const followUpDates = sources
+    .map((source) => normalizeNull(source.followUpDate))
+    .filter((value): value is string => Boolean(value))
+    .sort();
+  const nextDate = followUpDates[0] || normalizeNull(record.next_date);
+  const metrics = (record.related_metric_ids || []).flatMap((id) =>
+    metricGroups.filter((group) => group.metricId === id && group.personId === person.slug),
+  );
+
+  return {
+    record,
+    sources,
+    primarySources,
+    hiddenCount: Math.max(0, sources.length - primarySources.length),
+    nextDate,
+    metrics,
+  };
 }
 
 function statusLabel(status?: string) {
@@ -104,13 +125,28 @@ function sourceLabel(count = 0) {
     <p>Долгие медицинские темы, которые агент собрал из профилей и событий. Это навигационный слой: источники и цитаты из базы, без новых диагнозов и назначений.</p>
     <div class="watchlist-meta">
       <span class="chip">Зон: {records.length}</span>
+      <span class="chip">Людей: {personViews.filter((view) => view.topics.length > 0).length}</span>
       <span class="chip muted">Обновлено: {watchlist.generatedAt ? new Date(watchlist.generatedAt).toLocaleString("ru-RU") : "не указано"}</span>
       <span class="chip muted">Источник: 09 Наблюдение/watchlist.json</span>
     </div>
   </section>
 
-  <section class="watchlist-grid" aria-label="Зоны наблюдения">
-    {recordViews.map(({ record, people, sources, primarySources, hiddenCount, metrics }) => (
+  <section class="person-watchlist" aria-label="Зоны наблюдения по людям">
+    {personViews.map(({ person, topics, sourceCount }) => topics.length > 0 && (
+      <section class="person-watch-section" id={`person-${person.slug}`}>
+        <div class="person-watch-header">
+          <div>
+            <p class="eyebrow">Человек</p>
+            <h2><a href={person.href}>{person.name}</a></h2>
+          </div>
+          <div class="chip-row">
+            <span class="chip">{topics.length} {plural(topics.length, "тема", "темы", "тем")}</span>
+            <span class="chip muted">{sourceLabel(sourceCount)}</span>
+          </div>
+        </div>
+
+        <div class="watchlist-grid">
+          {topics.map(({ record, sources, primarySources, hiddenCount, nextDate, metrics }) => (
         <article class="watch-card">
           <div class="watch-card-header">
             <div>
@@ -122,15 +158,9 @@ function sourceLabel(count = 0) {
             </div>
             <dl class="watch-date">
               <dt>Ближайшая дата</dt>
-              <dd>{normalizeNull(record.next_date) ? formatDate(record.next_date || undefined) : "Без даты"}</dd>
+              <dd>{nextDate ? formatDate(nextDate) : "Без даты"}</dd>
             </dl>
           </div>
-
-          {people.length > 0 && (
-            <div class="chip-row">
-              {people.map((person) => <a class="chip" href={person.href}>{person.name}</a>)}
-            </div>
-          )}
 
           {metrics.length > 0 && (
             <div class="watch-metrics">
@@ -165,6 +195,9 @@ function sourceLabel(count = 0) {
 
           {hiddenCount > 0 && <p class="watch-hidden">Ещё {sourceLabel(hiddenCount)} в JSON.</p>}
         </article>
+          ))}
+        </div>
+      </section>
     ))}
   </section>
 </AppLayout>
