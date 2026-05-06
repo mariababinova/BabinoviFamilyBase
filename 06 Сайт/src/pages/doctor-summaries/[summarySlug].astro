@@ -1,0 +1,143 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import { dashboard, formatDate, plural } from "../../lib/ui";
+
+type DoctorSummary = {
+  slug: string;
+  title: string;
+  person: string;
+  personSlug: string;
+  specialty: string;
+  markdownPath: string;
+  sourceEventCount: number;
+  sourceDocumentCount: number;
+  latestEventDate?: string;
+  profileContext?: string[];
+  summary?: string[];
+  track?: string[];
+  nextActions?: string[];
+  events?: Array<{
+    title: string;
+    href: string;
+    date: string;
+    eventType: string;
+    specialty: string;
+    doctor?: string;
+    clinic?: string;
+  }>;
+  documents?: Array<{
+    date: string;
+    fileName: string;
+    href: string;
+    eventTitle: string;
+  }>;
+};
+
+export function getStaticPaths() {
+  const records = ((dashboard.doctorSummaries?.records || []) as DoctorSummary[]);
+  return records.map((summary) => ({
+    params: { summarySlug: summary.slug },
+    props: { summary },
+  }));
+}
+
+const { summary } = Astro.props as { summary: DoctorSummary };
+const person = dashboard.people.find((item) => item.slug === summary.personSlug);
+
+function renderList(items?: string[]) {
+  return (items || []).filter(Boolean);
+}
+---
+
+<AppLayout title={`${summary.title} · Сводка врачу`}>
+  <section class="page-header">
+    <p class="eyebrow">Doctor Summary Agent</p>
+    <h1>{summary.title}</h1>
+    <p>Производная сводка для врача: только пересказ данных из базы, без новых диагнозов и медицинских рекомендаций.</p>
+    <div class="chip-row">
+      {person && <a class="chip" href={person.href}>{summary.person}</a>}
+      <span class="chip">{summary.specialty}</span>
+      <span class="chip muted">{summary.sourceEventCount} {plural(summary.sourceEventCount, "событие", "события", "событий")}</span>
+      <span class="chip muted">{summary.sourceDocumentCount} {plural(summary.sourceDocumentCount, "документ", "документа", "документов")}</span>
+      <span class="chip muted">Markdown: {summary.markdownPath}</span>
+    </div>
+  </section>
+
+  <section class="detail-grid">
+    {renderList(summary.profileContext).length > 0 && (
+      <article class="card prose">
+        <h2>Профиль и постоянный контекст</h2>
+        <ul>{renderList(summary.profileContext).map((item) => <li>{item}</li>)}</ul>
+      </article>
+    )}
+
+    <article class="card prose">
+      <h2>Коротко</h2>
+      {renderList(summary.summary).length > 0 ? (
+        <ul>{renderList(summary.summary).map((item) => <li>{item}</li>)}</ul>
+      ) : (
+        <p class="empty">В заметках нет заполненного раздела краткого итога.</p>
+      )}
+    </article>
+
+    <article class="card prose">
+      <h2>Что важно отследить</h2>
+      {renderList(summary.track).length > 0 ? (
+        <ul>{renderList(summary.track).map((item) => <li>{item}</li>)}</ul>
+      ) : (
+        <p class="empty">В заметках нет отдельного списка наблюдения.</p>
+      )}
+    </article>
+
+    <article class="card prose">
+      <h2>Что обсудить или показать врачу</h2>
+      {renderList(summary.nextActions).length > 0 ? (
+        <ul>{renderList(summary.nextActions).map((item) => <li>{item}</li>)}</ul>
+      ) : (
+        <p class="empty">В заметках нет отдельного списка следующих действий.</p>
+      )}
+    </article>
+  </section>
+
+  <section class="card prose">
+    <h2>Хронология</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Тип</th>
+            <th>Направление</th>
+            <th>Врач / клиника</th>
+            <th>Запись</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(summary.events || []).map((event) => (
+            <tr>
+              <td>{formatDate(event.date)}</td>
+              <td>{event.eventType}</td>
+              <td>{event.specialty}</td>
+              <td>{[event.doctor, event.clinic].filter(Boolean).join(", ")}</td>
+              <td><a href={event.href}>{event.title}</a></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {(summary.documents || []).length > 0 && (
+    <section class="card prose">
+      <h2>Документы-источники</h2>
+      <ul>
+        {(summary.documents || []).map((document) => (
+          <li>
+            <a href={document.href}>{document.fileName}</a>
+            <span> · {formatDate(document.date)} · {document.eventTitle}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</AppLayout>

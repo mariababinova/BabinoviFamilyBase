@@ -12,10 +12,11 @@
     "agent:promote": "node scripts/intake-agent.mjs promote",
     "agent:metrics": "node scripts/metrics-agent.mjs",
     "agent:tasks": "node scripts/tasks-agent.mjs",
+    "agent:doctor-summaries": "node scripts/doctor-summary-agent.mjs",
     "dev:data": "node scripts/generate-data.mjs --dev-assets",
     "dev": "astro dev --host 127.0.0.1",
     "check": "astro check",
-    "prebuild": "node scripts/validate-operational-layer.mjs && node scripts/generate-data.mjs && node scripts/validate-assets.mjs",
+    "prebuild": "node scripts/validate-operational-layer.mjs && node scripts/doctor-summary-agent.mjs && node scripts/generate-data.mjs && node scripts/validate-assets.mjs",
     "build": "astro build && node scripts/copy-documents.mjs",
     "preview": "astro preview --host 127.0.0.1"
   },

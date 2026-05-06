@@ -12,6 +12,7 @@ export const inboxDir = path.join(repoRoot, "04 Входящие");
 export const metricsFilePath = path.join(repoRoot, "07 Показатели", "metrics.json");
 export const tasksFilePath = path.join(repoRoot, "08 Задачи", "tasks.json");
 export const watchlistFilePath = path.join(repoRoot, "09 Наблюдение", "watchlist.json");
+export const doctorSummariesFilePath = path.join(repoRoot, "09 Наблюдение", "doctor-summaries.json");
 export const generatedDir = path.join(siteDir, "src", "generated");
 export const publicDocumentsDir = path.join(siteDir, "public", "files", "documents");
 export const distDocumentsDir = path.join(siteDir, "dist", "files", "documents");
@@ -620,7 +621,7 @@ function buildProfileTasks(profile) {
   }));
 }
 
-function buildSearchItems({ people, events, documents, tasks }) {
+function buildSearchItems({ people, events, documents, tasks, doctorSummaries }) {
   return [
     ...people.map((person) => ({
       type: "person",
@@ -691,6 +692,29 @@ function buildSearchItems({ people, events, documents, tasks }) {
       subtitle: [task.person, task.dueDate || "Без даты"].filter(Boolean).join(" · "),
       text: stripMarkdown(`${task.actionText} ${task.person} ${task.specialty}`),
     })),
+    ...(doctorSummaries?.records || []).map((summary) => ({
+      type: "doctor-summary",
+      id: summary.id,
+      person: summary.person,
+      personSlug: summary.personSlug,
+      date: summary.latestEventDate,
+      specialty: summary.specialty,
+      title: summary.title,
+      routePath: summary.routePath,
+      href: summary.href,
+      subtitle: [summary.person, summary.specialty, "Сводка врачу"].filter(Boolean).join(" · "),
+      text: stripMarkdown(
+        [
+          summary.title,
+          summary.person,
+          summary.specialty,
+          ...(summary.profileContext || []),
+          ...(summary.summary || []),
+          ...(summary.track || []),
+          ...(summary.nextActions || []),
+        ].join(" "),
+      ),
+    })),
   ];
 }
 
@@ -725,6 +749,19 @@ async function readWatchlistFile() {
     };
   } catch {
     return { generatedAt: undefined, records: [], attentionZones: [] };
+  }
+}
+
+async function readDoctorSummariesFile() {
+  try {
+    const raw = await fsp.readFile(doctorSummariesFilePath, "utf8");
+    const parsed = JSON.parse(raw);
+    return {
+      generatedAt: parsed.generated_at || parsed.generatedAt,
+      records: Array.isArray(parsed.records) ? parsed.records : [],
+    };
+  } catch {
+    return { generatedAt: undefined, records: [] };
   }
 }
 
@@ -1017,6 +1054,7 @@ export async function loadDashboardData({ includeInbox = false } = {}) {
     );
   const metricGroups = buildMetricGroups(metrics);
   const watchlist = await readWatchlistFile();
+  const doctorSummaries = await readDoctorSummariesFile();
   for (const profile of profiles) {
     profile.keyMetrics = metricGroups
       .filter((group) => group.person === profile.name && keyMetricIds.has(group.metricId))
@@ -1037,6 +1075,7 @@ export async function loadDashboardData({ includeInbox = false } = {}) {
     metrics,
     metricGroups,
     watchlist,
+    doctorSummaries,
     tasks,
     issues,
     searchItems: [],
@@ -1047,6 +1086,7 @@ export async function loadDashboardData({ includeInbox = false } = {}) {
       metrics: metrics.length,
       metricTypes: metricGroups.length,
       watchlist: watchlist.records.length,
+      doctorSummaries: doctorSummaries.records.length,
       linkedDocuments: documents.filter((document) => document.isLinkedToEvent).length,
       unlinkedDocuments: documents.filter((document) => !document.isLinkedToEvent).length,
       tasks: tasks.length,

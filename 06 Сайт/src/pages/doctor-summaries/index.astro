@@ -1,0 +1,73 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import { dashboard, formatDate, plural } from "../../lib/ui";
+
+type DoctorSummary = {
+  id: string;
+  slug: string;
+  title: string;
+  person: string;
+  personSlug: string;
+  specialty: string;
+  href: string;
+  markdownPath: string;
+  sourceEventCount: number;
+  sourceDocumentCount: number;
+  latestEventDate?: string;
+  summary?: string[];
+  track?: string[];
+  nextActions?: string[];
+};
+
+const payload = dashboard.doctorSummaries as { generatedAt?: string; records?: DoctorSummary[] };
+const records = [...(payload.records || [])].sort((a, b) => {
+  const personCompare = String(a.person).localeCompare(String(b.person), "ru");
+  if (personCompare !== 0) return personCompare;
+  return String(a.specialty).localeCompare(String(b.specialty), "ru");
+});
+
+const byPerson = dashboard.people.map((person) => ({
+  person,
+  records: records.filter((record) => record.personSlug === person.slug),
+}));
+---
+
+<AppLayout title="Сводки врачу · Медицинская база">
+  <section class="page-header">
+    <p class="eyebrow">Doctor Summary Agent</p>
+    <h1>Сводки врачу</h1>
+    <p>Короткие read-only выжимки по человеку и направлению. Агент берёт только уже внесённые события и документы, без новых диагнозов и назначений.</p>
+    <div class="chip-row">
+      <span class="chip">Сводок: {records.length}</span>
+      <span class="chip muted">Обновлено: {payload.generatedAt ? new Date(payload.generatedAt).toLocaleString("ru-RU") : "не указано"}</span>
+      <span class="chip muted">Источник: 09 Наблюдение/doctor-summaries.json</span>
+    </div>
+  </section>
+
+  <section class="detail-grid">
+    {byPerson.map(({ person, records }) => records.length > 0 && (
+      <article class="card prose">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Пациент</p>
+            <h2><a href={person.href}>{person.name}</a></h2>
+          </div>
+          <span class="chip">{records.length} {plural(records.length, "сводка", "сводки", "сводок")}</span>
+        </div>
+        <div class="summary-list">
+          {records.map((record) => (
+            <a class="summary-row" href={record.href}>
+              <span>
+                <strong>{record.specialty}</strong>
+                <small>
+                  {record.latestEventDate ? formatDate(record.latestEventDate) : "без даты"} · {record.sourceEventCount} {plural(record.sourceEventCount, "событие", "события", "событий")} · {record.sourceDocumentCount} {plural(record.sourceDocumentCount, "документ", "документа", "документов")}
+                </small>
+              </span>
+              <span class="summary-arrow">Открыть</span>
+            </a>
+          ))}
+        </div>
+      </article>
+    ))}
+  </section>
+</AppLayout>

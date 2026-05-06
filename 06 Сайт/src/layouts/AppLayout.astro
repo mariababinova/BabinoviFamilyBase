@@ -13,6 +13,7 @@ const navItems = [
   { href: pageHref("/events"), label: "Все события" },
   { href: pageHref("/tasks"), label: "Задачи" },
   { href: pageHref("/watchlist"), label: "Наблюдение" },
+  { href: pageHref("/doctor-summaries"), label: "Сводки врачу" },
   { href: pageHref("/documents"), label: "Документы" },
   { href: pageHref("/metrics"), label: "Показатели" },
   { href: pageHref("/overview"), label: "Обзор" },
@@ -81,6 +82,7 @@ function isActiveNav(href: string) {
       <a href={pageHref("/events")}>События</a>
       <a href={pageHref("/tasks")}>Задачи</a>
       <a href={pageHref("/watchlist")}>Наблюдение</a>
+      <a href={pageHref("/doctor-summaries")}>Сводки</a>
       <a href={pageHref("/documents")}>Документы</a>
       <a href={pageHref("/metrics")}>Показатели</a>
     </nav>
