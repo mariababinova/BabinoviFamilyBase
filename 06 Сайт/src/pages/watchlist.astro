@@ -63,6 +63,7 @@ const personViews = dashboard.people.map((person) => {
     sourceCount: topics.reduce((sum, topic) => sum + topic.sources.length, 0),
   };
 });
+const activePersonSlug = personViews.find((view) => view.topics.length > 0)?.person.slug;
 
 function normalizeNull(value?: string | null) {
   return value && value !== "null" ? value : undefined;
@@ -131,9 +132,26 @@ function sourceLabel(count = 0) {
     </div>
   </section>
 
+  <section class="watch-person-picker" aria-label="Выбор человека">
+    <label for="watch-person-select">Человек</label>
+    <select id="watch-person-select" name="person">
+      {personViews.map(({ person, topics, sourceCount }) => topics.length > 0 && (
+        <option value={person.slug} selected={person.slug === activePersonSlug}>
+          {person.name} · {topics.length} {plural(topics.length, "тема", "темы", "тем")} · {sourceLabel(sourceCount)}
+        </option>
+      ))}
+    </select>
+  </section>
+
   <section class="person-watchlist" aria-label="Зоны наблюдения по людям">
     {personViews.map(({ person, topics, sourceCount }) => topics.length > 0 && (
-      <section class="person-watch-section" id={`person-${person.slug}`}>
+      <section
+        class="person-watch-section"
+        id={`person-${person.slug}`}
+        data-person-section
+        data-person-slug={person.slug}
+        hidden={person.slug !== activePersonSlug}
+      >
         <div class="person-watch-header">
           <div>
             <p class="eyebrow">Человек</p>
@@ -200,4 +218,31 @@ function sourceLabel(count = 0) {
       </section>
     ))}
   </section>
+
+  <script is:inline>
+    const personSelect = document.querySelector("#watch-person-select");
+    const personSections = [...document.querySelectorAll("[data-person-section]")];
+
+    function showSelectedPerson() {
+      if (!personSelect) return;
+      const selectedSlug = personSelect.value;
+      personSections.forEach((section) => {
+        section.hidden = section.dataset.personSlug !== selectedSlug;
+      });
+
+      const activeSection = document.querySelector(`[data-person-slug="${selectedSlug}"]`);
+      if (activeSection && window.location.hash !== `#${activeSection.id}`) {
+        history.replaceState(null, "", `#${activeSection.id}`);
+      }
+    }
+
+    if (personSelect) {
+      const hashSlug = window.location.hash.replace("#person-", "");
+      if (hashSlug && [...personSelect.options].some((option) => option.value === hashSlug)) {
+        personSelect.value = hashSlug;
+      }
+      showSelectedPerson();
+      personSelect.addEventListener("change", showSelectedPerson);
+    }
+  </script>
 </AppLayout>

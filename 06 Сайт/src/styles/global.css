@@ -445,6 +445,25 @@ select {
   overflow-wrap: anywhere;
 }
 
+.watch-person-picker {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 520px;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.watch-person-picker label {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .watchlist-grid {
   grid-template-columns: 1fr;
 }
