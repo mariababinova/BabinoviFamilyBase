@@ -11,6 +11,7 @@ export const membersDir = path.join(repoRoot, "01 Члены семьи");
 export const inboxDir = path.join(repoRoot, "04 Входящие");
 export const metricsFilePath = path.join(repoRoot, "07 Показатели", "metrics.json");
 export const tasksFilePath = path.join(repoRoot, "08 Задачи", "tasks.json");
+export const watchlistFilePath = path.join(repoRoot, "09 Наблюдение", "watchlist.json");
 export const generatedDir = path.join(siteDir, "src", "generated");
 export const publicDocumentsDir = path.join(siteDir, "public", "files", "documents");
 export const distDocumentsDir = path.join(siteDir, "dist", "files", "documents");
@@ -713,6 +714,20 @@ async function readTasksFile() {
   }
 }
 
+async function readWatchlistFile() {
+  try {
+    const raw = await fsp.readFile(watchlistFilePath, "utf8");
+    const parsed = JSON.parse(raw);
+    return {
+      generatedAt: parsed.generated_at || parsed.generatedAt,
+      records: Array.isArray(parsed.records) ? parsed.records : [],
+      attentionZones: Array.isArray(parsed.attention_zones) ? parsed.attention_zones : [],
+    };
+  } catch {
+    return { generatedAt: undefined, records: [], attentionZones: [] };
+  }
+}
+
 function normalizeTaskRecord(record, eventsById, profilesByPerson, issues) {
   if (record.status && ["done", "cancelled", "rejected"].includes(String(record.status))) return undefined;
 
@@ -1001,6 +1016,7 @@ export async function loadDashboardData({ includeInbox = false } = {}) {
       String(b.date).localeCompare(String(a.date)),
     );
   const metricGroups = buildMetricGroups(metrics);
+  const watchlist = await readWatchlistFile();
   for (const profile of profiles) {
     profile.keyMetrics = metricGroups
       .filter((group) => group.person === profile.name && keyMetricIds.has(group.metricId))
@@ -1020,6 +1036,7 @@ export async function loadDashboardData({ includeInbox = false } = {}) {
     documents: sortedDocuments,
     metrics,
     metricGroups,
+    watchlist,
     tasks,
     issues,
     searchItems: [],
@@ -1029,6 +1046,7 @@ export async function loadDashboardData({ includeInbox = false } = {}) {
       documents: documents.length,
       metrics: metrics.length,
       metricTypes: metricGroups.length,
+      watchlist: watchlist.records.length,
       linkedDocuments: documents.filter((document) => document.isLinkedToEvent).length,
       unlinkedDocuments: documents.filter((document) => !document.isLinkedToEvent).length,
       tasks: tasks.length,

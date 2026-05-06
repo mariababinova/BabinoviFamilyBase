@@ -1,0 +1,170 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { dashboard, formatDate, plural } from "../lib/ui";
+
+type Evidence = {
+  keyword?: string;
+  line?: number;
+  text?: string;
+};
+
+type WatchSource = {
+  title?: string;
+  person?: string;
+  date?: string | null;
+  followUpDate?: string | null;
+  specialty?: string | null;
+  path?: string;
+  evidence?: Evidence[];
+};
+
+type WatchRecord = {
+  id: string;
+  status?: string;
+  topic: string;
+  person_id?: string | null;
+  person_ids?: string[];
+  next_date?: string | null;
+  source_count?: number;
+  related_metric_ids?: string[];
+  sources?: WatchSource[];
+};
+
+const watchlist = dashboard.watchlist as {
+  generatedAt?: string;
+  records?: WatchRecord[];
+};
+
+const eventByPath = new Map(dashboard.events.map((event) => [event.markdownPath, event]));
+const eventByLooseKey = new Map(
+  dashboard.events.map((event) => [`${event.person}|${event.date}|${event.title}`.toLowerCase(), event]),
+);
+const personById = new Map(dashboard.people.map((person) => [person.slug, person]));
+const metricGroups = dashboard.metricGroups || [];
+
+const records = [...(watchlist.records || [])].sort((a, b) => {
+  const dateCompare = String(a.next_date || "9999-99-99").localeCompare(String(b.next_date || "9999-99-99"));
+  if (dateCompare !== 0) return dateCompare;
+  return String(a.topic).localeCompare(String(b.topic), "ru");
+});
+
+const recordViews = records.map((record) => {
+  const people = recordPeople(record);
+  const sources = record.sources || [];
+  const primarySources = sources.slice(0, 6).map((source) => ({
+    ...source,
+    event: sourceEvent(source),
+    evidence: source.evidence || [],
+  }));
+  const personIds = record.person_ids?.length ? record.person_ids : record.person_id ? [record.person_id] : [];
+  const metrics = (record.related_metric_ids || []).flatMap((id) =>
+    metricGroups.filter((group) => group.metricId === id && personIds.includes(group.personId)),
+  );
+
+  return {
+    record,
+    people,
+    sources,
+    primarySources,
+    hiddenCount: Math.max(0, sources.length - primarySources.length),
+    metrics,
+  };
+});
+
+function normalizeNull(value?: string | null) {
+  return value && value !== "null" ? value : undefined;
+}
+
+function sourceEvent(source: WatchSource) {
+  if (source.path && eventByPath.has(source.path)) return eventByPath.get(source.path);
+  return eventByLooseKey.get(`${source.person || ""}|${source.date || ""}|${source.title || ""}`.toLowerCase());
+}
+
+function recordPeople(record: WatchRecord) {
+  const ids = record.person_ids?.length ? record.person_ids : record.person_id ? [record.person_id] : [];
+  return ids.map((id) => personById.get(id)).filter((person): person is NonNullable<typeof person> => Boolean(person));
+}
+
+function statusLabel(status?: string) {
+  if (status === "active") return "Активно";
+  if (status === "watch") return "Наблюдать";
+  if (status === "quiet") return "Тихо";
+  return status || "Без статуса";
+}
+
+function sourceLabel(count = 0) {
+  return `${count} ${plural(count, "источник", "источника", "источников")}`;
+}
+---
+
+<AppLayout title="Наблюдение · Медицинская база">
+  <section class="page-header">
+    <p class="eyebrow">Watchlist Agent</p>
+    <h1>Наблюдение</h1>
+    <p>Долгие медицинские темы, которые агент собрал из профилей и событий. Это навигационный слой: источники и цитаты из базы, без новых диагнозов и назначений.</p>
+    <div class="watchlist-meta">
+      <span class="chip">Зон: {records.length}</span>
+      <span class="chip muted">Обновлено: {watchlist.generatedAt ? new Date(watchlist.generatedAt).toLocaleString("ru-RU") : "не указано"}</span>
+      <span class="chip muted">Источник: 09 Наблюдение/watchlist.json</span>
+    </div>
+  </section>
+
+  <section class="watchlist-grid" aria-label="Зоны наблюдения">
+    {recordViews.map(({ record, people, sources, primarySources, hiddenCount, metrics }) => (
+        <article class="watch-card">
+          <div class="watch-card-header">
+            <div>
+              <div class="chip-row">
+                <span class:list={["status-pill", record.status === "active" && "linked"]}>{statusLabel(record.status)}</span>
+                <span class="chip muted">{sourceLabel(record.source_count || sources.length)}</span>
+              </div>
+              <h2>{record.topic}</h2>
+            </div>
+            <dl class="watch-date">
+              <dt>Ближайшая дата</dt>
+              <dd>{normalizeNull(record.next_date) ? formatDate(record.next_date || undefined) : "Без даты"}</dd>
+            </dl>
+          </div>
+
+          {people.length > 0 && (
+            <div class="chip-row">
+              {people.map((person) => <a class="chip" href={person.href}>{person.name}</a>)}
+            </div>
+          )}
+
+          {metrics.length > 0 && (
+            <div class="watch-metrics">
+              <span>Связанные показатели</span>
+              <div class="chip-row">
+                {metrics.map((metric: any) => <a class="chip muted" href={metric.href}>{metric.metricLabel}</a>)}
+              </div>
+            </div>
+          )}
+
+          <div class="source-list">
+            {primarySources.map((source) => (
+                <details class="source-item">
+                  <summary>
+                    <span>
+                      {source.event ? <a href={source.event.href}>{source.title}</a> : <strong>{source.title}</strong>}
+                      <small>{[source.person, normalizeNull(source.date) ? formatDate(source.date || undefined) : undefined, source.specialty].filter(Boolean).join(" · ")}</small>
+                    </span>
+                    <span class="count-badge">{source.evidence.length}</span>
+                  </summary>
+                  <ul class="evidence-list">
+                    {source.evidence.slice(0, 8).map((item) => (
+                      <li>
+                        <span>{item.text}</span>
+                        {item.line && <small>строка {item.line}</small>}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+            ))}
+          </div>
+
+          {hiddenCount > 0 && <p class="watch-hidden">Ещё {sourceLabel(hiddenCount)} в JSON.</p>}
+        </article>
+    ))}
+  </section>
+</AppLayout>

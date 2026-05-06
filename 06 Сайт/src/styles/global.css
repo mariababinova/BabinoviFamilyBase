@@ -401,6 +401,153 @@ select {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+.watchlist-meta,
+.watch-summary-grid,
+.watchlist-grid,
+.source-list,
+.watch-metrics {
+  display: grid;
+  gap: 1rem;
+}
+
+.watchlist-meta {
+  grid-template-columns: repeat(auto-fit, minmax(180px, max-content));
+}
+
+.watch-summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  margin-bottom: 2rem;
+}
+
+.watch-summary-card {
+  display: grid;
+  gap: 0.35rem;
+  min-height: 132px;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(147, 223, 255, 0.48) 0 38px, transparent 40px),
+    #fff;
+  box-shadow: var(--shadow);
+}
+
+.watch-summary-card span,
+.watch-summary-card small,
+.watch-metrics span,
+.watch-hidden {
+  color: var(--muted);
+}
+
+.watch-summary-card strong {
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+}
+
+.watchlist-grid {
+  grid-template-columns: 1fr;
+}
+
+.watch-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 99% 8%, rgba(215, 255, 70, 0.42) 0 52px, transparent 54px),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.watch-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.watch-card h2 {
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+
+.watch-date {
+  min-width: 190px;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid rgba(32, 36, 38, 0.16);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.watch-date dt {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.watch-date dd {
+  margin: 0.15rem 0 0;
+  font-weight: 800;
+}
+
+.source-list {
+  gap: 0.75rem;
+}
+
+.source-item {
+  border: 1px solid rgba(32, 36, 38, 0.16);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.source-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 56px;
+  padding: 0.75rem;
+  cursor: pointer;
+}
+
+.source-item summary span:first-child {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.source-item summary a,
+.source-item summary strong {
+  color: var(--accent-dark);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.source-item summary small,
+.evidence-list small {
+  color: var(--muted);
+}
+
+.evidence-list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0 0.75rem 0.85rem 2rem;
+}
+
+.evidence-list li {
+  padding-right: 0.75rem;
+}
+
+.evidence-list span {
+  display: block;
+}
+
+.watch-hidden {
+  margin: 0;
+}
+
 .metrics-summary,
 .metric-grid {
   display: grid;
@@ -985,8 +1132,17 @@ select {
 
   .metrics-summary,
   .metrics-filter,
-  .metric-grid {
+  .metric-grid,
+  .watch-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .watch-card-header {
+    display: grid;
+  }
+
+  .watch-date {
+    min-width: 0;
   }
 
   .event-card,
