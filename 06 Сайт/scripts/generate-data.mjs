@@ -3,10 +3,11 @@ import { copyDocuments, publicDocumentsDir, writeDashboardData } from "./dashboa
 const args = new Set(process.argv.slice(2));
 const validateOnly = args.has("--validate");
 const devAssets = args.has("--dev-assets");
+const withDocuments = args.has("--with-documents") || devAssets;
 
-const data = await writeDashboardData();
+const data = await writeDashboardData({ publicDocuments: withDocuments });
 
-if (devAssets) {
+if (withDocuments) {
   const count = await copyDocuments(publicDocumentsDir);
   console.log(`Copied ${count} documents to public/documents for local dev.`);
 }

@@ -1,0 +1,106 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { dashboard, formatDateShort } from "../lib/ui";
+
+type DataIssue = { severity: string; message: string };
+
+const operations = (dashboard.operations || {
+  inbox: {},
+  intakeState: { files: 0, updatedAt: "" },
+  metricCandidates: { total: 0, byStatus: {}, generatedAt: "" },
+}) as any;
+const issues = (dashboard.issues || []) as DataIssue[];
+
+const inboxRows = [
+  ["Новые файлы", operations.inbox.newFiles || 0, "Запустить intake-agent"],
+  ["Черновики AI", operations.inbox.aiDrafts || 0, "Проверить разбор"],
+  ["На проверке", operations.inbox.review || 0, "Принять решение"],
+  ["Одобрено", operations.inbox.approved || 0, "Запустить promote"],
+  ["Обработано", operations.inbox.processed || 0, "Архив обработанного"],
+  ["Ошибки", operations.inbox.errors || 0, "Разобрать причину"],
+];
+
+const candidateStatusCounts = (operations.metricCandidates.byStatus || {}) as Record<string, number>;
+const candidateStatuses = Object.entries(candidateStatusCounts).sort((a, b) =>
+  String(a[0]).localeCompare(String(b[0]), "ru"),
+);
+
+const blockingIssues = issues.filter((issue) => issue.severity === "fatal");
+const nextActions = [
+  operations.inbox.newFiles > 0 && "Есть новые входящие файлы: запустить `npm run agent:intake`.",
+  operations.inbox.review > 0 && "Есть черновики на проверке: сверить их в Obsidian.",
+  operations.inbox.approved > 0 && "Есть одобренные черновики: запустить `npm run agent:promote`.",
+  operations.inbox.errors > 0 && "Есть ошибки intake: открыть `04 Входящие/99 Ошибки`.",
+  candidateStatusCounts.needs_review > 0 && "Есть кандидаты показателей: открыть `07 Показатели/Проверка показателей.md`.",
+  blockingIssues.length > 0 && "Есть fatal data issues: сначала исправить их, потом собирать сайт.",
+].filter(Boolean);
+---
+
+<AppLayout title="Операции · Медицинская база">
+  <section class="page-header">
+    <p class="eyebrow">Agent Ops</p>
+    <h1>Операции</h1>
+    <p>Очереди агентов, проверки и следующий шаг по обслуживанию базы.</p>
+  </section>
+
+  <section class="detail-grid">
+    <article class="card">
+      <h2>Очередь входящих</h2>
+      <dl class="details-list">
+        {inboxRows.map(([label, count, hint]) => (
+          <div>
+            <dt>{label}</dt>
+            <dd>{count} <span class="muted-text">· {hint}</span></dd>
+          </div>
+        ))}
+      </dl>
+    </article>
+
+    <article class="card">
+      <h2>Показатели</h2>
+      <dl class="details-list">
+        <div><dt>Кандидаты</dt><dd>{operations.metricCandidates.total || 0}</dd></div>
+        <div><dt>Сгенерировано</dt><dd>{operations.metricCandidates.generatedAt ? formatDateShort(operations.metricCandidates.generatedAt.slice(0, 10)) : "Нет данных"}</dd></div>
+      </dl>
+      <div class="chip-row">
+        {candidateStatuses.length ? (
+          candidateStatuses.map(([status, count]) => <span class="chip">{status}: {count}</span>)
+        ) : (
+          <span class="chip muted">Кандидатов нет</span>
+        )}
+      </div>
+    </article>
+
+    <article class="card">
+      <h2>Состояние intake</h2>
+      <dl class="details-list">
+        <div><dt>Файлов в state</dt><dd>{operations.intakeState.files || 0}</dd></div>
+        <div><dt>Обновлено</dt><dd>{operations.intakeState.updatedAt ? formatDateShort(operations.intakeState.updatedAt.slice(0, 10)) : "Нет данных"}</dd></div>
+      </dl>
+    </article>
+
+    <article class="card">
+      <h2>Проблемы данных</h2>
+      {issues.length ? (
+        <ul class="issue-list">
+          {issues.slice(0, 12).map((issue) => <li><strong>{issue.severity}</strong> {issue.message}</li>)}
+        </ul>
+      ) : (
+        <p class="empty">Существенных проблем данных нет.</p>
+      )}
+    </article>
+  </section>
+
+  <section>
+    <div class="section-title"><h2>Следующий шаг</h2></div>
+    {nextActions.length ? (
+      <div class="card prose">
+        <ul>
+          {nextActions.map((action) => <li>{action}</li>)}
+        </ul>
+      </div>
+    ) : (
+      <p class="empty">Очереди пустые, критичных проблем не видно.</p>
+    )}
+  </section>
+</AppLayout>

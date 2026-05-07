@@ -11,7 +11,7 @@ const unlinked = dashboard.documents.filter((document) => !document.isLinkedToEv
   <section class="page-header">
     <p class="eyebrow">Файлы</p>
     <h1>Документы</h1>
-    <p data-documents-default-copy>PDF и изображения, найденные в хранилище. Часть файлов уже привязана к медицинским записям.</p>
+    <p data-documents-default-copy>PDF и изображения, найденные в хранилище. На публичной сборке оригиналы не публикуются, доступны только карточки и связи с событиями.</p>
     <p data-documents-filtered-copy hidden>Показаны документы, для которых пока нет отдельного описания события.</p>
     <a class="button secondary inline-button" href={dashboard.basePath + "/documents"} data-documents-clear hidden>Показать все документы</a>
   </section>

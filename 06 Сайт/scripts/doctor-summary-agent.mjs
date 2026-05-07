@@ -8,6 +8,7 @@ import {
   stripMarkdown,
   loadDashboardData,
 } from "./dashboard-lib.mjs";
+import { atomicWriteJson, atomicWriteText, readJsonOrDefault } from "./agent-utils.mjs";
 
 const outputDir = path.join(repoRoot, "05 Индексы", "Сводки врачу");
 const outputJsonPath = path.join(repoRoot, "09 Наблюдение", "doctor-summaries.json");
@@ -15,6 +16,30 @@ const agentName = "doctor-summary-agent";
 
 function cleanItems(items, max = 12) {
   return [...new Set((items || []).map((item) => stripMarkdown(item)).filter(Boolean))].slice(0, max);
+}
+
+function evidenceItems(events, getItems, max = 12) {
+  const seen = new Set();
+  const output = [];
+  for (const event of events) {
+    for (const item of getItems(event) || []) {
+      const text = stripMarkdown(item);
+      if (!text) continue;
+      const key = `${event.id}:${text}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      output.push({
+        text,
+        date: event.date,
+        eventId: event.id,
+        eventTitle: event.title,
+        eventHref: event.href,
+        documentIds: (event.sourceFiles || []).map((document) => document.id).filter(Boolean),
+      });
+      if (output.length >= max) return output;
+    }
+  }
+  return output;
 }
 
 function summaryTitle(person, specialty) {
@@ -53,12 +78,12 @@ function buildSummary(person, specialty, events, profile) {
   const chronologicalEvents = [...events].sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title, "ru"));
   const slug = summarySlug(person.name, specialty);
   const title = summaryTitle(person.name, specialty);
-  const summary = cleanItems(sortedEvents.flatMap((event) => event.summary.map((item) => `${event.date}: ${item}`)), 16);
-  const track = cleanItems(sortedEvents.flatMap((event) => event.track.map((item) => `${event.date}: ${item}`)), 14);
-  const nextActions = cleanItems(
-    sortedEvents.flatMap((event) => [...(event.nextActions || []), ...(event.prescriptions || [])].map((item) => `${event.date}: ${item}`)),
-    14,
-  );
+  const summaryEvidence = evidenceItems(sortedEvents, (event) => event.summary, 16);
+  const trackEvidence = evidenceItems(sortedEvents, (event) => event.track, 14);
+  const nextActionEvidence = evidenceItems(sortedEvents, (event) => [...(event.nextActions || []), ...(event.prescriptions || [])], 14);
+  const summary = summaryEvidence.map((item) => `${item.date}: ${item.text}`);
+  const track = trackEvidence.map((item) => `${item.date}: ${item.text}`);
+  const nextActions = nextActionEvidence.map((item) => `${item.date}: ${item.text}`);
   const documents = sourceDocuments(chronologicalEvents);
   const profileContext = cleanItems(
     [
@@ -89,8 +114,11 @@ function buildSummary(person, specialty, events, profile) {
     latestEventDate: sortedEvents[0]?.date || "",
     profileContext,
     summary,
+    summaryEvidence,
     track,
+    trackEvidence,
     nextActions,
+    nextActionEvidence,
     events: chronologicalEvents.map((event) => ({
       id: event.id,
       title: event.title,
@@ -106,14 +134,14 @@ function buildSummary(person, specialty, events, profile) {
   };
 }
 
-function renderMarkdown(record) {
+function renderMarkdown(record, updatedDate = new Date().toISOString().slice(0, 10)) {
   const lines = [
     "---",
     `id: ${record.id}`,
     "type: doctor_summary",
     `person: ${record.person}`,
     `specialty: ${record.specialty}`,
-    `updated: ${new Date().toISOString().slice(0, 10)}`,
+    `updated: ${updatedDate}`,
     "source: doctor-summary-agent",
     "---",
     "",
@@ -155,17 +183,27 @@ function renderMarkdown(record) {
 }
 
 async function writeJson(filePath, value) {
-  await fsp.mkdir(path.dirname(filePath), { recursive: true });
-  await fsp.writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  await atomicWriteJson(filePath, value);
 }
 
 async function writeText(filePath, value) {
-  await fsp.mkdir(path.dirname(filePath), { recursive: true });
-  await fsp.writeFile(filePath, value, "utf8");
+  await atomicWriteText(filePath, value);
+}
+
+async function existingMarkdownForUnchangedRecord(record, previousRecord) {
+  if (!previousRecord || JSON.stringify(previousRecord) !== JSON.stringify(record)) return "";
+  try {
+    return await fsp.readFile(path.join(outputDir, markdownFileName(record.person, record.specialty)), "utf8");
+  } catch (error) {
+    if (error?.code === "ENOENT") return "";
+    throw error;
+  }
 }
 
 async function main() {
-  const dashboard = await loadDashboardData();
+  const previousOutput = await readJsonOrDefault(outputJsonPath, { records: [] });
+  const previousRecordsById = new Map((previousOutput.records || []).map((record) => [record.id, record]));
+  const dashboard = await loadDashboardData({ skipDoctorSummaries: true });
   const records = [];
 
   for (const person of dashboard.people) {
@@ -183,15 +221,40 @@ async function main() {
 
   records.sort((a, b) => a.person.localeCompare(b.person, "ru") || a.specialty.localeCompare(b.specialty, "ru"));
 
-  await fsp.rm(outputDir, { recursive: true, force: true });
-  await fsp.mkdir(outputDir, { recursive: true });
+  const tempOutputDir = `${outputDir}.tmp-${process.pid}-${Date.now()}`;
+  const backupOutputDir = `${outputDir}.bak-${process.pid}-${Date.now()}`;
+  await fsp.rm(tempOutputDir, { recursive: true, force: true });
+  await fsp.mkdir(tempOutputDir, { recursive: true });
   for (const record of records) {
-    await writeText(path.join(outputDir, markdownFileName(record.person, record.specialty)), renderMarkdown(record));
+    const previousMarkdown = await existingMarkdownForUnchangedRecord(record, previousRecordsById.get(record.id));
+    await writeText(
+      path.join(tempOutputDir, markdownFileName(record.person, record.specialty)),
+      previousMarkdown || renderMarkdown(record),
+    );
   }
 
+  try {
+    await fsp.rename(outputDir, backupOutputDir);
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+  }
+  try {
+    await fsp.rename(tempOutputDir, outputDir);
+    await fsp.rm(backupOutputDir, { recursive: true, force: true });
+  } catch (error) {
+    try {
+      await fsp.rm(outputDir, { recursive: true, force: true });
+      await fsp.rename(backupOutputDir, outputDir);
+    } catch {
+      // Keep the original error as the useful failure reason.
+    }
+    throw error;
+  }
+
+  const recordsChanged = JSON.stringify(previousOutput.records || []) !== JSON.stringify(records);
   await writeJson(outputJsonPath, {
     schema_version: 1,
-    generated_at: new Date().toISOString(),
+    generated_at: recordsChanged || !previousOutput.generated_at ? new Date().toISOString() : previousOutput.generated_at,
     agent: {
       id: agentName,
       name: "Doctor Summary Agent / агент сводок врачу",

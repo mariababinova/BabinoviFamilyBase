@@ -14,8 +14,11 @@ type DoctorSummary = {
   latestEventDate?: string;
   profileContext?: string[];
   summary?: string[];
+  summaryEvidence?: Array<EvidenceItem>;
   track?: string[];
+  trackEvidence?: Array<EvidenceItem>;
   nextActions?: string[];
+  nextActionEvidence?: Array<EvidenceItem>;
   events?: Array<{
     title: string;
     href: string;
@@ -33,6 +36,13 @@ type DoctorSummary = {
   }>;
 };
 
+type EvidenceItem = {
+  text: string;
+  date: string;
+  eventTitle: string;
+  eventHref: string;
+};
+
 export function getStaticPaths() {
   const records = ((dashboard.doctorSummaries?.records || []) as DoctorSummary[]);
   return records.map((summary) => ({
@@ -46,6 +56,10 @@ const person = dashboard.people.find((item) => item.slug === summary.personSlug)
 
 function renderList(items?: string[]) {
   return (items || []).filter(Boolean);
+}
+
+function renderEvidence(items?: EvidenceItem[]) {
+  return (items || []).filter((item) => item.text);
 }
 ---
 
@@ -73,7 +87,9 @@ function renderList(items?: string[]) {
 
     <article class="card prose">
       <h2>Коротко</h2>
-      {renderList(summary.summary).length > 0 ? (
+      {renderEvidence(summary.summaryEvidence).length > 0 ? (
+        <ul>{renderEvidence(summary.summaryEvidence).map((item) => <li>{item.date}: {item.text} <a href={item.eventHref}>Источник</a></li>)}</ul>
+      ) : renderList(summary.summary).length > 0 ? (
         <ul>{renderList(summary.summary).map((item) => <li>{item}</li>)}</ul>
       ) : (
         <p class="empty">В заметках нет заполненного раздела краткого итога.</p>
@@ -82,7 +98,9 @@ function renderList(items?: string[]) {
 
     <article class="card prose">
       <h2>Что важно отследить</h2>
-      {renderList(summary.track).length > 0 ? (
+      {renderEvidence(summary.trackEvidence).length > 0 ? (
+        <ul>{renderEvidence(summary.trackEvidence).map((item) => <li>{item.date}: {item.text} <a href={item.eventHref}>Источник</a></li>)}</ul>
+      ) : renderList(summary.track).length > 0 ? (
         <ul>{renderList(summary.track).map((item) => <li>{item}</li>)}</ul>
       ) : (
         <p class="empty">В заметках нет отдельного списка наблюдения.</p>
@@ -91,7 +109,9 @@ function renderList(items?: string[]) {
 
     <article class="card prose">
       <h2>Что обсудить или показать врачу</h2>
-      {renderList(summary.nextActions).length > 0 ? (
+      {renderEvidence(summary.nextActionEvidence).length > 0 ? (
+        <ul>{renderEvidence(summary.nextActionEvidence).map((item) => <li>{item.date}: {item.text} <a href={item.eventHref}>Источник</a></li>)}</ul>
+      ) : renderList(summary.nextActions).length > 0 ? (
         <ul>{renderList(summary.nextActions).map((item) => <li>{item}</li>)}</ul>
       ) : (
         <p class="empty">В заметках нет отдельного списка следующих действий.</p>

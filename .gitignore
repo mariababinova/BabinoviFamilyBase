@@ -16,6 +16,7 @@ dist/
 out/
 06 Сайт/public/files/documents/*
 !06 Сайт/public/files/documents/.gitkeep
+06 Сайт/src/generated/*.json
 
 # Local environment files
 .env

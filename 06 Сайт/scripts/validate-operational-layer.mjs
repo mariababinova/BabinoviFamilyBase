@@ -1,6 +1,7 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import matter from "gray-matter";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..");
@@ -29,6 +30,7 @@ const requiredJsonFiles = [
   "07 Показатели/metrics.json",
   "08 Задачи/tasks.json",
   "09 Наблюдение/watchlist.json",
+  "09 Наблюдение/doctor-summaries.json",
 ];
 
 const requiredTemplates = [
@@ -82,6 +84,29 @@ function checkUniqueIds(label, records) {
   return seen;
 }
 
+function isIsoDate(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || ""));
+}
+
+async function walkMarkdown(dir, output = []) {
+  let entries = [];
+  try {
+    entries = await fsp.readdir(path.join(repoRoot, dir), { withFileTypes: true });
+  } catch (error) {
+    if (error?.code === "ENOENT") return output;
+    throw error;
+  }
+  for (const entry of entries) {
+    const relativePath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      await walkMarkdown(relativePath, output);
+    } else if (entry.name.toLowerCase().endsWith(".md")) {
+      output.push(relativePath.split(path.sep).join("/"));
+    }
+  }
+  return output;
+}
+
 for (const dir of requiredDirs) {
   if (!(await exists(dir))) errors.push(`Missing directory: ${dir}`);
 }
@@ -99,6 +124,7 @@ const intakeStateJson = await readJson("04 Входящие/intake-state.json");
 const metricsJson = await readJson("07 Показатели/metrics.json");
 const tasksJson = await readJson("08 Задачи/tasks.json");
 const watchlistJson = await readJson("09 Наблюдение/watchlist.json");
+const doctorSummariesJson = await readJson("09 Наблюдение/doctor-summaries.json");
 
 const people = requireArray("people.json", peopleJson, "people");
 const specialties = requireArray("specialties.json", specialtiesJson, "specialties");
@@ -108,6 +134,7 @@ const intakeStateFiles = requireArray("intake-state.json", intakeStateJson, "fil
 const metricRecords = requireArray("metrics.json", metricsJson, "records");
 const taskRecords = requireArray("tasks.json", tasksJson, "records");
 const watchlistRecords = requireArray("watchlist.json", watchlistJson, "records");
+const doctorSummaryRecords = requireArray("doctor-summaries.json", doctorSummariesJson, "records");
 
 const personIds = checkUniqueIds("people", people);
 const specialtyIds = checkUniqueIds("specialties", specialties);
@@ -116,6 +143,17 @@ const metricIds = checkUniqueIds("metric_dictionary", metricDictionary);
 checkUniqueIds("metrics.records", metricRecords);
 checkUniqueIds("tasks.records", taskRecords);
 checkUniqueIds("watchlist.records", watchlistRecords);
+checkUniqueIds("doctor-summaries.records", doctorSummaryRecords);
+
+const eventIds = new Set();
+const eventPaths = new Set();
+for (const relativePath of await walkMarkdown("01 Члены семьи")) {
+  const fullPath = path.join(repoRoot, relativePath);
+  const parsed = matter(await fsp.readFile(fullPath, "utf8"));
+  if (parsed.data?.type !== "medical_event") continue;
+  eventPaths.add(relativePath);
+  if (parsed.data.id) eventIds.add(String(parsed.data.id));
+}
 
 const intakeFingerprints = new Set();
 for (const record of intakeStateFiles) {
@@ -152,14 +190,41 @@ for (const person of people) {
 for (const record of metricRecords) {
   if (record.person_id && !personIds.has(record.person_id)) errors.push(`metrics.records: unknown person_id "${record.person_id}"`);
   if (record.metric_id && !metricIds.has(record.metric_id)) errors.push(`metrics.records: unknown metric_id "${record.metric_id}"`);
+  if (!record.dedupe_key) errors.push(`metrics.records: "${record.id || "unknown"}" missing dedupe_key`);
+  if (!record.date || !isIsoDate(record.date)) errors.push(`metrics.records: "${record.id || "unknown"}" has invalid date`);
+  if (!record.value_text && !record.value && !record.qualitative_value) {
+    errors.push(`metrics.records: "${record.id || "unknown"}" missing value`);
+  }
+  if (record.source_event_id && !eventIds.has(String(record.source_event_id))) {
+    warnings.push(`metrics.records: unknown source_event_id "${record.source_event_id}"`);
+  }
+  if (record.source_event_path && !eventPaths.has(String(record.source_event_path))) {
+    warnings.push(`metrics.records: source_event_path does not exist: ${record.source_event_path}`);
+  }
 }
 
+const validTaskStatuses = new Set(["open", "done", "cancelled", "rejected"]);
 for (const record of taskRecords) {
   if (record.person_id && !personIds.has(record.person_id)) errors.push(`tasks.records: unknown person_id "${record.person_id}"`);
+  if (!record.dedupe_key) errors.push(`tasks.records: "${record.id || "unknown"}" missing dedupe_key`);
+  if (!record.action_text && !record.title) errors.push(`tasks.records: "${record.id || "unknown"}" missing action_text/title`);
+  if (record.status && !validTaskStatuses.has(String(record.status))) {
+    errors.push(`tasks.records: "${record.id || "unknown"}" has invalid status "${record.status}"`);
+  }
+  if (record.due_date && !isIsoDate(record.due_date)) errors.push(`tasks.records: "${record.id || "unknown"}" has invalid due_date`);
+  if (record.source_event_id && !eventIds.has(String(record.source_event_id))) {
+    warnings.push(`tasks.records: unknown source_event_id "${record.source_event_id}"`);
+  }
+  if (record.source_event_path && !eventPaths.has(String(record.source_event_path))) {
+    warnings.push(`tasks.records: source_event_path does not exist: ${record.source_event_path}`);
+  }
 }
 
 for (const record of watchlistRecords) {
   if (record.person_id && !personIds.has(record.person_id)) errors.push(`watchlist.records: unknown person_id "${record.person_id}"`);
+  for (const personId of record.person_ids || []) {
+    if (!personIds.has(personId)) errors.push(`watchlist.records: unknown person_ids value "${personId}"`);
+  }
   for (const metricId of record.related_metric_ids || []) {
     if (!metricIds.has(metricId)) errors.push(`watchlist.records: unknown related_metric_id "${metricId}"`);
   }

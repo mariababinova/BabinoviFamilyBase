@@ -831,7 +831,8 @@ select {
 }
 
 .chip.muted,
-.doc-badge.muted {
+.doc-badge.muted,
+.status-pill.muted {
   color: var(--muted);
   background: #fff;
 }
@@ -1128,6 +1129,25 @@ select {
   border: 0;
   object-fit: contain;
   background: #fffdf8;
+}
+
+.empty-state {
+  min-height: 360px;
+  display: grid;
+  align-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: var(--muted);
+}
+
+.empty-state h2 {
+  margin: 0;
+  color: var(--ink);
+}
+
+.empty-state p {
+  max-width: 42rem;
+  margin: 0;
 }
 
 .filter-panel {

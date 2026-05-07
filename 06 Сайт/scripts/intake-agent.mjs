@@ -4,6 +4,7 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import { hashText, isoDateFromText, repoRelative, repoRoot, slugify, stripMarkdown } from "./dashboard-lib.mjs";
+import { atomicWriteJson, atomicWriteText, readJsonOrDefault } from "./agent-utils.mjs";
 
 const args = process.argv.slice(2);
 const command = args.find((arg) => !arg.startsWith("--")) || "scan";
@@ -73,7 +74,7 @@ function loadEnvFile(filePath) {
 }
 
 async function readJson(relativePath) {
-  return JSON.parse(await fsp.readFile(path.join(repoRoot, relativePath), "utf8"));
+  return readJsonOrDefault(path.join(repoRoot, relativePath), {});
 }
 
 async function loadReferences() {
@@ -97,17 +98,13 @@ async function ensureFolders() {
 }
 
 async function loadState() {
-  try {
-    return JSON.parse(await fsp.readFile(statePath, "utf8"));
-  } catch {
-    return { schema_version: 1, files: [] };
-  }
+  return readJsonOrDefault(statePath, { schema_version: 1, files: [] });
 }
 
 async function saveState(state) {
   if (dryRun) return;
   state.updated_at = new Date().toISOString();
-  await fsp.writeFile(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf8");
+  await atomicWriteJson(statePath, state);
 }
 
 async function walkFiles(dir, output = []) {
@@ -725,7 +722,10 @@ async function scanInbox() {
       const draftContent = draftMarkdown(analysis, fingerprint);
 
       if (!dryRun) {
-        await fsp.writeFile(draftPath, draftContent, "utf8");
+        if (fs.existsSync(draftPath)) {
+          throw new Error(`Draft already exists and will not be overwritten: ${draftRelative}`);
+        }
+        await atomicWriteText(draftPath, draftContent);
         state.files.push({
           fingerprint,
           original_source_file: originalPath,
@@ -941,25 +941,19 @@ async function promoteDrafts() {
       continue;
     }
 
-    if (!dryRun) await fsp.mkdir(clinicDir, { recursive: true });
-
+    const plannedTargets = new Set();
+    const copyPlans = [];
     for (const source of sourceRefs) {
       const sourcePath = path.join(repoRoot, source);
-      const targetPath = await uniquePath(path.join(clinicDir, path.basename(sourcePath)));
-      if (!dryRun) await fsp.copyFile(sourcePath, targetPath);
-      copiedFiles.push(targetPath);
-
-      if (!dryRun && sourcePath.startsWith(inboxDir + path.sep) && !sourcePath.startsWith(paths.processed + path.sep)) {
-        const processedSourcePath = await uniquePath(path.join(paths.processed, path.basename(sourcePath)));
-        await fsp.rename(sourcePath, processedSourcePath);
-        const stateRecord = state.files.find((record) => record.source_file === source);
-        if (stateRecord) {
-          stateRecord.status = "processed";
-          stateRecord.source_file_processed = repoRelative(processedSourcePath);
-          stateRecord.event_file = repoRelative(eventPath);
-          stateRecord.processed_at = new Date().toISOString();
-        }
+      const ext = path.extname(sourcePath);
+      const base = path.basename(sourcePath, ext);
+      let targetPath = path.join(clinicDir, path.basename(sourcePath));
+      for (let index = 2; fs.existsSync(targetPath) || plannedTargets.has(targetPath); index += 1) {
+        targetPath = path.join(clinicDir, `${base} (${index})${ext}`);
       }
+      plannedTargets.add(targetPath);
+      copyPlans.push({ source, sourcePath, targetPath });
+      copiedFiles.push(targetPath);
     }
 
     const eventContent = buildEventMarkdown({
@@ -972,7 +966,26 @@ async function promoteDrafts() {
 
     const processedDraftPath = path.join(paths.processed, path.basename(draft.filePath));
     if (!dryRun) {
-      await fsp.writeFile(eventPath, eventContent, "utf8");
+      await fsp.mkdir(clinicDir, { recursive: true });
+      for (const plan of copyPlans) {
+        await fsp.copyFile(plan.sourcePath, plan.targetPath);
+      }
+      await atomicWriteText(eventPath, eventContent);
+
+      for (const plan of copyPlans) {
+        if (plan.sourcePath.startsWith(inboxDir + path.sep) && !plan.sourcePath.startsWith(paths.processed + path.sep)) {
+          const processedSourcePath = await uniquePath(path.join(paths.processed, path.basename(plan.sourcePath)));
+          await fsp.rename(plan.sourcePath, processedSourcePath);
+          const stateRecord = state.files.find((record) => record.source_file === plan.source);
+          if (stateRecord) {
+            stateRecord.status = "processed";
+            stateRecord.source_file_processed = repoRelative(processedSourcePath);
+            stateRecord.event_file = repoRelative(eventPath);
+            stateRecord.processed_at = new Date().toISOString();
+          }
+        }
+      }
+
       const finalProcessedDraftPath = await uniquePath(processedDraftPath);
       await fsp.rename(draft.filePath, finalProcessedDraftPath);
       const draftRelative = repoRelative(draft.filePath);

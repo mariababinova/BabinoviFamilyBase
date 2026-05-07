@@ -8,6 +8,7 @@ export function getStaticPaths() {
 
 const { document } = Astro.props;
 const isImage = ["jpg", "jpeg", "png"].includes(document.extension);
+const canOpenOriginal = Boolean(document.publicUrl);
 ---
 
 <AppLayout title={`${document.fileName} · Медицинская база`}>
@@ -27,17 +28,27 @@ const isImage = ["jpg", "jpeg", "png"].includes(document.extension);
       </dl>
       <div class="action-stack">
         {document.eventHref && <a class="button" href={document.eventHref}>К медицинской записи</a>}
-        <a class="button secondary" href={document.publicUrl} target="_blank" rel="noreferrer">Открыть оригинал</a>
-        <a class="button secondary" href={document.publicUrl} download>Скачать</a>
+        {canOpenOriginal ? (
+          <>
+            <a class="button secondary" href={document.publicUrl} target="_blank" rel="noreferrer">Открыть оригинал</a>
+            <a class="button secondary" href={document.publicUrl} download>Скачать</a>
+          </>
+        ) : (
+          <span class="status-pill muted">Оригинал не публикуется на сайте</span>
+        )}
       </div>
     </aside>
     <article class="document-preview card">
-      {isImage ? (
+      {canOpenOriginal && isImage ? (
         <img src={document.publicUrl} alt={document.fileName} />
-      ) : (
+      ) : canOpenOriginal ? (
         <iframe src={document.publicUrl} title={document.fileName}></iframe>
+      ) : (
+        <div class="empty-state">
+          <h2>Оригинал скрыт</h2>
+          <p>Сайт показывает карточку документа и связь с медицинской записью, но не публикует исходный файл.</p>
+        </div>
       )}
     </article>
   </section>
 </AppLayout>
-

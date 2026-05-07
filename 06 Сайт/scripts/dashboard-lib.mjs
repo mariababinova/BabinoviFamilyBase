@@ -4,6 +4,7 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
+import { atomicWriteJson, readJsonOrDefault, readJsonStrict } from "./agent-utils.mjs";
 
 export const siteDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const repoRoot = path.resolve(siteDir, "..");
@@ -19,6 +20,8 @@ export const distDocumentsDir = path.join(siteDir, "dist", "files", "documents")
 export const basePath = process.env.PUBLIC_BASE_PATH ?? (process.env.VERCEL ? "" : "/MedsDataBase");
 
 const assetExtensions = new Set([".pdf", ".jpg", ".jpeg", ".png"]);
+const documentPublishEnabled =
+  process.env.MEDS_PUBLIC_DOCUMENTS === "1" || process.env.MEDS_PUBLIC_DOCUMENTS === "true";
 
 const translit = {
   а: "a",
@@ -283,7 +286,7 @@ function documentOutputName(relativePath) {
   return `${hashText(relativePath)}-${slugify(base, "document")}${ext}`;
 }
 
-function documentFromPath(filePath, isInboxItem = false) {
+function documentFromPath(filePath, { isInboxItem = false, publicDocuments = documentPublishEnabled } = {}) {
   const relativePath = repoRelative(filePath);
   const outputFileName = documentOutputName(relativePath);
   const person = filePath.startsWith(membersDir) ? memberNameFromPath(filePath) : undefined;
@@ -298,7 +301,8 @@ function documentFromPath(filePath, isInboxItem = false) {
     routePath: `/documents/${slug}`,
     href: addBase(`/documents/${slug}`),
     outputFileName,
-    publicUrl: `${basePath}/files/documents/${outputFileName}`,
+    publicUrl: publicDocuments ? `${basePath}/files/documents/${outputFileName}` : "",
+    isOriginalPublic: Boolean(publicDocuments),
     extension: path.extname(filePath).slice(1).toLowerCase(),
     person,
     eventId: undefined,
@@ -719,50 +723,30 @@ function buildSearchItems({ people, events, documents, tasks, doctorSummaries })
 }
 
 async function readMetricsFile() {
-  try {
-    const raw = await fsp.readFile(metricsFilePath, "utf8");
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed.records) ? parsed.records : [];
-  } catch {
-    return [];
-  }
+  const parsed = await readJsonOrDefault(metricsFilePath, { records: [] });
+  return Array.isArray(parsed.records) ? parsed.records : [];
 }
 
 async function readTasksFile() {
-  try {
-    const raw = await fsp.readFile(tasksFilePath, "utf8");
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed.records) ? parsed.records : [];
-  } catch {
-    return [];
-  }
+  const parsed = await readJsonOrDefault(tasksFilePath, { records: [] });
+  return Array.isArray(parsed.records) ? parsed.records : [];
 }
 
 async function readWatchlistFile() {
-  try {
-    const raw = await fsp.readFile(watchlistFilePath, "utf8");
-    const parsed = JSON.parse(raw);
-    return {
-      generatedAt: parsed.generated_at || parsed.generatedAt,
-      records: Array.isArray(parsed.records) ? parsed.records : [],
-      attentionZones: Array.isArray(parsed.attention_zones) ? parsed.attention_zones : [],
-    };
-  } catch {
-    return { generatedAt: undefined, records: [], attentionZones: [] };
-  }
+  const parsed = await readJsonOrDefault(watchlistFilePath, { records: [], attention_zones: [] });
+  return {
+    generatedAt: parsed.generated_at || parsed.generatedAt,
+    records: Array.isArray(parsed.records) ? parsed.records : [],
+    attentionZones: Array.isArray(parsed.attention_zones) ? parsed.attention_zones : [],
+  };
 }
 
 async function readDoctorSummariesFile() {
-  try {
-    const raw = await fsp.readFile(doctorSummariesFilePath, "utf8");
-    const parsed = JSON.parse(raw);
-    return {
-      generatedAt: parsed.generated_at || parsed.generatedAt,
-      records: Array.isArray(parsed.records) ? parsed.records : [],
-    };
-  } catch {
-    return { generatedAt: undefined, records: [] };
-  }
+  const parsed = await readJsonOrDefault(doctorSummariesFilePath, { records: [] });
+  return {
+    generatedAt: parsed.generated_at || parsed.generatedAt,
+    records: Array.isArray(parsed.records) ? parsed.records : [],
+  };
 }
 
 function normalizeTaskRecord(record, eventsById, profilesByPerson, issues) {
@@ -922,10 +906,64 @@ function canonicalEventType(label) {
   return { eventTypeId: slugify(label || "event"), eventTypeLabel: label || "Событие" };
 }
 
-export async function loadDashboardData({ includeInbox = false } = {}) {
+async function countFilesInDir(dir) {
+  try {
+    const entries = await fsp.readdir(dir, { withFileTypes: true });
+    let count = 0;
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        count += await countFilesInDir(path.join(dir, entry.name));
+      } else if (entry.name !== ".gitkeep") {
+        count += 1;
+      }
+    }
+    return count;
+  } catch (error) {
+    if (error?.code === "ENOENT") return 0;
+    throw error;
+  }
+}
+
+async function loadOperationsData() {
+  const folderNames = {
+    newFiles: "00 Новые файлы",
+    aiDrafts: "10 Черновики AI",
+    review: "20 На проверке",
+    approved: "30 Одобрено",
+    processed: "90 Обработано",
+    errors: "99 Ошибки",
+  };
+  const entries = await Promise.all(
+    Object.entries(folderNames).map(async ([key, folder]) => [key, await countFilesInDir(path.join(inboxDir, folder))]),
+  );
+  const intakeState = await readJsonOrDefault(path.join(inboxDir, "intake-state.json"), { files: [] });
+  const metricCandidates = await readJsonOrDefault(path.join(repoRoot, "07 Показатели", "metric_candidates.json"), {
+    candidates: [],
+  });
+  const candidateCounts = {};
+  for (const candidate of metricCandidates.candidates || []) {
+    const status = candidate.status || "unknown";
+    candidateCounts[status] = (candidateCounts[status] || 0) + 1;
+  }
+
+  return {
+    inbox: Object.fromEntries(entries),
+    intakeState: {
+      updatedAt: intakeState.updated_at || intakeState.updatedAt || "",
+      files: Array.isArray(intakeState.files) ? intakeState.files.length : 0,
+    },
+    metricCandidates: {
+      generatedAt: metricCandidates.generated_at || metricCandidates.generatedAt || "",
+      total: Array.isArray(metricCandidates.candidates) ? metricCandidates.candidates.length : 0,
+      byStatus: candidateCounts,
+    },
+  };
+}
+
+export async function loadDashboardData({ includeInbox = false, publicDocuments = documentPublishEnabled, skipDoctorSummaries = false } = {}) {
   const issues = [];
   const documents = (await findAssetFiles({ includeInbox })).map((filePath) =>
-    documentFromPath(filePath, filePath.startsWith(inboxDir)),
+    documentFromPath(filePath, { isInboxItem: filePath.startsWith(inboxDir), publicDocuments }),
   );
   const markdownFiles = await findMarkdownFiles();
   const profiles = [];
@@ -1054,7 +1092,8 @@ export async function loadDashboardData({ includeInbox = false } = {}) {
     );
   const metricGroups = buildMetricGroups(metrics);
   const watchlist = await readWatchlistFile();
-  const doctorSummaries = await readDoctorSummariesFile();
+  const doctorSummaries = skipDoctorSummaries ? { generatedAt: undefined, records: [] } : await readDoctorSummariesFile();
+  const operations = await loadOperationsData();
   for (const profile of profiles) {
     profile.keyMetrics = metricGroups
       .filter((group) => group.person === profile.name && keyMetricIds.has(group.metricId))
@@ -1076,6 +1115,7 @@ export async function loadDashboardData({ includeInbox = false } = {}) {
     metricGroups,
     watchlist,
     doctorSummaries,
+    operations,
     tasks,
     issues,
     searchItems: [],
@@ -1111,14 +1151,14 @@ export async function writeDashboardData(options = {}) {
     extension: document.extension,
     size: document.size,
   }));
-  await fsp.writeFile(path.join(generatedDir, "dashboard-data.json"), `${JSON.stringify(data, null, 2)}\n`, "utf8");
-  await fsp.writeFile(path.join(generatedDir, "document-manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+  await atomicWriteJson(path.join(generatedDir, "dashboard-data.json"), data);
+  await atomicWriteJson(path.join(generatedDir, "document-manifest.json"), manifest);
   return data;
 }
 
 export async function copyDocuments(targetDir) {
   const manifestPath = path.join(generatedDir, "document-manifest.json");
-  const manifest = JSON.parse(await fsp.readFile(manifestPath, "utf8"));
+  const manifest = await readJsonStrict(manifestPath);
   await fsp.rm(targetDir, { recursive: true, force: true });
   await fsp.mkdir(targetDir, { recursive: true });
   for (const document of manifest) {

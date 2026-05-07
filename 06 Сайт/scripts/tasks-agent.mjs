@@ -12,6 +12,7 @@ import {
   slugify,
   stripMarkdown,
 } from "./dashboard-lib.mjs";
+import { atomicWriteJson, readJsonOrDefault } from "./agent-utils.mjs";
 
 const args = process.argv.slice(2);
 const flags = new Set(args.filter((arg) => arg.startsWith("--")));
@@ -33,17 +34,12 @@ The agent scans approved medical event notes and writes control tasks to 08 За
 }
 
 async function readJson(filePath, fallback) {
-  try {
-    return JSON.parse(await fsp.readFile(filePath, "utf8"));
-  } catch {
-    return fallback;
-  }
+  return readJsonOrDefault(filePath, fallback);
 }
 
 async function writeJson(filePath, value) {
   if (dryRun) return;
-  await fsp.mkdir(path.dirname(filePath), { recursive: true });
-  await fsp.writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  await atomicWriteJson(filePath, value);
 }
 
 function normalizeText(value) {
@@ -246,6 +242,34 @@ function uniqueCandidates(candidates) {
   );
 }
 
+function mergeGeneratedTask(generated, previous) {
+  if (!previous) return generated;
+  const userOwnedFields = [
+    "status",
+    "priority",
+    "notes",
+    "reviewed_at",
+    "reviewed_by",
+    "closed_at",
+    "closed_by",
+    "completed_at",
+    "completed_by",
+    "cancelled_at",
+    "cancelled_by",
+    "rejected_at",
+    "rejected_by",
+    "user_comment",
+    "generated_at",
+  ];
+  const merged = { ...generated };
+  for (const field of userOwnedFields) {
+    if (previous[field] !== undefined && previous[field] !== "") merged[field] = previous[field];
+  }
+  if (previous.title_override) merged.title = previous.title_override;
+  if (previous.priority_override) merged.priority = previous.priority_override;
+  return merged;
+}
+
 async function loadEvents(people) {
   const files = await findMarkdownFiles();
   const output = [];
@@ -297,16 +321,24 @@ async function scanTasks() {
   const people = peopleJson.people || [];
   const events = await loadEvents(people);
   const generated = uniqueCandidates(events.flatMap(extractTasksFromEvent));
+  const previousGenerated = new Map(
+    (tasksJson.records || [])
+      .filter((record) => record.source_agent === agentName && record.dedupe_key)
+      .map((record) => [record.dedupe_key, record]),
+  );
   const manualRecords = (tasksJson.records || []).filter((record) => record.source_agent !== agentName);
   const manualKeys = new Set(manualRecords.map((record) => record.dedupe_key).filter(Boolean));
   const records = [
     ...manualRecords,
-    ...generated.filter((record) => !manualKeys.has(record.dedupe_key)),
+    ...generated
+      .filter((record) => !manualKeys.has(record.dedupe_key))
+      .map((record) => mergeGeneratedTask(record, previousGenerated.get(record.dedupe_key))),
   ];
+  const recordsChanged = JSON.stringify(tasksJson.records || []) !== JSON.stringify(records);
 
   const payload = {
     schema_version: tasksJson.schema_version || 1,
-    updated_at: new Date().toISOString(),
+    updated_at: recordsChanged || !tasksJson.updated_at ? new Date().toISOString() : tasksJson.updated_at,
     records,
   };
 

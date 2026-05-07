@@ -13,6 +13,7 @@ import {
   slugify,
   stripMarkdown,
 } from "./dashboard-lib.mjs";
+import { atomicWriteJson, atomicWriteText, readJsonOrDefault } from "./agent-utils.mjs";
 
 const args = process.argv.slice(2);
 const command = args.find((arg) => !arg.startsWith("--")) || "scan";
@@ -43,23 +44,17 @@ Workflow:
 }
 
 async function readJson(filePath, fallback) {
-  try {
-    return JSON.parse(await fsp.readFile(filePath, "utf8"));
-  } catch {
-    return fallback;
-  }
+  return readJsonOrDefault(filePath, fallback);
 }
 
 async function writeJson(filePath, value) {
   if (dryRun) return;
-  await fsp.mkdir(path.dirname(filePath), { recursive: true });
-  await fsp.writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  await atomicWriteJson(filePath, value);
 }
 
 async function writeText(filePath, value) {
   if (dryRun) return;
-  await fsp.mkdir(path.dirname(filePath), { recursive: true });
-  await fsp.writeFile(filePath, value, "utf8");
+  await atomicWriteText(filePath, value);
 }
 
 async function loadDictionary() {
@@ -636,23 +631,42 @@ async function checkedReviewIds() {
 }
 
 async function scanMetrics() {
-  const [dictionary, people, events, drafts, metricsJson] = await Promise.all([
+  const [dictionary, people, events, drafts, metricsJson, previousCandidatesJson, checkedIds] = await Promise.all([
     loadDictionary(),
     loadPeople(),
     loadEvents(),
     loadDrafts(),
     readJson(metricsPath, { records: [] }),
+    readJson(candidatesPath, { candidates: [] }),
+    checkedReviewIds(),
   ]);
 
   const existingKeys = new Set((metricsJson.records || []).map((record) => record.dedupe_key).filter(Boolean));
   const existingFingerprints = new Set((metricsJson.records || []).map(metricFingerprint));
+  const previousByKey = new Map();
+  for (const candidate of previousCandidatesJson.candidates || []) {
+    if (candidate.id) previousByKey.set(candidate.id, candidate);
+    if (candidate.dedupe_key) previousByKey.set(candidate.dedupe_key, candidate);
+  }
   const rawCandidates = [
     ...events.flatMap((event) => extractFromEvent(event, dictionary, people)),
     ...drafts.flatMap((draft) => extractFromDraft(draft, dictionary, people)),
   ];
-  const candidates = uniqueByDedupeKey(keepRepeatedCustomCandidates(rawCandidates)).filter(
-    (candidate) => !existingKeys.has(candidate.dedupe_key) && !existingFingerprints.has(metricFingerprint(candidate)),
-  );
+  const candidates = uniqueByDedupeKey(keepRepeatedCustomCandidates(rawCandidates))
+    .filter((candidate) => !existingKeys.has(candidate.dedupe_key) && !existingFingerprints.has(metricFingerprint(candidate)))
+    .map((candidate) => {
+      const previous = previousByKey.get(candidate.id) || previousByKey.get(candidate.dedupe_key);
+      if (!previous && !checkedIds.has(candidate.id)) return candidate;
+      const status = checkedIds.has(candidate.id) && previous?.status !== "imported" ? "approved" : previous?.status || candidate.status;
+      return {
+        ...candidate,
+        status,
+        reviewed_at: previous?.reviewed_at || (checkedIds.has(candidate.id) ? new Date().toISOString() : candidate.reviewed_at),
+        reviewed_by: previous?.reviewed_by || candidate.reviewed_by || "",
+        imported_at: previous?.imported_at || candidate.imported_at || "",
+        review_comment: previous?.review_comment || candidate.review_comment || "",
+      };
+    });
   const payload = {
     schema_version: 1,
     status: "needs_review",

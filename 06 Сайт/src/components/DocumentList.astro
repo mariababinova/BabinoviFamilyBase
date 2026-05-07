@@ -9,7 +9,8 @@ interface DocumentItem {
   specialty?: string;
   isLinkedToEvent: boolean;
   linkStatusLabel: string;
-  publicUrl: string;
+  publicUrl?: string;
+  isOriginalPublic?: boolean;
 }
 
 const { documents } = Astro.props as { documents: DocumentItem[] };
@@ -24,7 +25,11 @@ const { documents } = Astro.props as { documents: DocumentItem[] };
       </div>
       <div class="document-actions">
         <span class:list={["status-pill", document.isLinkedToEvent ? "linked" : "unlinked"]}>{document.linkStatusLabel}</span>
-        <a class="button secondary" href={document.publicUrl} target="_blank" rel="noreferrer">Открыть</a>
+        {document.publicUrl ? (
+          <a class="button secondary" href={document.publicUrl} target="_blank" rel="noreferrer">Открыть</a>
+        ) : (
+          <span class="status-pill muted">Оригинал не публикуется</span>
+        )}
       </div>
     </article>
   ))}
