@@ -1,7 +1,8 @@
 import { defineConfig } from "astro/config";
 
-const site = "https://ulyana19svlv.github.io";
-const base = "/MedsDataBase";
+const isVercel = Boolean(process.env.VERCEL);
+const site = process.env.PUBLIC_SITE_URL || (isVercel ? "https://meds-database-site.vercel.app" : "https://ulyana19svlv.github.io");
+const base = process.env.PUBLIC_BASE_PATH ?? (isVercel ? "" : "/MedsDataBase");
 
 export default defineConfig({
   site,

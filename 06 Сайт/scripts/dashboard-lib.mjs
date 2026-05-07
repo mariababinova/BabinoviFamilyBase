@@ -16,7 +16,7 @@ export const doctorSummariesFilePath = path.join(repoRoot, "09 Наблюден�
 export const generatedDir = path.join(siteDir, "src", "generated");
 export const publicDocumentsDir = path.join(siteDir, "public", "files", "documents");
 export const distDocumentsDir = path.join(siteDir, "dist", "files", "documents");
-export const basePath = "/MedsDataBase";
+export const basePath = process.env.PUBLIC_BASE_PATH ?? (process.env.VERCEL ? "" : "/MedsDataBase");
 
 const assetExtensions = new Set([".pdf", ".jpg", ".jpeg", ".png"]);
 

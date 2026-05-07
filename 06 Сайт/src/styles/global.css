@@ -1183,6 +1183,97 @@ select {
   display: none;
 }
 
+.chat-dock {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 50;
+}
+
+.chat-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 1rem;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+  box-shadow: 5px 5px 0 rgba(23, 27, 29, 0.18);
+  cursor: pointer;
+}
+
+.chat-toggle:hover {
+  color: var(--accent-dark);
+  transform: translate(-1px, -1px);
+}
+
+.chat-window {
+  position: absolute;
+  right: 0;
+  bottom: 64px;
+  width: min(560px, calc(100vw - 2.4rem));
+  height: min(720px, calc(100vh - 7rem));
+  overflow: hidden;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.chat-window-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 2px solid var(--border);
+  background: rgba(255, 253, 248, 0.96);
+}
+
+.chat-window-header div {
+  display: grid;
+  gap: 0.05rem;
+}
+
+.chat-window-header span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.chat-close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+openai-chatkit {
+  display: block;
+  width: 100%;
+  height: calc(100% - 56px);
+}
+
+.chatkit-fallback {
+  position: absolute;
+  inset: 56px 0 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: var(--surface);
+}
+
 @media (max-width: 980px) {
   .app-shell {
     display: block;
@@ -1289,6 +1380,18 @@ select {
     color: var(--muted);
     min-width: 0;
     text-align: center;
+  }
+
+  .chat-dock {
+    right: 0.8rem;
+    bottom: 4.4rem;
+  }
+
+  .chat-window {
+    right: -0.2rem;
+    bottom: 58px;
+    width: calc(100vw - 1.2rem);
+    height: min(680px, calc(100vh - 9rem));
   }
 }
 

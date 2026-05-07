@@ -1,0 +1,137 @@
+<div class="chat-dock" data-chat-dock>
+  <button class="chat-toggle" type="button" aria-expanded="false" aria-controls="medical-chat-panel" data-chat-toggle>
+    <span>Чат по базе</span>
+  </button>
+  <section class="chat-window" id="medical-chat-panel" aria-label="Чат по медицинской базе" hidden data-chat-window>
+    <div class="chat-window-header">
+      <div>
+        <strong>QA агент</strong>
+        <span>только по данным базы</span>
+      </div>
+      <button class="chat-close" type="button" aria-label="Закрыть чат" data-chat-close>×</button>
+    </div>
+    <openai-chatkit id="medical-chatkit"></openai-chatkit>
+    <div class="chatkit-fallback" id="chatkit-fallback">Загрузка чата...</div>
+  </section>
+</div>
+
+<script>
+  type SearchParams = { query?: string; person?: string; limit?: number };
+  type ToolCall = { name: string; params?: SearchParams };
+  type ChatKitElement = HTMLElement & {
+    setOptions?: (options: Record<string, unknown>) => void;
+  };
+
+  const endpoint =
+    import.meta.env.PUBLIC_CHATKIT_SESSION_ENDPOINT || "/api/chatkit/session";
+
+  function getStableUserId() {
+    const key = "meds-db-chat-user";
+    const existing = window.localStorage.getItem(key);
+    if (existing) return existing;
+
+    const value =
+      window.crypto?.randomUUID?.() ||
+      `browser-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    window.localStorage.setItem(key, value);
+    return value;
+  }
+
+  async function getClientSecret(currentClientSecret?: string) {
+    if (currentClientSecret) return currentClientSecret;
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user: getStableUserId() }),
+    });
+
+    const payload = await response.json();
+    if (!response.ok || !payload.client_secret) {
+      throw new Error(payload.error || "Не удалось открыть сессию ChatKit.");
+    }
+
+    return payload.client_secret;
+  }
+
+  async function searchMedicalContext(params?: SearchParams) {
+    const response = await fetch("/api/medical-context/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: String(params?.query || ""),
+        person: String(params?.person || ""),
+        limit: Number(params?.limit || 8),
+      }),
+    });
+
+    const payload = await response.json();
+    if (!response.ok) {
+      return {
+        error: payload.error || "Не удалось найти данные в медицинском индексе.",
+      };
+    }
+
+    return payload;
+  }
+
+  function configureChatKit() {
+    const chatkit = document.getElementById("medical-chatkit") as ChatKitElement | null;
+    const fallback = document.getElementById("chatkit-fallback");
+
+    if (!chatkit || typeof chatkit.setOptions !== "function") {
+      window.setTimeout(configureChatKit, 100);
+      return;
+    }
+
+    chatkit.setOptions({
+      api: { getClientSecret },
+      onClientTool: async (toolCall: ToolCall) => {
+        if (toolCall.name === "search_medical_context") {
+          return await searchMedicalContext(toolCall.params);
+        }
+
+        return { error: `Unknown client tool: ${toolCall.name}` };
+      },
+      locale: "ru",
+      theme: { colorScheme: "light" },
+      header: {
+        title: {
+          enabled: true,
+          text: "Чат по базе",
+        },
+      },
+      composer: {
+        placeholder: "Спросить по базе...",
+        attachments: { enabled: false },
+      },
+      startScreen: {
+        greeting: "Чем помочь по медицинской базе?",
+        prompts: [
+          { label: "Педиатрия Ники", prompt: "Что важно обсудить с педиатром по Нике?" },
+          { label: "Ближайшие задачи", prompt: "Покажи ближайшие задачи по базе" },
+          { label: "Сводка по Маше", prompt: "Собери краткую сводку по Маше" },
+        ],
+      },
+      history: { enabled: true },
+    });
+
+    fallback?.remove();
+  }
+
+  const toggle = document.querySelector("[data-chat-toggle]");
+  const close = document.querySelector("[data-chat-close]");
+  const windowEl = document.querySelector("[data-chat-window]") as HTMLElement | null;
+
+  function setOpen(open: boolean) {
+    if (!toggle || !windowEl) return;
+    windowEl.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+    if (open) configureChatKit();
+  }
+
+  toggle?.addEventListener("click", () => {
+    setOpen(windowEl?.hidden ?? true);
+  });
+  close?.addEventListener("click", () => setOpen(false));
+</script>

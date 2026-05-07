@@ -1,0 +1,6 @@
+{
+  "installCommand": "cd \"06 Сайт\" && npm ci",
+  "buildCommand": "cd \"06 Сайт\" && npm run build",
+  "outputDirectory": "06 Сайт/dist",
+  "framework": "astro"
+}
