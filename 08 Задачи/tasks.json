@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-05-07T13:06:58.503Z",
+  "updated_at": "2026-05-10T17:15:21.505Z",
   "records": [
     {
       "id": "task-dc66f350e7398ba613ffdc3a",
@@ -18,8 +18,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Гомоцистеин",
       "extraction_confidence": "high",
@@ -43,8 +45,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Контроль: Эндокринология",
       "extraction_confidence": "high",
@@ -68,8 +72,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Контрольные анализы в июле",
       "extraction_confidence": "high",
@@ -93,8 +99,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Липопротеин (a)",
       "extraction_confidence": "high",
@@ -118,8 +126,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Общий анализ крови",
       "extraction_confidence": "high",
@@ -143,8 +153,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Свободный Т4",
       "extraction_confidence": "high",
@@ -168,8 +180,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "ТТГ",
       "extraction_confidence": "high",
@@ -436,8 +450,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Выполнение гастро-обследований в плановом порядке",
       "extraction_confidence": "medium",
@@ -473,31 +489,6 @@
       "generated_at": "2026-05-07T13:06:58.490Z"
     },
     {
-      "id": "task-f4b4b68b397bcc8f28b23b26",
-      "type": "diagnostic_control",
-      "status": "open",
-      "person": "Артём",
-      "person_id": "artem",
-      "due_date": "",
-      "priority": "low",
-      "specialty": "Эндокринология",
-      "specialty_id": "endokrinologiya",
-      "title": "Гастроскопия",
-      "action_text": "Гастроскопия",
-      "reason": "Из раздела \"Планово\" события \"2026-04-18 Артём — эндокринолог\".",
-      "source_type": "event",
-      "source_event_id": "2026-04-18-artem-endokrinolog",
-      "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
-      "watchlist_topic_id": "",
-      "source_text": "Гастроскопия",
-      "extraction_confidence": "medium",
-      "dedupe_key": "f4b4b68b397bcc8f28b23b26",
-      "source_agent": "tasks-agent",
-      "generated_at": "2026-05-07T13:06:58.492Z"
-    },
-    {
       "id": "task-c80e0675fb078eacc31ca6d8",
       "type": "diagnostic_control",
       "status": "open",
@@ -513,14 +504,70 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Колоноскопия",
       "extraction_confidence": "medium",
       "dedupe_key": "c80e0675fb078eacc31ca6d8",
       "source_agent": "tasks-agent",
       "generated_at": "2026-05-07T13:06:58.492Z"
+    },
+    {
+      "id": "task-b61ed54304b76abc59216399",
+      "type": "doctor_visit",
+      "status": "open",
+      "person": "Артём",
+      "person_id": "artem",
+      "due_date": "",
+      "priority": "low",
+      "specialty": "Эндокринология",
+      "specialty_id": "endokrinologiya",
+      "title": "Консультация гастроэнтеролога по результатам",
+      "action_text": "Консультация гастроэнтеролога по результатам",
+      "reason": "Из раздела \"Планово\" события \"2026-04-18 Артём — эндокринолог\".",
+      "source_type": "event",
+      "source_event_id": "2026-04-18-artem-endokrinolog",
+      "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
+      "watchlist_topic_id": "",
+      "source_text": "Консультация гастроэнтеролога по результатам",
+      "extraction_confidence": "medium",
+      "dedupe_key": "b61ed54304b76abc59216399",
+      "source_agent": "tasks-agent",
+      "generated_at": "2026-05-10T17:15:21.492Z"
+    },
+    {
+      "id": "task-39cc8e39881349eb5e9eb928",
+      "type": "lab_control",
+      "status": "open",
+      "person": "Артём",
+      "person_id": "artem",
+      "due_date": "",
+      "priority": "low",
+      "specialty": "Эндокринология",
+      "specialty_id": "endokrinologiya",
+      "title": "Общий анализ кала",
+      "action_text": "Общий анализ кала",
+      "reason": "Из раздела \"Планово\" события \"2026-04-18 Артём — эндокринолог\".",
+      "source_type": "event",
+      "source_event_id": "2026-04-18-artem-endokrinolog",
+      "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
+      "watchlist_topic_id": "",
+      "source_text": "Общий анализ кала",
+      "extraction_confidence": "medium",
+      "dedupe_key": "39cc8e39881349eb5e9eb928",
+      "source_agent": "tasks-agent",
+      "generated_at": "2026-05-10T17:15:21.492Z"
     },
     {
       "id": "task-5d68f98ecb97ec595e84a458",
@@ -538,8 +585,10 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "",
-      "source_files": [],
+      "source_document_id": "7ba5913fdbb469b6",
+      "source_files": [
+        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+      ],
       "watchlist_topic_id": "",
       "source_text": "Омега-индекс развёрнутый",
       "extraction_confidence": "medium",
