@@ -1,10 +1,15 @@
 ---
-import { ageText, formatDateShort } from "../lib/ui";
+import { ageText, formatDateShort, pageHref } from "../lib/ui";
 
 const { person } = Astro.props;
 ---
 
 <article class="card person-card">
+  {person.photo && (
+    <a class="person-photo-link" href={person.href} aria-label={`Открыть профиль ${person.name}`}>
+      <img class="person-photo" src={pageHref(person.photo)} alt={person.name} loading="lazy" />
+    </a>
+  )}
   <div class="card-header">
     <div>
       <h3><a href={person.href}>{person.name}</a></h3>
@@ -15,7 +20,17 @@ const { person } = Astro.props;
   <dl class="mini-stats">
     <div><dt>События</dt><dd>{person.eventCount}</dd></div>
     <div><dt>Документы</dt><dd>{person.documentCount}</dd></div>
+    <div>
+      <dt>Вес</dt>
+      <dd>{person.latestWeight?.displayValue || "нет"}</dd>
+    </div>
   </dl>
+  {person.latestWeight && (
+    <a class="soft-row compact" href={person.weightMetric?.href || pageHref("/metrics")}>
+      <span>Вес на {formatDateShort(person.latestWeight.date)}</span>
+      <strong>{person.latestWeight.displayValue}</strong>
+    </a>
+  )}
   {person.latestEvent && (
     <a class="soft-row" href={person.latestEvent.href}>
       <span>Последнее событие</span>

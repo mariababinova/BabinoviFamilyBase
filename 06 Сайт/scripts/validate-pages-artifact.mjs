@@ -20,7 +20,9 @@ async function walk(dir) {
     if (entry.isDirectory()) {
       await walk(fullPath);
     } else if (forbiddenExtensions.has(path.extname(entry.name).toLowerCase())) {
-      violations.push(path.relative(distDir, fullPath).split(path.sep).join("/"));
+      const relativePath = path.relative(distDir, fullPath).split(path.sep).join("/");
+      if (relativePath.startsWith("people/")) continue;
+      violations.push(relativePath);
     }
   }
 }

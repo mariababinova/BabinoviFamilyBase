@@ -633,6 +633,30 @@ select {
   justify-content: space-between;
 }
 
+.person-photo-link {
+  display: block;
+  margin: -0.25rem -0.25rem 0.85rem;
+}
+
+.person-photo,
+.profile-photo {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.person-photo {
+  aspect-ratio: 4 / 3;
+}
+
+.profile-photo {
+  aspect-ratio: 1 / 1;
+  margin-bottom: 1rem;
+}
+
 .count-badge,
 .doc-badge,
 .chip,
@@ -689,6 +713,11 @@ select {
   border-radius: 8px;
   border: 1px solid rgba(32, 36, 38, 0.12);
   background: #fff;
+}
+
+.soft-row.compact {
+  min-height: 0;
+  padding: 0.6rem 0.7rem;
 }
 
 .soft-row span,
@@ -864,6 +893,37 @@ select {
 
 .profile-grid {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.profile-card {
+  align-content: start;
+}
+
+.weight-card {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.weight-form {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.weight-form label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.weight-form .button {
+  width: 100%;
+}
+
+.form-status {
+  min-height: 1.4rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .section-heading {

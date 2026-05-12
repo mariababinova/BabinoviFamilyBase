@@ -447,17 +447,30 @@
         "тип 33"
       ]
     },
-    {
-      "id": "hpv_45",
-      "label": "ВПЧ 45",
-      "category": "hpv",
-      "default_unit": "",
+  {
+    "id": "hpv_45",
+    "label": "ВПЧ 45",
+    "category": "hpv",
+    "default_unit": "",
       "value_type": "qualitative",
       "aliases": [
         "впч 45",
         "hpv 45",
-        "тип 45"
-      ]
-    }
-  ]
+      "тип 45"
+    ]
+  },
+  {
+    "id": "weight",
+    "label": "Вес",
+    "category": "body",
+    "default_unit": "кг",
+    "value_type": "numeric",
+    "aliases": [
+      "вес",
+      "масса тела",
+      "weight",
+      "body weight"
+    ]
+  }
+]
 }

@@ -14,6 +14,25 @@ const events = dashboard.events.filter((event) => event.personSlug === person.sl
 const documents = dashboard.documents.filter((document) => document.person === person.name);
 const tasks = dashboard.tasks.filter((task) => task.personSlug === person.slug);
 const keyMetrics = person.keyMetrics || [];
+type WeightRecord = {
+  date?: string;
+  displayValue?: string;
+};
+type WeightMetric = {
+  href?: string;
+  records?: WeightRecord[];
+} | null;
+type PersonWithWeight = typeof person & {
+  latestWeight?: WeightRecord | null;
+  weightMetric?: WeightMetric;
+};
+const personWithWeight = person as unknown as PersonWithWeight;
+const latestWeightData = personWithWeight.latestWeight as any;
+const weightMetricData = personWithWeight.weightMetric as { href?: string; records?: WeightRecord[] } | null;
+const weightHistory: WeightRecord[] = weightMetricData?.records || [];
+const weightMetricHref = weightMetricData?.href;
+const latestWeightValue = latestWeightData?.displayValue || "Нет данных";
+const latestWeightDateText = latestWeightData?.date ? `на ${formatDateShort(latestWeightData.date)}` : "История пока пустая";
 ---
 
 <AppLayout title={`${person.name} · Медицинская база`}>
@@ -24,7 +43,8 @@ const keyMetrics = person.keyMetrics || [];
   </section>
 
   <section class="profile-grid">
-    <article class="card">
+    <article class="card profile-card">
+      {person.photo && <img class="profile-photo" src={pageHref(person.photo)} alt={person.name} />}
       <h2>Основное</h2>
       <dl class="details-list">
         <div><dt>Дата рождения</dt><dd>{person.birthDate ? formatDate(person.birthDate) : person.birthDateText || "Не указана"}</dd></div>
@@ -45,6 +65,28 @@ const keyMetrics = person.keyMetrics || [];
           {person.specialtySummary.map((item) => <span class="chip">{item.label}: {item.count}</span>)}
         </div>
       )}
+    </article>
+    <article class="card weight-card">
+      <h2>Вес</h2>
+      <div class="metric-latest">
+        <strong>{latestWeightValue}</strong>
+        <span>{latestWeightDateText}</span>
+      </div>
+      {weightHistory.length > 0 && (
+        <a class="text-link" href={weightMetricHref}>Открыть историю</a>
+      )}
+      <form class="weight-form" data-weight-form data-person-id={person.slug} data-person-name={person.name}>
+        <label>
+          <span class="side-label">Дата</span>
+          <input name="date" type="date" required value={new Date().toISOString().slice(0, 10)} />
+        </label>
+        <label>
+          <span class="side-label">Вес, кг</span>
+          <input name="weight" type="number" inputmode="decimal" step="0.01" min="0.1" required placeholder="Например, 68.5" />
+        </label>
+        <button class="button" type="submit">Сохранить вес</button>
+        <p class="form-status" data-weight-form-status aria-live="polite"></p>
+      </form>
     </article>
   </section>
 
@@ -90,4 +132,49 @@ const keyMetrics = person.keyMetrics || [];
     <div class="section-title"><h2>Документы</h2></div>
     <DocumentList documents={documents} />
   </section>
+
+  <script>
+    const form = document.querySelector("[data-weight-form]") as HTMLFormElement | null;
+    const status = document.querySelector("[data-weight-form-status]") as HTMLElement | null;
+
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!status) return;
+
+      const submitButton = form.querySelector("button[type='submit']") as HTMLButtonElement | null;
+      const formData = new FormData(form);
+      const payload = {
+        personId: form.dataset.personId,
+        person: form.dataset.personName,
+        date: String(formData.get("date") || ""),
+        weight: String(formData.get("weight") || ""),
+      };
+
+      status.textContent = "Сохраняю...";
+      submitButton?.setAttribute("disabled", "disabled");
+
+      try {
+        const response = await fetch("/api/metrics/weight", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(result.error || "Не удалось сохранить вес.");
+        }
+
+        status.textContent = "Вес сохранён. После деплоя значение обновится в профиле и показателях.";
+        form.reset();
+      } catch (error) {
+        status.textContent =
+          error instanceof Error
+            ? error.message
+            : "Запись веса доступна только на сайте с включённым API.";
+      } finally {
+        submitButton?.removeAttribute("disabled");
+      }
+    });
+  </script>
 </AppLayout>

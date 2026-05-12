@@ -454,6 +454,7 @@ function normalizeProfile(filePath, data, body) {
     name: person,
     routePath: `/people/${slugify(person, `person-${hashText(person, 6)}`)}`,
     href: addBase(`/people/${slugify(person, `person-${hashText(person, 6)}`)}`),
+    photo: data.photo || "",
     profilePath: repoRelative(filePath),
     birthDate,
     birthDateText: info["Дата рождения"] || "",
@@ -833,6 +834,7 @@ function doctorQuestionsForMetric(group, latest, previous) {
 }
 
 const keyMetricIds = new Set([
+  "weight",
   "hemoglobin",
   "ferritin",
   "vitamin_d",
@@ -1095,6 +1097,9 @@ export async function loadDashboardData({ includeInbox = false, publicDocuments 
   const doctorSummaries = skipDoctorSummaries ? { generatedAt: undefined, records: [] } : await readDoctorSummariesFile();
   const operations = await loadOperationsData();
   for (const profile of profiles) {
+    const weightMetric = metricGroups.find((group) => group.person === profile.name && group.metricId === "weight");
+    profile.weightMetric = weightMetric || null;
+    profile.latestWeight = weightMetric?.latest || null;
     profile.keyMetrics = metricGroups
       .filter((group) => group.person === profile.name && keyMetricIds.has(group.metricId))
       .sort((a, b) => {
