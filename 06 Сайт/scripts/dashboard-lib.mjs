@@ -701,8 +701,8 @@ function buildSearchItems({ people, events, documents, tasks, doctorSummaries })
       specialty: task.specialty,
       specialtyId: task.specialtyId,
       title: task.actionText,
-      routePath: task.sourcePath,
-      href: task.sourceHref,
+      routePath: task.routePath || task.sourcePath,
+      href: task.href || task.sourceHref,
       subtitle: [task.person, task.dueDate || "Без даты"].filter(Boolean).join(" · "),
       text: stripMarkdown(`${task.actionText} ${task.person} ${task.specialty}`),
     })),
@@ -767,6 +767,20 @@ function normalizeTaskRecord(record, eventsById, profilesByPerson, issues) {
   const profile = person ? profilesByPerson.get(person) : undefined;
   const dueDate = isoDateFromText(record.due_date || record.dueDate);
   const actionText = cleanTaskText(record.action_text || record.title || record.source_text);
+  const groupedSourceEventIds = Array.isArray(record.grouped_source_event_ids) ? record.grouped_source_event_ids : [];
+  const items = Array.isArray(record.items)
+    ? record.items
+        .map((item) => ({
+          title: cleanTaskText(item.title || item.action_text || item.source_text),
+          specialty: item.specialty || "",
+          specialtyId: item.specialty_id || slugify(item.specialty || "control"),
+          sourceEventId: item.source_event_id || "",
+        }))
+        .filter((item) => item.title)
+    : [];
+  const id = String(record.id || `task-${hashText(actionText, 12)}`);
+  const isGroupedTask = record.kind === "grouped_task" || record.task_page === true || groupedSourceEventIds.length > 1 || items.length > 1;
+  const taskRoutePath = isGroupedTask ? `/tasks/${slugify(id.replace(/^task-/, ""), id)}` : event?.routePath || record.source_path || profile?.routePath || "/tasks";
 
   if (!actionText) {
     issues.push(
@@ -778,10 +792,14 @@ function normalizeTaskRecord(record, eventsById, profilesByPerson, issues) {
   }
 
   return {
-    id: String(record.id || `task-${hashText(actionText, 12)}`),
+    id,
+    slug: slugify(id.replace(/^task-/, ""), id),
+    kind: record.kind || (isGroupedTask ? "grouped_task" : "single_task"),
+    taskPage: isGroupedTask,
     person,
     personSlug: profile?.slug || slugify(person || record.person_id || "unknown"),
-    href: event?.href || profile?.href,
+    href: addBase(taskRoutePath),
+    routePath: taskRoutePath,
     dueDate,
     specialty: record.specialty || event?.specialty || "Контроль",
     specialtyId: record.specialty_id || event?.specialtyId || slugify(record.specialty || "control"),
@@ -797,6 +815,9 @@ function normalizeTaskRecord(record, eventsById, profilesByPerson, issues) {
     stateBucket: "computed_on_client",
     statusLabel: "Рассчитывается по текущей дате",
     actionText,
+    items,
+    groupedFrom: Array.isArray(record.grouped_from) ? record.grouped_from : [],
+    groupedSourceEventIds,
   };
 }
 
@@ -1042,9 +1063,31 @@ export async function loadDashboardData({ includeInbox = false, publicDocuments 
   const explicitTaskKeys = new Set(
     explicitTasks.map((task) => [task.sourceEventId || task.sourcePath, task.dueDate || "", task.actionText].join("::")),
   );
+  const explicitEventDueKeys = new Set(
+    explicitTasks
+      .filter((task) => task.sourceEventId && task.dueDate)
+      .map((task) => [task.sourceEventId, task.dueDate].join("::")),
+  );
+  const groupedExplicitEventKeys = new Set(
+    explicitTasks.flatMap((task) =>
+      (task.items || [])
+        .filter((item) => item.sourceEventId)
+        .map((item) => [item.sourceEventId, task.dueDate || ""].join("::")),
+    ),
+  );
+  const groupedExplicitEventIds = new Set(explicitTasks.flatMap((task) => task.groupedSourceEventIds || []));
   const tasks = [
     ...explicitTasks,
-    ...computedTasks.filter((task) => !explicitTaskKeys.has([task.sourceEventId || task.sourcePath, task.dueDate || "", task.actionText].join("::"))),
+    ...computedTasks.filter((task) => {
+      const taskKey = [task.sourceEventId || task.sourcePath, task.dueDate || "", task.actionText].join("::");
+      const groupedEventKey = [task.sourceEventId || "", task.dueDate || ""].join("::");
+      return (
+        !explicitTaskKeys.has(taskKey) &&
+        !explicitEventDueKeys.has(groupedEventKey) &&
+        !groupedExplicitEventKeys.has(groupedEventKey) &&
+        !groupedExplicitEventIds.has(task.sourceEventId)
+      );
+    }),
   ].filter((task) => !isOpenOverdueTask(task));
 
   for (const profile of profiles) {

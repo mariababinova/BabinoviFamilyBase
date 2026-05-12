@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-05-12T11:10:53.860Z",
+  "generated_at": "2026-05-12T18:00:22.831Z",
   "agent": {
     "id": "doctor-summary-agent",
     "name": "Doctor Summary Agent / агент сводок врачу",
@@ -3211,7 +3211,7 @@
           "eventType": "Консультация",
           "specialty": "Эндокринология",
           "doctor": "Евгения Скрынник",
-          "clinic": "Доктор 3",
+          "clinic": "СитиЛаб",
           "markdownPath": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md"
         }
       ],

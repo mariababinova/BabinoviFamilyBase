@@ -250,6 +250,156 @@ function uniqueCandidates(candidates) {
   );
 }
 
+function taskItem(record) {
+  return {
+    title: record.title,
+    type: record.type,
+    specialty: record.specialty,
+    specialty_id: record.specialty_id,
+    source_event_id: record.source_event_id,
+    source_event_path: record.source_event_path,
+    source_document_id: record.source_document_id,
+    source_files: record.source_files,
+  };
+}
+
+function groupedTask(records, overrides) {
+  const base = records[0];
+  const itemSeen = new Set();
+  const defaultItems = [];
+  for (const record of records) {
+    const key = normalizeText(`${record.title}::${record.specialty_id}`);
+    if (itemSeen.has(key)) continue;
+    itemSeen.add(key);
+    defaultItems.push(taskItem(record));
+  }
+  const items = overrides.items || defaultItems;
+  return {
+    ...base,
+    ...overrides,
+    kind: "grouped_task",
+    task_page: true,
+    action_text: overrides.title,
+    source_text: items.map((item) => item.title).join("; "),
+    grouped_from: records.map((record) => record.dedupe_key).filter(Boolean),
+    grouped_source_event_ids: [...new Set(records.map((record) => record.source_event_id).filter(Boolean))],
+    source_event_ids: [...new Set(records.map((record) => record.source_event_id).filter(Boolean))],
+    items,
+    dedupe_key: overrides.dedupe_key,
+    id: `task-${overrides.dedupe_key}`,
+  };
+}
+
+function groupGeneratedTasks(records) {
+  const output = [];
+  const used = new Set();
+
+  function take(predicate) {
+    const group = records.filter((record) => !used.has(record.dedupe_key) && predicate(record));
+    for (const record of group) used.add(record.dedupe_key);
+    return group;
+  }
+
+  const artemJulyLabs = take(
+    (record) =>
+      record.person_id === "artem" &&
+      (record.due_date === "2026-07-01" || record.title === "Омега-индекс развёрнутый") &&
+      record.specialty_id === "endokrinologiya" &&
+      ["lab_control", "control_task"].includes(record.type),
+  );
+  if (artemJulyLabs.length > 1) {
+    output.push(
+      groupedTask(artemJulyLabs, {
+        type: "lab_control",
+        due_date: "2026-07-01",
+        title: "Сдать контрольные анализы для эндокринолога",
+        items: artemJulyLabs
+          .filter((record) => record.type === "lab_control" && !/^Контрольные анализы/u.test(record.title))
+          .map(taskItem),
+        priority: "medium",
+        dedupe_key: "artem-2026-07-endocrinology-labs",
+      }),
+    );
+  } else {
+    output.push(...artemJulyLabs);
+  }
+
+  const artemSeptemberCheckup = take(
+    (record) =>
+      record.person_id === "artem" &&
+      record.due_date >= "2026-09-19" &&
+      record.due_date <= "2026-09-26" &&
+      ["control_task", "doctor_visit", "diagnostic_control", "lab_control"].includes(record.type),
+  );
+  if (artemSeptemberCheckup.length > 1) {
+    output.push(
+      groupedTask(artemSeptemberCheckup, {
+        type: "doctor_visit",
+        due_date: "2026-09-19",
+        specialty: "Чекап",
+        specialty_id: "checkup",
+        title: "Пройти контрольный чекап",
+        items: [
+          { title: "Терапевт", specialty: "Терапия", specialty_id: "terapiya" },
+          { title: "Кардиолог", specialty: "Кардиология", specialty_id: "kardiologiya" },
+          { title: "Невролог", specialty: "Неврология", specialty_id: "nevrologiya" },
+          { title: "Спортивная медицина", specialty: "Спортивная медицина", specialty_id: "sportivnaya-meditsina" },
+        ],
+        priority: "medium",
+        dedupe_key: "artem-2026-09-control-checkup",
+      }),
+    );
+  } else {
+    output.push(...artemSeptemberCheckup);
+  }
+
+  const artemGastro = take(
+    (record) =>
+      record.person_id === "artem" &&
+      !record.due_date &&
+      record.specialty_id === "endokrinologiya" &&
+      [
+        "Выполнение гастро-обследований в плановом порядке",
+        "Колоноскопия",
+        "Консультация гастроэнтеролога по результатам",
+        "Общий анализ кала",
+      ].includes(record.title),
+  );
+  if (artemGastro.length > 1) {
+    output.push(
+      groupedTask(artemGastro, {
+        type: "diagnostic_control",
+        specialty: "Гастроэнтерология",
+        specialty_id: "gastroenterologiya",
+        title: "Пройти гастро-обследования",
+        priority: "low",
+        dedupe_key: "artem-gastro-plan",
+      }),
+    );
+  } else {
+    output.push(...artemGastro);
+  }
+
+  const hiddenRecommendationTitles = new Set([
+    "Выполнять ЭКГ-контроль по рекомендации",
+    "Повторные ЭХО-КГ по рекомендации",
+    "Повторять контроль по рекомендации кардиолога / спортивного врача",
+    "УЗ-контроль по рекомендации",
+  ]);
+  for (const record of records) {
+    if (record.person_id === "artem" && hiddenRecommendationTitles.has(record.title)) {
+      used.add(record.dedupe_key);
+    }
+  }
+
+  output.push(...records.filter((record) => !used.has(record.dedupe_key)));
+  return output.sort((a, b) =>
+    String(a.person_id).localeCompare(String(b.person_id)) ||
+    String(a.due_date || "9999-12-31").localeCompare(String(b.due_date || "9999-12-31")) ||
+    String(a.title).localeCompare(String(b.title), "ru"),
+  );
+}
+
 function mergeGeneratedTask(generated, previous) {
   if (!previous) return generated;
   const userOwnedFields = [
@@ -312,6 +462,19 @@ function extractTasksFromEvent(item) {
   }
 
   if (item.event.follow_up_date) {
+    const fallbackSection = sectionNames[0];
+    const fallbackAction = sectionList(sections, fallbackSection).find((value) =>
+      isActionable(cleanAction(value), true, fallbackSection),
+    );
+    if (fallbackAction) {
+      const followUpCandidate = candidateFromLine(fallbackAction, item.event, fallbackSection, {
+        useFollowUpFallback: true,
+      });
+      if (followUpCandidate) {
+        candidates.push(followUpCandidate);
+        return candidates;
+      }
+    }
     const fallback = candidateFromLine(`Контроль: ${item.event.specialty}`, item.event, "follow_up_date", {
       useFollowUpFallback: true,
     });
@@ -329,7 +492,9 @@ async function scanTasks() {
   const today = todayIso();
   const people = peopleJson.people || [];
   const events = await loadEvents(people);
-  const generated = uniqueCandidates(events.flatMap(extractTasksFromEvent)).filter((record) => !isOpenOverdue(record, today));
+  const generated = groupGeneratedTasks(
+    uniqueCandidates(events.flatMap(extractTasksFromEvent)).filter((record) => !isOpenOverdue(record, today)),
+  );
   const previousGenerated = new Map(
     (tasksJson.records || [])
       .filter((record) => record.source_agent === agentName && record.dedupe_key)

@@ -779,6 +779,45 @@ select {
   font-weight: 700;
 }
 
+.task-items {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.2rem 0 0;
+  padding-left: 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.task-items li {
+  overflow-wrap: anywhere;
+}
+
+.task-source-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.task-source-card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1px solid rgba(32, 36, 38, 0.14);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.task-source-card h3,
+.task-source-card h4,
+.task-source-card p,
+.task-source-card ul {
+  margin: 0;
+}
+
+.task-source-card h4 {
+  font-size: 1rem;
+}
+
 .task-status {
   width: fit-content;
   min-height: 24px;

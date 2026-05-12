@@ -1,0 +1,108 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import EventCard from "../../components/EventCard.astro";
+import { dashboard, formatDate, formatDateShort } from "../../lib/ui";
+
+export function getStaticPaths() {
+  return dashboard.tasks
+    .filter((task) => task.taskPage)
+    .map((task) => ({ params: { taskSlug: task.slug }, props: { task } }));
+}
+
+const { task } = Astro.props;
+const sourceIds = Array.from(new Set([...(task.groupedSourceEventIds || []), ...(task.items || []).map((item) => item.sourceEventId).filter(Boolean)]));
+const sourceEvents: any[] = sourceIds
+  .map((id) => dashboard.events.find((event) => event.id === id))
+  .filter(Boolean)
+  .sort((a, b) => String(a?.date).localeCompare(String(b?.date)) || String(a?.specialty).localeCompare(String(b?.specialty), "ru"));
+const sourceBySpecialty = new Map(sourceEvents.map((event) => [event.specialtyId, event]));
+const taskItems = (task.items || []).map((item) => ({
+  ...item,
+  sourceEvent: item.sourceEventId
+    ? sourceEvents.find((event) => event.id === item.sourceEventId)
+    : sourceBySpecialty.get(item.specialtyId),
+}));
+---
+
+<AppLayout title={`${task.actionText} · Медицинская база`}>
+  <section class="page-header">
+    <p class="eyebrow">{task.person} · {task.specialty}</p>
+    <h1>{task.actionText}</h1>
+    <p>{formatDate(task.dueDate)} · сборная задача из {sourceEvents.length || 1} медицинских записей</p>
+  </section>
+
+  <section class="detail-grid">
+    <article class="card prose">
+      <h2>Что сделать</h2>
+      {taskItems.length > 0 ? (
+        <ul>
+          {taskItems.map((item) => (
+            <li>
+              <strong>{item.title}</strong>
+              {item.sourceEvent && (
+                <>
+                  {" "}
+                  <span class="muted-text">из записи: </span>
+                  <a href={item.sourceEvent.href}>{item.sourceEvent.specialty}</a>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>{task.actionText}</p>
+      )}
+
+      <h2>Основания из документов</h2>
+      {sourceEvents.length > 0 ? (
+        <div class="task-source-list">
+          {sourceEvents.map((event) => (
+            <article class="task-source-card">
+              <div class="document-meta">
+                <span class="chip muted">{formatDateShort(event.date)}</span>
+                <span class="chip">{event.specialty}</span>
+                <span class="chip muted">{event.eventTypeLabel}</span>
+              </div>
+              <h3><a href={event.href}>{event.title}</a></h3>
+              {event.doctor && <p class="muted-text">{[event.doctor, event.clinic].filter(Boolean).join(" · ")}</p>}
+              {event.track?.length > 0 && (
+                <>
+                  <h4>Что важно отследить</h4>
+                  <ul>{event.track.slice(0, 4).map((item: string) => <li>{item}</li>)}</ul>
+                </>
+              )}
+              {event.nextActions?.length > 0 && (
+                <>
+                  <h4>Что делать дальше</h4>
+                  <ul>{event.nextActions.slice(0, 4).map((item: string) => <li>{item}</li>)}</ul>
+                </>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Связанные медицинские записи не найдены.</p>
+      )}
+    </article>
+
+    <aside class="stack">
+      <article class="card">
+        <h2>Данные задачи</h2>
+        <dl class="details-list">
+          <div><dt>Человек</dt><dd>{task.person}</dd></div>
+          <div><dt>Срок</dt><dd>{formatDate(task.dueDate)}</dd></div>
+          <div><dt>Направление</dt><dd>{task.specialty}</dd></div>
+          <div><dt>Статус</dt><dd>{task.statusLabel}</dd></div>
+          <div><dt>Тип</dt><dd>{task.kind === "grouped_task" ? "Сборная задача" : "Задача"}</dd></div>
+        </dl>
+      </article>
+
+      {sourceEvents.length > 0 && (
+        <article class="card">
+          <h2>Связанные события</h2>
+          <div class="event-list">{sourceEvents.map((event) => <EventCard event={event} compact />)}</div>
+        </article>
+      )}
+    </aside>
+  </section>
+</AppLayout>

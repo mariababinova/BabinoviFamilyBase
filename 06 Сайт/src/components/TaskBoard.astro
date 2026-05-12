@@ -12,10 +12,17 @@ const groups = groupTasks(taskItems);
       <h3>{group.title}</h3>
       <div class="task-list" data-task-list>
         {group.tasks.map((task) => (
-          <a class="task-card" href={task.sourceHref || task.href} data-task-card data-due-date={task.dueDate || ""}>
+          <a class="task-card" href={task.href || task.sourceHref} data-task-card data-due-date={task.dueDate || ""}>
             <span class="task-status">{task.state.label}</span>
             <span class="task-date">{formatDateShort(task.dueDate)}</span>
             <strong>{task.actionText}</strong>
+            {task.items?.length > 0 && (
+              <ul class="task-items" aria-label="Состав задачи">
+                {task.items.map((item: any) => (
+                  <li>{item.title}</li>
+                ))}
+              </ul>
+            )}
             <span>{task.person} · {task.specialty}</span>
           </a>
         ))}
