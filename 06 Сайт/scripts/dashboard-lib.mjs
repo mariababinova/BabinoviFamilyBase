@@ -1141,6 +1141,17 @@ export async function loadDashboardData({ includeInbox = false, publicDocuments 
 export async function writeDashboardData(options = {}) {
   const data = await loadDashboardData(options);
   await fsp.mkdir(generatedDir, { recursive: true });
+  const dashboardPath = path.join(generatedDir, "dashboard-data.json");
+  try {
+    const existing = JSON.parse(await fsp.readFile(dashboardPath, "utf8"));
+    const existingComparable = { ...existing, generatedAt: "<generated>" };
+    const nextComparable = { ...data, generatedAt: "<generated>" };
+    if (JSON.stringify(existingComparable) === JSON.stringify(nextComparable)) {
+      data.generatedAt = existing.generatedAt || data.generatedAt;
+    }
+  } catch {
+    // No previous generated data to preserve.
+  }
   const manifest = data.documents.map((document) => ({
     id: document.id,
     slug: document.slug,
@@ -1151,7 +1162,7 @@ export async function writeDashboardData(options = {}) {
     extension: document.extension,
     size: document.size,
   }));
-  await atomicWriteJson(path.join(generatedDir, "dashboard-data.json"), data);
+  await atomicWriteJson(dashboardPath, data);
   await atomicWriteJson(path.join(generatedDir, "document-manifest.json"), manifest);
   return data;
 }

@@ -40,11 +40,11 @@ const byPerson = dashboard.people.map((person) => ({
     <div class="chip-row">
       <span class="chip">Сводок: {records.length}</span>
       <span class="chip muted">Обновлено: {payload.generatedAt ? new Date(payload.generatedAt).toLocaleString("ru-RU") : "не указано"}</span>
-      <span class="chip muted">Источник: 09 Наблюдение/doctor-summaries.json</span>
+      <span class="chip muted">Источник: технические сводки</span>
     </div>
   </section>
 
-  <section class="detail-grid">
+  <section class="doctor-summary-grid">
     {byPerson.map(({ person, records }) => records.length > 0 && (
       <article class="card prose">
         <div class="section-heading">

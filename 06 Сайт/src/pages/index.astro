@@ -4,16 +4,13 @@ import PersonCard from "../components/PersonCard.astro";
 import EventCard from "../components/EventCard.astro";
 import TaskBoard from "../components/TaskBoard.astro";
 import StatStrip from "../components/StatStrip.astro";
-import { dashboard, formatDate, pageHref } from "../lib/ui";
+import { dashboard, pageHref } from "../lib/ui";
 
 const recentEvents = dashboard.events.slice(0, 6);
 const visibleTasks = [...dashboard.tasks]
   .sort((a, b) => (a.dueDate || "9999-99-99").localeCompare(b.dueDate || "9999-99-99"))
   .slice(0, 8);
 const unlinkedCount = dashboard.documents.filter((document) => !document.isLinkedToEvent).length;
-const watchRecords = [...(dashboard.watchlist?.records || [])]
-  .sort((a, b) => String(a.next_date || "9999-99-99").localeCompare(String(b.next_date || "9999-99-99")))
-  .slice(0, 3);
 ---
 
 <AppLayout title="Медицинская база семьи">
@@ -32,38 +29,21 @@ const watchRecords = [...(dashboard.watchlist?.records || [])]
     </a>
   )}
 
-  <section class="section-grid two">
-    <div>
-      <div class="section-title">
-        <h2>Ближайшие задачи</h2>
-        <a href={pageHref("/tasks")}>Все задачи</a>
-      </div>
-      <TaskBoard tasks={visibleTasks} />
+  <section>
+    <div class="section-title">
+      <h2>Члены семьи</h2>
     </div>
-    <div>
-      <div class="section-title">
-        <h2>Члены семьи</h2>
-      </div>
-      <div class="card-grid">
-        {dashboard.people.map((person) => <PersonCard person={person} />)}
-      </div>
+    <div class="card-grid home-people-grid">
+      {dashboard.people.map((person) => <PersonCard person={person} />)}
     </div>
   </section>
 
-  <section>
+  <section class="home-tasks-section">
     <div class="section-title">
-      <h2>Наблюдение</h2>
-      <a href={pageHref("/watchlist")}>Все зоны</a>
+      <h2>Ближайшие задачи</h2>
+      <a href={pageHref("/tasks")}>Все задачи</a>
     </div>
-    <div class="watch-summary-grid">
-      {watchRecords.map((record) => (
-        <a class="watch-summary-card" href={pageHref("/watchlist")}>
-          <span>{record.status === "active" ? "Активно" : record.status || "Статус"}</span>
-          <strong>{record.topic}</strong>
-          <small>{record.next_date && record.next_date !== "null" ? formatDate(record.next_date) : "Без даты"} · {record.source_count || 0} источников</small>
-        </a>
-      ))}
-    </div>
+    <TaskBoard tasks={visibleTasks} />
   </section>
 
   <section>
