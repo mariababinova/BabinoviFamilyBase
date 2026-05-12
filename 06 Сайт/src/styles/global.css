@@ -404,6 +404,11 @@ select {
   font-weight: 700;
 }
 
+.section-subtitle {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+}
+
 .card-grid,
 .overview-grid {
   display: grid;
@@ -829,6 +834,17 @@ select {
   box-shadow: 5px 5px 0 rgba(23, 27, 29, 0.1);
 }
 
+.document-row.compact {
+  box-shadow: none;
+}
+
+.document-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
 .document-row h3,
 .event-card h3,
 .task-card strong,
@@ -847,6 +863,21 @@ select {
   flex-direction: column;
   align-items: stretch;
   margin-top: 1rem;
+}
+
+.document-person-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  gap: 1rem;
+}
+
+.document-person-summary .card {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.document-person-summary strong {
+  font-size: 2rem;
 }
 
 .status-pill.linked {
@@ -1270,7 +1301,7 @@ openai-chatkit {
     bottom: 0;
     z-index: 20;
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     border-top: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(16px);

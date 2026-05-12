@@ -1,0 +1,59 @@
+---
+import AppLayout from "../../../layouts/AppLayout.astro";
+import DocumentList from "../../../components/DocumentList.astro";
+import { dashboard, pageHref } from "../../../lib/ui";
+
+export function getStaticPaths() {
+  return dashboard.people.map((person) => ({
+    params: { personSlug: person.slug },
+    props: { person },
+  }));
+}
+
+const { person } = Astro.props;
+const documents = dashboard.documents.filter((document) => document.person === person.name);
+const groups = Object.values(
+  documents.reduce((acc, document) => {
+    const key = document.specialty || "Без специальности";
+    acc[key] ||= { title: key, documents: [] };
+    acc[key].documents.push(document);
+    return acc;
+  }, {} as Record<string, { title: string; documents: typeof documents }>)
+).sort((a, b) => b.documents.length - a.documents.length || a.title.localeCompare(b.title, "ru"));
+---
+
+<AppLayout title={`Документы ${person.name} · Медицинская база`}>
+  <section class="page-header">
+    <p class="eyebrow">Документы профиля</p>
+    <h1>Документы {person.name}</h1>
+    <p>Все файлы и карточки документов, которые относятся только к этому профилю.</p>
+    <a class="button secondary inline-button" href={pageHref(`/people/${person.slug}`)}>Вернуться в профиль</a>
+  </section>
+
+  <section class="document-person-summary">
+    <article class="card">
+      <span class="side-label">Всего документов</span>
+      <strong>{documents.length}</strong>
+    </article>
+    <article class="card">
+      <span class="side-label">Разделов</span>
+      <strong>{groups.length}</strong>
+    </article>
+  </section>
+
+  {groups.map((group) => (
+    <section>
+      <div class="section-title">
+        <h2>{group.title}</h2>
+        <span>{group.documents.length}</span>
+      </div>
+      <DocumentList documents={group.documents} />
+    </section>
+  ))}
+
+  {documents.length === 0 && (
+    <section class="card">
+      <p class="empty">Документов в этом профиле пока нет.</p>
+    </section>
+  )}
+</AppLayout>

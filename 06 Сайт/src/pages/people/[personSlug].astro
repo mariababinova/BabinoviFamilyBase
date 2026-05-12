@@ -12,8 +12,10 @@ export function getStaticPaths() {
 const { person } = Astro.props;
 const events = dashboard.events.filter((event) => event.personSlug === person.slug);
 const documents = dashboard.documents.filter((document) => document.person === person.name);
+const recentDocuments = documents.slice(0, 5);
 const tasks = dashboard.tasks.filter((task) => task.personSlug === person.slug);
 const keyMetrics = person.keyMetrics || [];
+const personDocumentsHref = pageHref(`/people/${person.slug}/documents`);
 type WeightRecord = {
   date?: string;
   displayValue?: string;
@@ -90,6 +92,22 @@ const latestWeightDateText = latestWeightData?.date ? `на ${formatDateShort(la
     </article>
   </section>
 
+  <section>
+    <div class="section-title"><h2>Задачи</h2></div>
+    <TaskBoard tasks={tasks} />
+  </section>
+
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>Документы</h2>
+        <p class="section-subtitle">Последние файлы из профиля {person.name}</p>
+      </div>
+      <a class="text-link" href={personDocumentsHref}>Все документы {person.name}</a>
+    </div>
+    <DocumentList documents={recentDocuments} compact />
+  </section>
+
   {keyMetrics.length > 0 && (
     <section>
       <div class="section-title">
@@ -117,22 +135,11 @@ const latestWeightDateText = latestWeightData?.date ? `на ${formatDateShort(la
   )}
 
   <section>
-    <div class="section-title"><h2>Задачи</h2></div>
-    <TaskBoard tasks={tasks} />
-  </section>
-
-  <section>
     <div class="section-title"><h2>Таймлайн</h2></div>
     <div class="event-list">
       {events.map((event) => <EventCard event={event} />)}
     </div>
   </section>
-
-  <section>
-    <div class="section-title"><h2>Документы</h2></div>
-    <DocumentList documents={documents} />
-  </section>
-
   <script>
     const form = document.querySelector("[data-weight-form]") as HTMLFormElement | null;
     const status = document.querySelector("[data-weight-form-status]") as HTMLElement | null;

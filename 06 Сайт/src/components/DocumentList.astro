@@ -7,21 +7,27 @@ interface DocumentItem {
   person?: string;
   date?: string;
   specialty?: string;
+  extension?: string;
   isLinkedToEvent: boolean;
   linkStatusLabel: string;
   publicUrl?: string;
   isOriginalPublic?: boolean;
 }
 
-const { documents } = Astro.props as { documents: DocumentItem[] };
+const { documents, compact = false } = Astro.props as { documents: DocumentItem[]; compact?: boolean };
 ---
 
 <div class="document-list">
   {documents.map((document) => (
-    <article class="document-row">
+    <article class:list={["document-row", compact && "compact"]}>
       <div>
+        <div class="document-meta">
+          <span class="chip muted">{formatDateShort(document.date)}</span>
+          {document.person && <span class="chip">{document.person}</span>}
+          {document.specialty && <span class="chip">{document.specialty}</span>}
+          {document.extension && <span class="chip muted">{document.extension.toUpperCase()}</span>}
+        </div>
         <h3><a href={document.href}>{document.fileName}</a></h3>
-        <p>{[document.person, formatDateShort(document.date), document.specialty].filter(Boolean).join(" · ")}</p>
       </div>
       <div class="document-actions">
         <span class:list={["status-pill", document.isLinkedToEvent ? "linked" : "unlinked"]}>{document.linkStatusLabel}</span>

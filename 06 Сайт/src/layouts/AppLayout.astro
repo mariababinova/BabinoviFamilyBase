@@ -11,13 +11,6 @@ interface Props {
 const { title, description = "Семейная медицинская база" } = Astro.props;
 const navItems = [
   { href: pageHref("/"), label: "Главная" },
-  { href: pageHref("/events"), label: "Все события" },
-  { href: pageHref("/tasks"), label: "Задачи" },
-  { href: pageHref("/doctor-summaries"), label: "Сводки врачу" },
-  { href: pageHref("/documents"), label: "Документы" },
-  { href: pageHref("/metrics"), label: "Показатели" },
-  { href: pageHref("/operations"), label: "Операции" },
-  { href: pageHref("/overview"), label: "Обзор" },
 ];
 const people = dashboard.people;
 const currentPath = Astro.url.pathname;
@@ -85,11 +78,7 @@ function isActiveNav(href: string) {
     </div>
     <nav class="bottom-nav" aria-label="Быстрая навигация">
       <a href={pageHref("/")}>Главная</a>
-      <a href={pageHref("/events")}>События</a>
-      <a href={pageHref("/tasks")}>Задачи</a>
-      <a href={pageHref("/doctor-summaries")}>Сводки</a>
-      <a href={pageHref("/documents")}>Документы</a>
-      <a href={pageHref("/metrics")}>Показатели</a>
+      {people.map((person) => <a href={person.href}>{person.name}</a>)}
     </nav>
     <MedicalChatWidget />
   </body>
