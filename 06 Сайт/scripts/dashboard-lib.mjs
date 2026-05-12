@@ -71,6 +71,14 @@ export function hashText(value, length = 10) {
   return crypto.createHash("sha1").update(value).digest("hex").slice(0, length);
 }
 
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function isOpenOverdueTask(task, today = todayIso()) {
+  return task?.status !== "done" && Boolean(task?.dueDate) && String(task.dueDate) < today;
+}
+
 export function slugify(value, fallback = "item") {
   const source = String(value ?? "").toLowerCase();
   let out = "";
@@ -563,6 +571,7 @@ function normalizeEvent(filePath, data, body, idCounts, issues) {
 
 function buildTaskFromEvent(event) {
   if (!event.followUpDate) return undefined;
+  if (event.followUpDate < todayIso()) return undefined;
   const actionText = event.followUpAction || `Контроль: ${event.specialty}`;
   return {
     id: `task-${event.slug}-${event.followUpDate}`,
@@ -1029,14 +1038,14 @@ export async function loadDashboardData({ includeInbox = false, publicDocuments 
   const profilesByPerson = new Map(profiles.map((profile) => [profile.name, profile]));
   const explicitTasks = (await readTasksFile())
     .map((record) => normalizeTaskRecord(record, eventsById, profilesByPerson, issues))
-    .filter(Boolean);
+    .filter((task) => task && !isOpenOverdueTask(task));
   const explicitTaskKeys = new Set(
     explicitTasks.map((task) => [task.sourceEventId || task.sourcePath, task.dueDate || "", task.actionText].join("::")),
   );
   const tasks = [
     ...explicitTasks,
     ...computedTasks.filter((task) => !explicitTaskKeys.has([task.sourceEventId || task.sourcePath, task.dueDate || "", task.actionText].join("::"))),
-  ];
+  ].filter((task) => !isOpenOverdueTask(task));
 
   for (const profile of profiles) {
     const personEvents = events

@@ -57,6 +57,14 @@ function cleanAction(value) {
     .trim();
 }
 
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function isOpenOverdue(record, today = todayIso()) {
+  return record?.status === "open" && Boolean(record.due_date) && String(record.due_date) < today;
+}
+
 function addDays(isoDate, days) {
   const date = new Date(`${isoDate}T00:00:00.000Z`);
   date.setUTCDate(date.getUTCDate() + days);
@@ -318,15 +326,18 @@ async function scanTasks() {
     readJson(path.join(referencesDir, "people.json"), { people: [] }),
     readJson(tasksPath, { schema_version: 1, records: [] }),
   ]);
+  const today = todayIso();
   const people = peopleJson.people || [];
   const events = await loadEvents(people);
-  const generated = uniqueCandidates(events.flatMap(extractTasksFromEvent));
+  const generated = uniqueCandidates(events.flatMap(extractTasksFromEvent)).filter((record) => !isOpenOverdue(record, today));
   const previousGenerated = new Map(
     (tasksJson.records || [])
       .filter((record) => record.source_agent === agentName && record.dedupe_key)
       .map((record) => [record.dedupe_key, record]),
   );
-  const manualRecords = (tasksJson.records || []).filter((record) => record.source_agent !== agentName);
+  const manualRecords = (tasksJson.records || []).filter(
+    (record) => record.source_agent !== agentName && !isOpenOverdue(record, today),
+  );
   const manualKeys = new Set(manualRecords.map((record) => record.dedupe_key).filter(Boolean));
   const records = [
     ...manualRecords,
