@@ -53,8 +53,11 @@ jobs:
         working-directory: "06 Сайт"
 
       - name: Build static site
-        run: npm run build
+        run: npm run build:encrypted-documents
         working-directory: "06 Сайт"
+        env:
+          MEDS_ENCRYPTED_DOCUMENTS: "1"
+          MEDS_DOCUMENTS_PASSWORD: ${{ secrets.MEDS_DOCUMENTS_PASSWORD }}
 
       - name: Guard Pages artifact privacy
         run: npm run validate:pages-artifact

@@ -20,6 +20,7 @@
     "refresh:derived": "node scripts/tasks-agent.mjs && node scripts/doctor-summary-agent.mjs && node scripts/generate-data.mjs",
     "prebuild": "node scripts/validate-operational-layer.mjs && node scripts/tasks-agent.mjs && node scripts/doctor-summary-agent.mjs && node scripts/generate-data.mjs && node scripts/validate-assets.mjs",
     "build": "astro build && node scripts/validate-pages-artifact.mjs",
+    "build:encrypted-documents": "node scripts/validate-operational-layer.mjs && node scripts/tasks-agent.mjs && node scripts/doctor-summary-agent.mjs && node scripts/generate-data.mjs && node scripts/validate-assets.mjs && astro build && node scripts/encrypt-documents.mjs && node scripts/validate-pages-artifact.mjs",
     "build:with-documents": "node scripts/generate-data.mjs --with-documents && astro build && node scripts/copy-documents.mjs --allow",
     "preview": "astro preview --host 127.0.0.1"
   },

@@ -9,6 +9,7 @@ export function getStaticPaths() {
 const { document } = Astro.props;
 const isImage = ["jpg", "jpeg", "png"].includes(document.extension);
 const canOpenOriginal = Boolean(document.publicUrl);
+const canOpenEncryptedOriginal = Boolean(document.encryptedUrl);
 ---
 
 <AppLayout title={`${document.fileName} · Медицинская база`}>
@@ -33,6 +34,33 @@ const canOpenOriginal = Boolean(document.publicUrl);
             <a class="button secondary" href={document.publicUrl} target="_blank" rel="noreferrer">Открыть оригинал</a>
             <a class="button secondary" href={document.publicUrl} download>Скачать</a>
           </>
+        ) : canOpenEncryptedOriginal ? (
+          <>
+            <button
+              class="button secondary"
+              type="button"
+              data-encrypted-open
+              data-encrypted-url={document.encryptedUrl}
+              data-file-name={document.fileName}
+              data-mime-type={document.mimeType}
+              data-extension={document.extension}
+            >
+              Открыть оригинал
+            </button>
+            <button
+              class="button secondary"
+              type="button"
+              data-encrypted-download
+              data-encrypted-url={document.encryptedUrl}
+              data-file-name={document.fileName}
+              data-mime-type={document.mimeType}
+              data-extension={document.extension}
+            >
+              Скачать
+            </button>
+            <button class="button ghost" type="button" data-forget-document-key>Забыть пароль</button>
+            <p class="form-status" data-document-unlock-status></p>
+          </>
         ) : (
           <span class="status-pill muted">Оригинал не публикуется на сайте</span>
         )}
@@ -43,6 +71,22 @@ const canOpenOriginal = Boolean(document.publicUrl);
         <img src={document.publicUrl} alt={document.fileName} />
       ) : canOpenOriginal ? (
         <iframe src={document.publicUrl} title={document.fileName}></iframe>
+      ) : canOpenEncryptedOriginal ? (
+        <div class="empty-state encrypted-document-state" data-encrypted-preview>
+          <h2>Оригинал защищён</h2>
+          <p>Введите пароль один раз на этом устройстве, и сайт будет открывать остальные оригиналы без повторного ввода.</p>
+          <button
+            class="button"
+            type="button"
+            data-encrypted-open
+            data-encrypted-url={document.encryptedUrl}
+            data-file-name={document.fileName}
+            data-mime-type={document.mimeType}
+            data-extension={document.extension}
+          >
+            Открыть оригинал
+          </button>
+        </div>
       ) : (
         <div class="empty-state">
           <h2>Оригинал скрыт</h2>
@@ -51,4 +95,195 @@ const canOpenOriginal = Boolean(document.publicUrl);
       )}
     </article>
   </section>
+  {canOpenEncryptedOriginal && (
+    <div class="document-unlock-modal" data-document-password-modal hidden>
+      <form class="document-unlock-card" data-document-password-form>
+        <h2>Пароль к документам</h2>
+        <p>Пароль сохранится только в этом браузере. После этого остальные документы будут открываться без повторного ввода.</p>
+        <label>
+          <span>Пароль</span>
+          <input type="password" autocomplete="current-password" data-document-password-input required />
+        </label>
+        <div class="document-unlock-actions">
+          <button class="button" type="submit">Открыть</button>
+          <button class="button secondary" type="button" data-document-password-cancel>Отмена</button>
+        </div>
+        <p class="form-status" data-document-password-status></p>
+      </form>
+    </div>
+  )}
+  {canOpenEncryptedOriginal && (
+    <script is:inline>
+      const textEncoder = new TextEncoder();
+      const keyPrefix = "medsDocumentKey:v1:";
+      let pendingEncryptedAction = null;
+
+      function base64ToBytes(value) {
+        const binary = atob(value);
+        const bytes = new Uint8Array(binary.length);
+        for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+        return bytes;
+      }
+
+      function bytesToBase64(bytes) {
+        let binary = "";
+        const chunkSize = 0x8000;
+        for (let index = 0; index < bytes.length; index += chunkSize) {
+          binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+        }
+        return btoa(binary);
+      }
+
+      function setStatus(message) {
+        document.querySelectorAll("[data-document-unlock-status]").forEach((element) => {
+          element.textContent = message || "";
+        });
+      }
+
+      async function parseEncryptedPayload(url) {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) throw new Error("Не удалось загрузить зашифрованный документ.");
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const magic = new TextDecoder().decode(bytes.slice(0, 4));
+        if (magic !== "MDB1") throw new Error("Неизвестный формат зашифрованного документа.");
+        const headerLength = new DataView(bytes.buffer, bytes.byteOffset + 4, 4).getUint32(0, false);
+        const headerStart = 8;
+        const headerEnd = headerStart + headerLength;
+        const header = JSON.parse(new TextDecoder().decode(bytes.slice(headerStart, headerEnd)));
+        return { header, encryptedBytes: bytes.slice(headerEnd) };
+      }
+
+      async function deriveKey(password, header) {
+        const baseKey = await crypto.subtle.importKey("raw", textEncoder.encode(password), "PBKDF2", false, ["deriveKey"]);
+        return crypto.subtle.deriveKey(
+          {
+            name: "PBKDF2",
+            hash: header.kdf.hash,
+            salt: base64ToBytes(header.kdf.salt),
+            iterations: header.kdf.iterations,
+          },
+          baseKey,
+          { name: "AES-GCM", length: 256 },
+          true,
+          ["decrypt"],
+        );
+      }
+
+      async function cachedKey(header) {
+        const rawKey = localStorage.getItem(`${keyPrefix}${header.kdf.salt}`);
+        if (!rawKey) return null;
+        return crypto.subtle.importKey("raw", base64ToBytes(rawKey), "AES-GCM", true, ["decrypt"]);
+      }
+
+      async function saveKey(header, key) {
+        const raw = new Uint8Array(await crypto.subtle.exportKey("raw", key));
+        localStorage.setItem(`${keyPrefix}${header.kdf.salt}`, bytesToBase64(raw));
+      }
+
+      async function decryptPayload(payload, key) {
+        const encryptedWithTag = new Uint8Array(payload.encryptedBytes.length + base64ToBytes(payload.header.authTag).length);
+        encryptedWithTag.set(payload.encryptedBytes, 0);
+        encryptedWithTag.set(base64ToBytes(payload.header.authTag), payload.encryptedBytes.length);
+        return crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: base64ToBytes(payload.header.iv), tagLength: 128 },
+          key,
+          encryptedWithTag,
+        );
+      }
+
+      function openBlob(blob, fileName, shouldDownload) {
+        const objectUrl = URL.createObjectURL(blob);
+        if (shouldDownload) {
+          const link = document.createElement("a");
+          link.href = objectUrl;
+          link.download = fileName;
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
+        } else {
+          window.open(objectUrl, "_blank", "noopener,noreferrer");
+          setTimeout(() => URL.revokeObjectURL(objectUrl), 120000);
+        }
+      }
+
+      function showPasswordModal(action) {
+        pendingEncryptedAction = action;
+        const modal = document.querySelector("[data-document-password-modal]");
+        const input = document.querySelector("[data-document-password-input]");
+        const status = document.querySelector("[data-document-password-status]");
+        if (status) status.textContent = "";
+        modal?.removeAttribute("hidden");
+        input?.focus();
+      }
+
+      function hidePasswordModal() {
+        const modal = document.querySelector("[data-document-password-modal]");
+        const input = document.querySelector("[data-document-password-input]");
+        modal?.setAttribute("hidden", "");
+        if (input) input.value = "";
+      }
+
+      async function runEncryptedAction(action, password) {
+        setStatus("Открываю документ...");
+        const payload = await parseEncryptedPayload(action.url);
+        let key = password ? await deriveKey(password, payload.header) : await cachedKey(payload.header);
+        if (!key) {
+          setStatus("");
+          showPasswordModal(action);
+          return;
+        }
+        try {
+          const decrypted = await decryptPayload(payload, key);
+          if (password) await saveKey(payload.header, key);
+          const blob = new Blob([decrypted], { type: action.mimeType || payload.header.mimeType || "application/octet-stream" });
+          openBlob(blob, action.fileName || payload.header.fileName, action.download);
+          setStatus("Готово.");
+        } catch (error) {
+          if (!password) {
+            showPasswordModal(action);
+            setStatus("");
+            return;
+          }
+          throw new Error("Пароль не подошёл.");
+        }
+      }
+
+      document.querySelectorAll("[data-encrypted-open], [data-encrypted-download]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const action = {
+            url: button.dataset.encryptedUrl,
+            fileName: button.dataset.fileName,
+            mimeType: button.dataset.mimeType,
+            extension: button.dataset.extension,
+            download: button.hasAttribute("data-encrypted-download"),
+          };
+          try {
+            await runEncryptedAction(action);
+          } catch (error) {
+            setStatus(error.message || "Не удалось открыть документ.");
+          }
+        });
+      });
+
+      document.querySelector("[data-document-password-form]")?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const input = document.querySelector("[data-document-password-input]");
+        const status = document.querySelector("[data-document-password-status]");
+        try {
+          if (status) status.textContent = "Проверяю пароль...";
+          await runEncryptedAction(pendingEncryptedAction, input?.value || "");
+          hidePasswordModal();
+        } catch (error) {
+          if (status) status.textContent = error.message || "Не удалось открыть документ.";
+        }
+      });
+
+      document.querySelector("[data-document-password-cancel]")?.addEventListener("click", hidePasswordModal);
+      document.querySelector("[data-forget-document-key]")?.addEventListener("click", () => {
+        for (const key of Object.keys(localStorage)) {
+          if (key.startsWith(keyPrefix)) localStorage.removeItem(key);
+        }
+        setStatus("Пароль забыт на этом устройстве.");
+      });
+    </script>
+  )}
 </AppLayout>

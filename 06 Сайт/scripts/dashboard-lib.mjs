@@ -17,11 +17,14 @@ export const doctorSummariesFilePath = path.join(repoRoot, "09 Наблюден�
 export const generatedDir = path.join(siteDir, "src", "generated");
 export const publicDocumentsDir = path.join(siteDir, "public", "files", "documents");
 export const distDocumentsDir = path.join(siteDir, "dist", "files", "documents");
+export const distEncryptedDocumentsDir = path.join(siteDir, "dist", "files", "encrypted-documents");
 export const basePath = process.env.PUBLIC_BASE_PATH ?? (process.env.VERCEL ? "" : "/MedsDataBase");
 
 const assetExtensions = new Set([".pdf", ".jpg", ".jpeg", ".png"]);
 const documentPublishEnabled =
   process.env.MEDS_PUBLIC_DOCUMENTS === "1" || process.env.MEDS_PUBLIC_DOCUMENTS === "true";
+const encryptedDocumentPublishEnabled =
+  process.env.MEDS_ENCRYPTED_DOCUMENTS === "1" || process.env.MEDS_ENCRYPTED_DOCUMENTS === "true";
 
 const translit = {
   а: "a",
@@ -294,13 +297,23 @@ function documentOutputName(relativePath) {
   return `${hashText(relativePath)}-${slugify(base, "document")}${ext}`;
 }
 
+function mimeTypeFromExtension(extension) {
+  const clean = String(extension || "").toLowerCase().replace(/^\./, "");
+  if (clean === "pdf") return "application/pdf";
+  if (clean === "jpg" || clean === "jpeg") return "image/jpeg";
+  if (clean === "png") return "image/png";
+  return "application/octet-stream";
+}
+
 function documentFromPath(filePath, { isInboxItem = false, publicDocuments = documentPublishEnabled } = {}) {
   const relativePath = repoRelative(filePath);
   const outputFileName = documentOutputName(relativePath);
+  const encryptedOutputFileName = `${outputFileName}.enc`;
   const person = filePath.startsWith(membersDir) ? memberNameFromPath(filePath) : undefined;
   const inferredDate = isoDateFromText(path.basename(filePath)) || isoDateFromText(relativePath);
   const specialty = inferSpecialtyFromPath(filePath);
   const slug = slugify(`${path.basename(filePath, path.extname(filePath))}-${hashText(relativePath, 8)}`, `document-${hashText(relativePath, 8)}`);
+  const extension = path.extname(filePath).slice(1).toLowerCase();
   return {
     id: hashText(relativePath, 16),
     slug,
@@ -310,8 +323,12 @@ function documentFromPath(filePath, { isInboxItem = false, publicDocuments = doc
     href: addBase(`/documents/${slug}`),
     outputFileName,
     publicUrl: publicDocuments ? `${basePath}/files/documents/${outputFileName}` : "",
+    encryptedOutputFileName,
+    encryptedUrl: encryptedDocumentPublishEnabled ? `${basePath}/files/encrypted-documents/${encryptedOutputFileName}` : "",
     isOriginalPublic: Boolean(publicDocuments),
-    extension: path.extname(filePath).slice(1).toLowerCase(),
+    isOriginalEncrypted: Boolean(encryptedDocumentPublishEnabled),
+    extension,
+    mimeType: mimeTypeFromExtension(extension),
     person,
     eventId: undefined,
     eventSlug: undefined,
@@ -1215,8 +1232,11 @@ export async function writeDashboardData(options = {}) {
     fileName: document.fileName,
     originalPath: document.originalPath,
     outputFileName: document.outputFileName,
+    encryptedOutputFileName: document.encryptedOutputFileName,
     publicUrl: document.publicUrl,
+    encryptedUrl: document.encryptedUrl,
     extension: document.extension,
+    mimeType: document.mimeType,
     size: document.size,
   }));
   await atomicWriteJson(dashboardPath, data);

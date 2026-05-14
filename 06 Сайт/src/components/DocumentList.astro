@@ -11,6 +11,7 @@ interface DocumentItem {
   isLinkedToEvent: boolean;
   linkStatusLabel: string;
   publicUrl?: string;
+  encryptedUrl?: string;
   isOriginalPublic?: boolean;
 }
 
@@ -33,6 +34,8 @@ const { documents, compact = false } = Astro.props as { documents: DocumentItem[
         <span class:list={["status-pill", document.isLinkedToEvent ? "linked" : "unlinked"]}>{document.linkStatusLabel}</span>
         {document.publicUrl ? (
           <a class="button secondary" href={document.publicUrl} target="_blank" rel="noreferrer">Открыть</a>
+        ) : document.encryptedUrl ? (
+          <a class="button secondary" href={document.href}>Открыть</a>
         ) : (
           <span class="status-pill muted">Оригинал не публикуется</span>
         )}

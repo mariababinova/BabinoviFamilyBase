@@ -1,6 +1,6 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
-import { distDocumentsDir, siteDir } from "./dashboard-lib.mjs";
+import { distDocumentsDir, distEncryptedDocumentsDir, siteDir } from "./dashboard-lib.mjs";
 
 const forbiddenExtensions = new Set([".pdf", ".jpg", ".jpeg", ".png"]);
 const distDir = path.join(siteDir, "dist");
@@ -47,4 +47,15 @@ try {
   }
 } catch {
   // No documents directory is the expected production state.
+}
+
+try {
+  const entries = await fsp.readdir(distEncryptedDocumentsDir);
+  const unexpected = entries.filter((entry) => entry !== ".gitkeep" && !entry.endsWith(".enc"));
+  if (unexpected.length) {
+    console.error(`dist/files/encrypted-documents contains unexpected entries: ${unexpected.join(", ")}`);
+    process.exitCode = 1;
+  }
+} catch {
+  // Encrypted documents are optional.
 }

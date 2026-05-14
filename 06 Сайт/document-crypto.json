@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "kdf": "PBKDF2",
+  "hash": "SHA-256",
+  "iterations": 210000,
+  "salt": "kNlxo6Qdw9vXSzv/uQd9IA==",
+  "cipher": "AES-256-GCM"
+}
