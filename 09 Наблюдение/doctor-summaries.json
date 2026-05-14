@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-05-13T12:02:17.232Z",
+  "generated_at": "2026-05-14T10:13:30.854Z",
   "agent": {
     "id": "doctor-summary-agent",
     "name": "Doctor Summary Agent / агент сводок врачу",
@@ -116,6 +116,7 @@
         {
           "date": "2026-01-14",
           "fileName": "2026-01-14 Александр — тестостерон и ПСА.jpg",
+          "displayName": "2026-01-14 Александр — тестостерон и ПСА.jpg",
           "href": "/MedsDataBase/documents/2026-01-14-aleksandr-testosteron-i-psa-5c294822",
           "eventTitle": "Александр — тестостерон и ПСА — 14.01.2026"
         }
@@ -462,72 +463,84 @@
         {
           "date": "2025-06-04",
           "fileName": "2025-06-04 Александр — ПЭТ-КТ PSMA.pdf",
+          "displayName": "2025-06-04 Александр — ПЭТ-КТ PSMA.pdf",
           "href": "/MedsDataBase/documents/2025-06-04-aleksandr-pet-kt-psma-1237cc1a",
           "eventTitle": "Александр — ПЭТ-КТ PSMA — 04.06.2025"
         },
         {
           "date": "2025-06-04",
           "fileName": "2025-06-04 Александр — ПЭТ-КТ PSMA фото 1.jpg",
+          "displayName": "2025-06-04 Александр — ПЭТ-КТ PSMA фото 1.jpg",
           "href": "/MedsDataBase/documents/2025-06-04-aleksandr-pet-kt-psma-foto-1-e34d47c1",
           "eventTitle": "Александр — ПЭТ-КТ PSMA — 04.06.2025"
         },
         {
           "date": "2025-06-04",
           "fileName": "2025-06-04 Александр — ПЭТ-КТ PSMA фото 2.jpg",
+          "displayName": "2025-06-04 Александр — ПЭТ-КТ PSMA фото 2.jpg",
           "href": "/MedsDataBase/documents/2025-06-04-aleksandr-pet-kt-psma-foto-2-08361bb9",
           "eventTitle": "Александр — ПЭТ-КТ PSMA — 04.06.2025"
         },
         {
           "date": "2025-07-09",
           "fileName": "2025-07-09 Александр — консультация онколога Герцена 1.jpg",
+          "displayName": "2025-07-09 Александр — консультация онколога Герцена 1.jpg",
           "href": "/MedsDataBase/documents/2025-07-09-aleksandr-konsultatsiya-onkologa-gertsena-1-8869aeb7",
           "eventTitle": "Александр — консультация онколога Герцена — 09.07.2025"
         },
         {
           "date": "2025-07-09",
           "fileName": "2025-07-09 Александр — консультация онколога Герцена 2.jpg",
+          "displayName": "2025-07-09 Александр — консультация онколога Герцена 2.jpg",
           "href": "/MedsDataBase/documents/2025-07-09-aleksandr-konsultatsiya-onkologa-gertsena-2-0fdcb9e7",
           "eventTitle": "Александр — консультация онколога Герцена — 09.07.2025"
         },
         {
           "date": "2025-07-09",
           "fileName": "2025-07-09 Александр — консультация онколога Герцена 3.jpg",
+          "displayName": "2025-07-09 Александр — консультация онколога Герцена 3.jpg",
           "href": "/MedsDataBase/documents/2025-07-09-aleksandr-konsultatsiya-onkologa-gertsena-3-43150ce9",
           "eventTitle": "Александр — консультация онколога Герцена — 09.07.2025"
         },
         {
           "date": "2025-07-16",
           "fileName": "2025-07-16 Александр — онкологический консилиум 1.jpg",
+          "displayName": "2025-07-16 Александр — онкологический консилиум 1.jpg",
           "href": "/MedsDataBase/documents/2025-07-16-aleksandr-onkologicheskiy-konsilium-1-1dc9a0dd",
           "eventTitle": "Александр — онкологический консилиум — 16.07.2025"
         },
         {
           "date": "2025-07-16",
           "fileName": "2025-07-16 Александр — онкологический консилиум 2.jpg",
+          "displayName": "2025-07-16 Александр — онкологический консилиум 2.jpg",
           "href": "/MedsDataBase/documents/2025-07-16-aleksandr-onkologicheskiy-konsilium-2-7575d2ee",
           "eventTitle": "Александр — онкологический консилиум — 16.07.2025"
         },
         {
           "date": "2026-04-08",
           "fileName": "2026-04-08 Александр — ПЭТ-КТ PSMA 1.jpg",
+          "displayName": "2026-04-08 Александр — ПЭТ-КТ PSMA 1.jpg",
           "href": "/MedsDataBase/documents/2026-04-08-aleksandr-pet-kt-psma-1-a3ef797f",
           "eventTitle": "Александр — ПЭТ-КТ PSMA — 08.04.2026"
         },
         {
           "date": "2026-04-08",
           "fileName": "2026-04-08 Александр — ПЭТ-КТ PSMA 2.jpg",
+          "displayName": "2026-04-08 Александр — ПЭТ-КТ PSMA 2.jpg",
           "href": "/MedsDataBase/documents/2026-04-08-aleksandr-pet-kt-psma-2-adc4771f",
           "eventTitle": "Александр — ПЭТ-КТ PSMA — 08.04.2026"
         },
         {
           "date": "2026-04-08",
           "fileName": "2026-04-08 Александр — ПЭТ-КТ PSMA 1 дубль.jpg",
+          "displayName": "2026-04-08 Александр — ПЭТ-КТ PSMA 1 дубль.jpg",
           "href": "/MedsDataBase/documents/2026-04-08-aleksandr-pet-kt-psma-1-dubl-52131391",
           "eventTitle": "Александр — ПЭТ-КТ PSMA — 08.04.2026"
         },
         {
           "date": "2026-04-08",
           "fileName": "2026-04-08 Александр — ПЭТ-КТ PSMA 2 дубль.jpg",
+          "displayName": "2026-04-08 Александр — ПЭТ-КТ PSMA 2 дубль.jpg",
           "href": "/MedsDataBase/documents/2026-04-08-aleksandr-pet-kt-psma-2-dubl-37912e27",
           "eventTitle": "Александр — ПЭТ-КТ PSMA — 08.04.2026"
         }
@@ -697,6 +710,7 @@
         {
           "date": "2024-06-26",
           "fileName": "2024-06-26 Александр — выписной эпикриз Лотошинская больница.pdf",
+          "displayName": "2024-06-26 Александр — выписной эпикриз Лотошинская больница.pdf",
           "href": "/MedsDataBase/documents/2024-06-26-aleksandr-vypisnoy-epikriz-lotoshinskaya-bolnitsa-e73b8a4a",
           "eventTitle": "Александр — выписной эпикриз Лотошинская больница — 26.06.2024"
         }
@@ -871,24 +885,28 @@
         {
           "date": "2025-06-24",
           "fileName": "2025-06-24 Александр — выписной эпикриз урология 1.jpg",
+          "displayName": "2025-06-24 Александр — выписной эпикриз урология 1.jpg",
           "href": "/MedsDataBase/documents/2025-06-24-aleksandr-vypisnoy-epikriz-urologiya-1-8b111a82",
           "eventTitle": "Александр — выписной эпикриз, урология — 24.06.2025"
         },
         {
           "date": "2025-06-24",
           "fileName": "2025-06-24 Александр — выписной эпикриз урология 2.jpg",
+          "displayName": "2025-06-24 Александр — выписной эпикриз урология 2.jpg",
           "href": "/MedsDataBase/documents/2025-06-24-aleksandr-vypisnoy-epikriz-urologiya-2-a99b0268",
           "eventTitle": "Александр — выписной эпикриз, урология — 24.06.2025"
         },
         {
           "date": "2025-06-24",
           "fileName": "2025-06-24 Александр — выписной эпикриз урология 3.jpg",
+          "displayName": "2025-06-24 Александр — выписной эпикриз урология 3.jpg",
           "href": "/MedsDataBase/documents/2025-06-24-aleksandr-vypisnoy-epikriz-urologiya-3-b34f51ae",
           "eventTitle": "Александр — выписной эпикриз, урология — 24.06.2025"
         },
         {
           "date": "2025-06-24",
           "fileName": "2025-06-24 Александр — выписной эпикриз урология 4.jpg",
+          "displayName": "2025-06-24 Александр — выписной эпикриз урология 4.jpg",
           "href": "/MedsDataBase/documents/2025-06-24-aleksandr-vypisnoy-epikriz-urologiya-4-6f196140",
           "eventTitle": "Александр — выписной эпикриз, урология — 24.06.2025"
         }
@@ -1115,6 +1133,7 @@
         {
           "date": "2026-03-20",
           "fileName": "2026-03-20 Артём — Аллерголог.pdf",
+          "displayName": "2026-03-20 Артём — Аллерголог.pdf",
           "href": "/MedsDataBase/documents/2026-03-20-artem-allergolog-57d3f60c",
           "eventTitle": "2026-03-20 Артём — аллерголог"
         }
@@ -1506,18 +1525,21 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — Кардиолог.pdf",
+          "displayName": "2026-03-19 Артём — Кардиолог.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-kardiolog-b159e40b",
           "eventTitle": "Артём — кардиолог — 19.03.2026"
         },
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — ЭХОкардиография.pdf",
+          "displayName": "2026-03-19 Артём — ЭХОкардиография.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-ehokardiografiya-37c4242a",
           "eventTitle": "Артём — ЭХОкардиография — 19.03.2026"
         },
         {
           "date": "2026-03-20",
           "fileName": "2026-03-19 Артём — Риск сердечно-сосудистых заболеваний.pdf",
+          "displayName": "2026-03-19 Артём — Риск сердечно-сосудистых заболеваний.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-risk-serdechno-sosudistyh-zabolevaniy-2008020e",
           "eventTitle": "Артём — риск сердечно-сосудистых заболеваний — 20.03.2026"
         }
@@ -1799,12 +1821,14 @@
         {
           "date": "2026-03-10",
           "fileName": "2026-03-10 Артём — антитела к вирусу кори IgG.pdf",
+          "displayName": "2026-03-10 Артём — антитела к вирусу кори IgG.pdf",
           "href": "/MedsDataBase/documents/2026-03-10-artem-antitela-k-virusu-kori-igg-3203a79a",
           "eventTitle": "Артём — антитела к вирусу кори IgG — 10.03.2026"
         },
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — Анализ крови.pdf",
+          "displayName": "2026-03-19 Артём — Анализ крови.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-analiz-krovi-80b99b7d",
           "eventTitle": "Артём — анализ крови — 19.03.2026"
         }
@@ -1943,6 +1967,7 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — ЛОР.pdf",
+          "displayName": "2026-03-19 Артём — ЛОР.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-lor-43a25a1a",
           "eventTitle": "Артём — ЛОР — 19.03.2026"
         }
@@ -2070,6 +2095,7 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — Невротолог.pdf",
+          "displayName": "2026-03-19 Артём — Невротолог.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-nevrotolog-5278f7a5",
           "eventTitle": "Артём — невролог — 19.03.2026"
         }
@@ -2219,6 +2245,7 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — Офтальмолог.pdf",
+          "displayName": "2026-03-19 Артём — Офтальмолог.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-oftalmolog-16c89167",
           "eventTitle": "Артём — офтальмолог — 19.03.2026"
         }
@@ -2379,6 +2406,7 @@
         {
           "date": "2026-03-10",
           "fileName": "2026-03-10 Артём — флюорография.pdf",
+          "displayName": "2026-03-10 Артём — флюорография.pdf",
           "href": "/MedsDataBase/documents/2026-03-10-artem-flyuorografiya-3eb2797e",
           "eventTitle": "Артём — флюорография — 10.03.2026"
         }
@@ -2869,18 +2897,21 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — Биоимпиданс.pdf",
+          "displayName": "2026-03-19 Артём — Биоимпиданс.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-bioimpidans-44938ace",
           "eventTitle": "Артём — биоимпедансометрия — 19.03.2026"
         },
         {
           "date": "2026-03-20",
           "fileName": "2026-03-20 Артём — Заключение врача по спортивной медицине.pdf",
+          "displayName": "2026-03-20 Артём — Заключение врача по спортивной медицине.pdf",
           "href": "/MedsDataBase/documents/2026-03-20-artem-zaklyuchenie-vracha-po-sportivnoy-meditsine-bc08dd11",
           "eventTitle": "2026-03-20 Артём — Заключение врача по спортивной медицине"
         },
         {
           "date": "2026-03-26",
           "fileName": "2026-03-26 Артём — Консультация врача.pdf",
+          "displayName": "2026-03-26 Артём — Консультация врача.pdf",
           "href": "/MedsDataBase/documents/2026-03-26-artem-konsultatsiya-vracha-3bed88a9",
           "eventTitle": "Артём — консультация спортивного врача — 26.03.2026"
         }
@@ -3041,6 +3072,7 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — Терапевт.pdf",
+          "displayName": "2026-03-19 Артём — Терапевт.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-terapevt-9de3f950",
           "eventTitle": "Артём — терапевт — 19.03.2026"
         }
@@ -3179,6 +3211,7 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — Травматолог.pdf",
+          "displayName": "2026-03-19 Артём — Травматолог.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-travmatolog-2938e988",
           "eventTitle": "Артём — травматолог — 19.03.2026"
         }
@@ -3372,12 +3405,14 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — УЗИ органов брюшной полости.pdf",
+          "displayName": "2026-03-19 Артём — УЗИ органов брюшной полости.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-uzi-organov-bryushnoy-polosti-f2242fe4",
           "eventTitle": "Артём — УЗИ органов брюшной полости — 19.03.2026"
         },
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — УЗИ щитовидной железы.pdf",
+          "displayName": "2026-03-19 Артём — УЗИ щитовидной железы.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-uzi-schitovidnoy-zhelezy-90495b81",
           "eventTitle": "Артём — УЗИ щитовидной железы — 19.03.2026"
         }
@@ -3505,6 +3540,7 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — УЗИ ног.pdf",
+          "displayName": "2026-03-19 Артём — УЗИ ног.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-uzi-nog-b13f4aad",
           "eventTitle": "Артём — УЗИ артерий нижних конечностей — 19.03.2026"
         }
@@ -3797,12 +3833,14 @@
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — ЭКГ.pdf",
+          "displayName": "2026-03-19 Артём — ЭКГ.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-ekg-378420f5",
           "eventTitle": "Артём — ЭКГ — 19.03.2026"
         },
         {
           "date": "2026-03-19",
           "fileName": "2026-03-19 Артём — Результаты эргоспирографии.pdf",
+          "displayName": "2026-03-19 Артём — Результаты эргоспирографии.pdf",
           "href": "/MedsDataBase/documents/2026-03-19-artem-rezultaty-ergospirografii-fb9b157e",
           "eventTitle": "Артём — эргоспирография — 19.03.2026"
         }
@@ -3845,7 +3883,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3855,7 +3893,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3865,7 +3903,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3875,7 +3913,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3885,7 +3923,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3895,7 +3933,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3905,7 +3943,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3915,7 +3953,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3925,7 +3963,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3935,7 +3973,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3945,7 +3983,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         }
       ],
@@ -3964,7 +4002,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3974,7 +4012,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3984,7 +4022,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -3994,7 +4032,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -4004,7 +4042,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         }
       ],
@@ -4025,7 +4063,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -4035,7 +4073,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -4045,7 +4083,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -4055,7 +4093,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -4065,7 +4103,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -4075,7 +4113,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         },
         {
@@ -4085,7 +4123,7 @@
           "eventTitle": "2026-04-18 Артём — эндокринолог",
           "eventHref": "/MedsDataBase/events/2026-04-18-artem-endokrinolog",
           "documentIds": [
-            "b48811f546d1c048"
+            "c2c1e689e24d521d"
           ]
         }
       ],
@@ -4105,8 +4143,9 @@
       "documents": [
         {
           "date": "2026-04-18",
-          "fileName": "2026-04-18 Артём — эндокринолог Доктор 3.pdf",
-          "href": "/MedsDataBase/documents/2026-04-18-artem-endokrinolog-doktor-3-b48811f5",
+          "fileName": "2026-04-18 Артём — эндокринолог.pdf",
+          "displayName": "2026-04-18 Артём — эндокринолог.pdf",
+          "href": "/MedsDataBase/documents/2026-04-18-artem-endokrinolog-c2c1e689",
           "eventTitle": "2026-04-18 Артём — эндокринолог"
         }
       ]
@@ -4805,102 +4844,119 @@
         {
           "date": "2025-08-25",
           "fileName": "2025-08-25 Маша — Скорая помощь.pdf",
+          "displayName": "2025-08-25 Маша — Скорая помощь.pdf",
           "href": "/MedsDataBase/documents/2025-08-25-masha-skoraya-pomosch-b3aed02e",
           "eventTitle": "2025-08-25 Маша — скорая помощь"
         },
         {
           "date": "2025-08-27",
           "fileName": "2025-08-27 Маша Угрожающий аборт.pdf",
+          "displayName": "2025-08-27 Маша Угрожающий аборт.pdf",
           "href": "/MedsDataBase/documents/2025-08-27-masha-ugrozhayuschiy-abort-38450d9c",
           "eventTitle": "2025-08-27 Маша — выписной эпикриз, угрожающий аборт"
         },
         {
           "date": "2025-09-18",
           "fileName": "2025-09-18 Маша — Скрининговое УЗИ 1 триместр.pdf",
+          "displayName": "2025-09-18 Маша — Скрининговое УЗИ 1 триместр.pdf",
           "href": "/MedsDataBase/documents/2025-09-18-masha-skriningovoe-uzi-1-trimestr-0870e2b4",
           "eventTitle": "Маша — первый пренатальный скрининг — 18.09.2025"
         },
         {
           "date": "2025-09-18",
           "fileName": "2025-09-18 Маша — Пренатальный скрининг 1 триместр.pdf",
+          "displayName": "2025-09-18 Маша — Пренатальный скрининг 1 триместр.pdf",
           "href": "/MedsDataBase/documents/2025-09-18-masha-prenatalnyy-skrining-1-trimestr-f79516b6",
           "eventTitle": "Маша — первый пренатальный скрининг — 18.09.2025"
         },
         {
           "date": "2026-01-28",
           "fileName": "2026-01-28 Маша Акушер-гинеколог.pdf",
+          "displayName": "2026-01-28 Маша Акушер-гинеколог.pdf",
           "href": "/MedsDataBase/documents/2026-01-28-masha-akusher-ginekolog-b4ff682b",
           "eventTitle": "2026-01-28 Маша — акушер-гинеколог"
         },
         {
           "date": "2026-02-06",
           "fileName": "2026-02-06 Маша Акушер-гинеколог.pdf",
+          "displayName": "2026-02-06 Маша Акушер-гинеколог.pdf",
           "href": "/MedsDataBase/documents/2026-02-06-masha-akusher-ginekolog-1bebc276",
           "eventTitle": "2026-02-06 Маша — акушер-гинеколог"
         },
         {
           "date": "2026-02-07",
           "fileName": "2026-02-07 Маша — Кардиотокография.pdf",
+          "displayName": "2026-02-07 Маша — Кардиотокография.pdf",
           "href": "/MedsDataBase/documents/2026-02-07-masha-kardiotokografiya-05dd5130",
           "eventTitle": "Маша — кардиотокография — 07.02.2026"
         },
         {
           "date": "2026-02-12",
           "fileName": "2026-02-12 Маша — УЗИ матки и плода 33 недели.pdf",
+          "displayName": "2026-02-12 Маша — УЗИ матки и плода 33 недели.pdf",
           "href": "/MedsDataBase/documents/2026-02-12-masha-uzi-matki-i-ploda-33-nedeli-9ed6f728",
           "eventTitle": "Маша — УЗИ матки и плода — 12.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша Акушер-гинеколог.pdf",
+          "displayName": "2026-02-18 Маша Акушер-гинеколог.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-akusher-ginekolog-bef89da6",
           "eventTitle": "2026-02-18 Маша — консультация акушера-гинеколога"
         },
         {
           "date": "2026-02-25",
           "fileName": "2026-02-25 Маша Акушер-гинеколог.pdf",
+          "displayName": "2026-02-25 Маша Акушер-гинеколог.pdf",
           "href": "/MedsDataBase/documents/2026-02-25-masha-akusher-ginekolog-0f753e43",
           "eventTitle": "2026-02-25 Маша — акушер-гинеколог"
         },
         {
           "date": "2026-03-11",
           "fileName": "2026-03-11 Маша Акушер-гинеколог.pdf",
+          "displayName": "2026-03-11 Маша Акушер-гинеколог.pdf",
           "href": "/MedsDataBase/documents/2026-03-11-masha-akusher-ginekolog-bdb05868",
           "eventTitle": "2026-03-11 Маша — акушер-гинеколог"
         },
         {
           "date": "2026-03-25",
           "fileName": "2026-03-25 Маша Акушер-гинеколог.pdf",
+          "displayName": "2026-03-25 Маша Акушер-гинеколог.pdf",
           "href": "/MedsDataBase/documents/2026-03-25-masha-akusher-ginekolog-3c5a1e1d",
           "eventTitle": "2026-03-25 Маша — акушер-гинеколог"
         },
         {
           "date": "2026-03-26",
           "fileName": "2026-03-26 Маша Результат кардиотокографии.pdf",
+          "displayName": "2026-03-26 Маша Результат кардиотокографии.pdf",
           "href": "/MedsDataBase/documents/2026-03-26-masha-rezultat-kardiotokografii-dba70f2d",
           "eventTitle": "2026-03-26 Маша — кардиотокография"
         },
         {
           "date": "2026-03-26",
           "fileName": "2026-03-26 Маша Результат кардиотокографии.jpeg",
+          "displayName": "2026-03-26 Маша Результат кардиотокографии.jpeg",
           "href": "/MedsDataBase/documents/2026-03-26-masha-rezultat-kardiotokografii-fe40e985",
           "eventTitle": "2026-03-26 Маша — кардиотокография"
         },
         {
           "date": "2026-03-26",
           "fileName": "2026-03-26 Маша — Кардиотокография электронный результат.pdf",
+          "displayName": "2026-03-26 Маша — Кардиотокография электронный результат.pdf",
           "href": "/MedsDataBase/documents/2026-03-26-masha-kardiotokografiya-elektronnyy-rezultat-fe9c60f1",
           "eventTitle": "Маша — кардиотокография, электронный результат — 26.03.2026"
         },
         {
           "date": "2026-04-10",
           "fileName": "2026-04-10 Маша Консультация. Завершение беременности..pdf",
+          "displayName": "2026-04-10 Маша Консультация. Завершение беременности..pdf",
           "href": "/MedsDataBase/documents/2026-04-10-masha-konsultatsiya-zavershenie-beremennosti-a8216b21",
           "eventTitle": "2026-04-10 Маша — завершение беременности"
         },
         {
           "date": "2026-04-13",
           "fileName": "2026-04-13 Маша — Гинеколог.pdf",
+          "displayName": "2026-04-13 Маша — Гинеколог.pdf",
           "href": "/MedsDataBase/documents/2026-04-13-masha-ginekolog-43eb1f42",
           "eventTitle": "2026-04-13 Маша — гинеколог"
         }
@@ -5733,300 +5789,350 @@
         {
           "date": "2022-07-04",
           "fileName": "2022-07-04 Маша — Цервикальный скрининг CMD.pdf",
+          "displayName": "2022-07-04 Маша — Цервикальный скрининг CMD.pdf",
           "href": "/MedsDataBase/documents/2022-07-04-masha-tservikalnyy-skrining-cmd-125921c9",
           "eventTitle": "Маша — цервикальный скрининг CMD — 04.07.2022"
         },
         {
           "date": "2022-08-08",
           "fileName": "2022-08-08 Маша — Цервикальный скрининг.pdf",
+          "displayName": "2022-08-08 Маша — Цервикальный скрининг.pdf",
           "href": "/MedsDataBase/documents/2022-08-08-masha-tservikalnyy-skrining-22fae322",
           "eventTitle": "Маша — цервикальный скрининг — 08.08.2022"
         },
         {
           "date": "2024-02-17",
           "fileName": "2024-02-17 Маша — Фемофлор-16.pdf",
+          "displayName": "2024-02-17 Маша — Фемофлор-16.pdf",
           "href": "/MedsDataBase/documents/2024-02-17-masha-femoflor-16-236afcec",
           "eventTitle": "Маша — ПЦР и ВПЧ — 17.02.2024"
         },
         {
           "date": "2024-02-17",
           "fileName": "2024-02-17 Маша — ВПЧ типирование.pdf",
+          "displayName": "2024-02-17 Маша — ВПЧ типирование.pdf",
           "href": "/MedsDataBase/documents/2024-02-17-masha-vpch-tipirovanie-b0ba70e0",
           "eventTitle": "Маша — ПЦР и ВПЧ — 17.02.2024"
         },
         {
           "date": "2024-02-17",
           "fileName": "2024-02-17 Маша — ПЦР диагностика.pdf",
+          "displayName": "2024-02-17 Маша — ПЦР диагностика.pdf",
           "href": "/MedsDataBase/documents/2024-02-17-masha-ptsr-diagnostika-da7bcb5a",
           "eventTitle": "Маша — ПЦР и ВПЧ — 17.02.2024"
         },
         {
           "date": "2024-02-17",
           "fileName": "2024-02-17 Маша — ПЦР диагностика дополнительный бланк.pdf",
+          "displayName": "2024-02-17 Маша — ПЦР диагностика дополнительный бланк.pdf",
           "href": "/MedsDataBase/documents/2024-02-17-masha-ptsr-diagnostika-dopolnitelnyy-blank-9ee10b97",
           "eventTitle": "Маша — ПЦР и ВПЧ — 17.02.2024"
         },
         {
           "date": "2024-05-16",
           "fileName": "2024-05-16 Маша — Гормоны.pdf",
+          "displayName": "2024-05-16 Маша — Гормоны.pdf",
           "href": "/MedsDataBase/documents/2024-05-16-masha-gormony-70735f46",
           "eventTitle": "Маша — лабораторные анализы — 16.05.2024"
         },
         {
           "date": "2024-05-16",
           "fileName": "2024-05-16 Маша — Аутоиммунная патология.pdf",
+          "displayName": "2024-05-16 Маша — Аутоиммунная патология.pdf",
           "href": "/MedsDataBase/documents/2024-05-16-masha-autoimmunnaya-patologiya-ee194ee9",
           "eventTitle": "Маша — лабораторные анализы — 16.05.2024"
         },
         {
           "date": "2024-05-16",
           "fileName": "2024-05-16 Маша — Биохимический анализ крови.pdf",
+          "displayName": "2024-05-16 Маша — Биохимический анализ крови.pdf",
           "href": "/MedsDataBase/documents/2024-05-16-masha-biohimicheskiy-analiz-krovi-c333f9ed",
           "eventTitle": "Маша — лабораторные анализы — 16.05.2024"
         },
         {
           "date": "2024-05-16",
           "fileName": "2024-05-16 Маша — Витамины и микроэлементы.pdf",
+          "displayName": "2024-05-16 Маша — Витамины и микроэлементы.pdf",
           "href": "/MedsDataBase/documents/2024-05-16-masha-vitaminy-i-mikroelementy-3dbf7f87",
           "eventTitle": "Маша — лабораторные анализы — 16.05.2024"
         },
         {
           "date": "2024-05-16",
           "fileName": "2024-05-16 Маша — ОАК и ретикулоциты.pdf",
+          "displayName": "2024-05-16 Маша — ОАК и ретикулоциты.pdf",
           "href": "/MedsDataBase/documents/2024-05-16-masha-oak-i-retikulotsity-6f3c35d1",
           "eventTitle": "Маша — лабораторные анализы — 16.05.2024"
         },
         {
           "date": "2024-05-21",
           "fileName": "2024-05-21 Маша — Фемофлор скрининг.pdf",
+          "displayName": "2024-05-21 Маша — Фемофлор скрининг.pdf",
           "href": "/MedsDataBase/documents/2024-05-21-masha-femoflor-skrining-d8b030df",
           "eventTitle": "Маша — цитология и Фемофлор — 21.05.2024"
         },
         {
           "date": "2024-05-21",
           "fileName": "2024-05-21 Маша — Жидкостная цитология.pdf",
+          "displayName": "2024-05-21 Маша — Жидкостная цитология.pdf",
           "href": "/MedsDataBase/documents/2024-05-21-masha-zhidkostnaya-tsitologiya-40d863ee",
           "eventTitle": "Маша — цитология и Фемофлор — 21.05.2024"
         },
         {
           "date": "2024-05-21",
           "fileName": "2024-05-21 Маша — Жидкостная цитология скан.pdf",
+          "displayName": "2024-05-21 Маша — Жидкостная цитология скан.pdf",
           "href": "/MedsDataBase/documents/2024-05-21-masha-zhidkostnaya-tsitologiya-skan-6752b8a4",
           "eventTitle": "Маша — цитология и Фемофлор — 21.05.2024"
         },
         {
           "date": "2024-07-04",
           "fileName": "2024-07-04 Маша — Гистология невуса.pdf",
+          "displayName": "2024-07-04 Маша — Гистология невуса.pdf",
           "href": "/MedsDataBase/documents/2024-07-04-masha-gistologiya-nevusa-d42c64b0",
           "eventTitle": "Маша — гистология невуса — 04.07.2024"
         },
         {
           "date": "2024-10-03",
           "fileName": "2024-10-03 Маша — Фемофлор-16.pdf",
+          "displayName": "2024-10-03 Маша — Фемофлор-16.pdf",
           "href": "/MedsDataBase/documents/2024-10-03-masha-femoflor-16-69e7f11e",
           "eventTitle": "Маша — мазки и Фемофлор — 03.10.2024"
         },
         {
           "date": "2024-10-03",
           "fileName": "2024-10-03 Маша — Мазки из МПО.pdf",
+          "displayName": "2024-10-03 Маша — Мазки из МПО.pdf",
           "href": "/MedsDataBase/documents/2024-10-03-masha-mazki-iz-mpo-b1b424eb",
           "eventTitle": "Маша — мазки и Фемофлор — 03.10.2024"
         },
         {
           "date": "2024-10-11",
           "fileName": "2024-10-11 Маша — Стероидный профиль слюны.pdf",
+          "displayName": "2024-10-11 Маша — Стероидный профиль слюны.pdf",
           "href": "/MedsDataBase/documents/2024-10-11-masha-steroidnyy-profil-slyuny-6c6a8fc5",
           "eventTitle": "Маша — лабораторные анализы — 11.10.2024"
         },
         {
           "date": "2024-10-11",
           "fileName": "2024-10-11 Маша — стероидный профиль слюны скрин.png",
+          "displayName": "2024-10-11 Маша — стероидный профиль слюны скрин.png",
           "href": "/MedsDataBase/documents/2024-10-11-masha-steroidnyy-profil-slyuny-skrin-675d982e",
           "eventTitle": "Маша — лабораторные анализы — 11.10.2024"
         },
         {
           "date": "2024-10-11",
           "fileName": "2024-10-11 Маша — Биохимический анализ крови.pdf",
+          "displayName": "2024-10-11 Маша — Биохимический анализ крови.pdf",
           "href": "/MedsDataBase/documents/2024-10-11-masha-biohimicheskiy-analiz-krovi-74a033c0",
           "eventTitle": "Маша — лабораторные анализы — 11.10.2024"
         },
         {
           "date": "2024-10-11",
           "fileName": "2024-10-11 Маша — биохимический анализ крови скрин.png",
+          "displayName": "2024-10-11 Маша — биохимический анализ крови скрин.png",
           "href": "/MedsDataBase/documents/2024-10-11-masha-biohimicheskiy-analiz-krovi-skrin-ce2fee42",
           "eventTitle": "Маша — лабораторные анализы — 11.10.2024"
         },
         {
           "date": "2024-10-11",
           "fileName": "2024-10-11 Маша — Витамины и микроэлементы.pdf",
+          "displayName": "2024-10-11 Маша — Витамины и микроэлементы.pdf",
           "href": "/MedsDataBase/documents/2024-10-11-masha-vitaminy-i-mikroelementy-d16d6b63",
           "eventTitle": "Маша — лабораторные анализы — 11.10.2024"
         },
         {
           "date": "2024-10-11",
           "fileName": "2024-10-11 Маша — витамины скрин.png",
+          "displayName": "2024-10-11 Маша — витамины скрин.png",
           "href": "/MedsDataBase/documents/2024-10-11-masha-vitaminy-skrin-357290e5",
           "eventTitle": "Маша — лабораторные анализы — 11.10.2024"
         },
         {
           "date": "2024-10-17",
           "fileName": "2024-10-17 Маша — ОАК.png",
+          "displayName": "2024-10-17 Маша — ОАК.png",
           "href": "/MedsDataBase/documents/2024-10-17-masha-oak-8128fceb",
           "eventTitle": "Маша — лабораторные анализы — 17.10.2024"
         },
         {
           "date": "2024-10-17",
           "fileName": "2024-10-17 Маша — АСЛО.png",
+          "displayName": "2024-10-17 Маша — АСЛО.png",
           "href": "/MedsDataBase/documents/2024-10-17-masha-aslo-f81e1273",
           "eventTitle": "Маша — лабораторные анализы — 17.10.2024"
         },
         {
           "date": "2024-10-17",
           "fileName": "2024-10-17 Маша — СРБ мочевина мочевая кислота РФ.png",
+          "displayName": "2024-10-17 Маша — СРБ мочевина мочевая кислота РФ.png",
           "href": "/MedsDataBase/documents/2024-10-17-masha-srb-mochevina-mochevaya-kislota-rf-5b8c7b11",
           "eventTitle": "Маша — лабораторные анализы — 17.10.2024"
         },
         {
           "date": "2024-10-17",
           "fileName": "2024-10-17 Маша — мазок из зева.png",
+          "displayName": "2024-10-17 Маша — мазок из зева.png",
           "href": "/MedsDataBase/documents/2024-10-17-masha-mazok-iz-zeva-af799634",
           "eventTitle": "Маша — лабораторные анализы — 17.10.2024"
         },
         {
           "date": "2024-10-24",
           "fileName": "2024-10-24 Маша — Иммунологические исследования.pdf",
+          "displayName": "2024-10-24 Маша — Иммунологические исследования.pdf",
           "href": "/MedsDataBase/documents/2024-10-24-masha-immunologicheskie-issledovaniya-857ab2f6",
           "eventTitle": "Маша — иммунологические исследования — 24.10.2024"
         },
         {
           "date": "2024-10-24",
           "fileName": "2024-10-24 Маша — иммунологические исследования скрин.jpg",
+          "displayName": "2024-10-24 Маша — иммунологические исследования скрин.jpg",
           "href": "/MedsDataBase/documents/2024-10-24-masha-immunologicheskie-issledovaniya-skrin-62461547",
           "eventTitle": "Маша — иммунологические исследования — 24.10.2024"
         },
         {
           "date": "2025-05-23",
           "fileName": "2025-05-23 Маша — Гормоны.pdf",
+          "displayName": "2025-05-23 Маша — Гормоны.pdf",
           "href": "/MedsDataBase/documents/2025-05-23-masha-gormony-f05c1809",
           "eventTitle": "Маша — лабораторные анализы — 23.05.2025"
         },
         {
           "date": "2025-05-23",
           "fileName": "2025-05-23 Маша — Биохимический анализ крови.pdf",
+          "displayName": "2025-05-23 Маша — Биохимический анализ крови.pdf",
           "href": "/MedsDataBase/documents/2025-05-23-masha-biohimicheskiy-analiz-krovi-e1b2eb57",
           "eventTitle": "Маша — лабораторные анализы — 23.05.2025"
         },
         {
           "date": "2025-05-23",
           "fileName": "2025-05-23 Маша — ОАК и ретикулоциты.pdf",
+          "displayName": "2025-05-23 Маша — ОАК и ретикулоциты.pdf",
           "href": "/MedsDataBase/documents/2025-05-23-masha-oak-i-retikulotsity-6231c7ea",
           "eventTitle": "Маша — лабораторные анализы — 23.05.2025"
         },
         {
           "date": "2025-08-25",
           "fileName": "2025-08-25 Маша — Гормоны.pdf",
+          "displayName": "2025-08-25 Маша — Гормоны.pdf",
           "href": "/MedsDataBase/documents/2025-08-25-masha-gormony-2264e9b7",
           "eventTitle": "Маша — лабораторные анализы — 25.08.2025"
         },
         {
           "date": "2025-08-25",
           "fileName": "2025-08-25 Маша — Биохимический анализ крови.pdf",
+          "displayName": "2025-08-25 Маша — Биохимический анализ крови.pdf",
           "href": "/MedsDataBase/documents/2025-08-25-masha-biohimicheskiy-analiz-krovi-6ddece37",
           "eventTitle": "Маша — лабораторные анализы — 25.08.2025"
         },
         {
           "date": "2026-02-02",
           "fileName": "2026-02-02 Маша — Клинический анализ мочи.pdf",
+          "displayName": "2026-02-02 Маша — Клинический анализ мочи.pdf",
           "href": "/MedsDataBase/documents/2026-02-02-masha-klinicheskiy-analiz-mochi-4dfed1f0",
           "eventTitle": "Маша — клинический анализ мочи — 02.02.2026"
         },
         {
           "date": "2026-02-03",
           "fileName": "2026-02-03 Маша — HBsAg.pdf",
+          "displayName": "2026-02-03 Маша — HBsAg.pdf",
           "href": "/MedsDataBase/documents/2026-02-03-masha-hbsag-39af85d0",
           "eventTitle": "Маша — инфекционный скрининг — 03.02.2026"
         },
         {
           "date": "2026-02-03",
           "fileName": "2026-02-03 Маша — HIV антитела-антиген.pdf",
+          "displayName": "2026-02-03 Маша — HIV антитела-антиген.pdf",
           "href": "/MedsDataBase/documents/2026-02-03-masha-hiv-antitela-antigen-3e31c273",
           "eventTitle": "Маша — инфекционный скрининг — 03.02.2026"
         },
         {
           "date": "2026-02-03",
           "fileName": "2026-02-03 Маша — Hepatitis C антитела ИФА.pdf",
+          "displayName": "2026-02-03 Маша — Hepatitis C антитела ИФА.pdf",
           "href": "/MedsDataBase/documents/2026-02-03-masha-hepatitis-c-antitela-ifa-3704087c",
           "eventTitle": "Маша — инфекционный скрининг — 03.02.2026"
         },
         {
           "date": "2026-02-03",
           "fileName": "2026-02-03 Маша — Treponema pallidum IgM IgG.pdf",
+          "displayName": "2026-02-03 Маша — Treponema pallidum IgM IgG.pdf",
           "href": "/MedsDataBase/documents/2026-02-03-masha-treponema-pallidum-igm-igg-0a56cfc5",
           "eventTitle": "Маша — инфекционный скрининг — 03.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша — Билирубин общий.pdf",
+          "displayName": "2026-02-18 Маша — Билирубин общий.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-bilirubin-obschiy-a20bd8dc",
           "eventTitle": "Маша — биохимия крови — 18.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша — Глюкоза.pdf",
+          "displayName": "2026-02-18 Маша — Глюкоза.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-glyukoza-09fd5626",
           "eventTitle": "Маша — биохимия крови — 18.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша — Креатинин.pdf",
+          "displayName": "2026-02-18 Маша — Креатинин.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-kreatinin-16d6df56",
           "eventTitle": "Маша — биохимия крови — 18.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша — Мочевая кислота.pdf",
+          "displayName": "2026-02-18 Маша — Мочевая кислота.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-mochevaya-kislota-f92ca444",
           "eventTitle": "Маша — биохимия крови — 18.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша — Общий белок.pdf",
+          "displayName": "2026-02-18 Маша — Общий белок.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-obschiy-belok-abdbb630",
           "eventTitle": "Маша — биохимия крови — 18.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша — АЛТ.pdf",
+          "displayName": "2026-02-18 Маша — АЛТ.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-alt-0118d320",
           "eventTitle": "Маша — биохимия крови — 18.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша — АСТ.pdf",
+          "displayName": "2026-02-18 Маша — АСТ.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-ast-1d061409",
           "eventTitle": "Маша — биохимия крови — 18.02.2026"
         },
         {
           "date": "2026-02-18",
           "fileName": "2026-02-18 Маша — Билирубин прямой.pdf",
+          "displayName": "2026-02-18 Маша — Билирубин прямой.pdf",
           "href": "/MedsDataBase/documents/2026-02-18-masha-bilirubin-pryamoy-e5a1b1ed",
           "eventTitle": "Маша — биохимия крови — 18.02.2026"
         },
         {
           "date": "2026-03-12",
           "fileName": "2026-03-12 Маша — Вагинальное отделяемое.pdf",
+          "displayName": "2026-03-12 Маша — Вагинальное отделяемое.pdf",
           "href": "/MedsDataBase/documents/2026-03-12-masha-vaginalnoe-otdelyaemoe-bf98be1c",
           "eventTitle": "Маша — мазки влагалища и цервикального канала — 12.03.2026"
         },
         {
           "date": "2026-03-12",
           "fileName": "2026-03-12 Маша — Цервикальное отделяемое.pdf",
+          "displayName": "2026-03-12 Маша — Цервикальное отделяемое.pdf",
           "href": "/MedsDataBase/documents/2026-03-12-masha-tservikalnoe-otdelyaemoe-f185135a",
           "eventTitle": "Маша — мазки влагалища и цервикального канала — 12.03.2026"
         },
         {
           "date": "2026-03-13",
           "fileName": "2026-03-13 Маша — Посев на стрептококк группы B.pdf",
+          "displayName": "2026-03-13 Маша — Посев на стрептококк группы B.pdf",
           "href": "/MedsDataBase/documents/2026-03-13-masha-posev-na-streptokokk-gruppy-b-667c820e",
           "eventTitle": "Маша — посев на стрептококк группы B — 13.03.2026"
         }
@@ -6168,6 +6274,7 @@
         {
           "date": "2024-11-08",
           "fileName": "2024-11-08 Маша — ЛОР Major Clinic.jpg",
+          "displayName": "2024-11-08 Маша — ЛОР Major Clinic.jpg",
           "href": "/MedsDataBase/documents/2024-11-08-masha-lor-major-clinic-6feb0425",
           "eventTitle": "Маша — ЛОР Major Clinic — 08.11.2024"
         }
@@ -6604,42 +6711,49 @@
         {
           "date": "2024-10-01",
           "fileName": "2024-10-01 Маша — офтальмолог первичный прием.jpeg",
+          "displayName": "2024-10-01 Маша — офтальмолог первичный прием.jpeg",
           "href": "/MedsDataBase/documents/2024-10-01-masha-oftalmolog-pervichnyy-priem-45c9a82c",
           "eventTitle": "Маша — офтальмолог — 01.10.2024"
         },
         {
           "date": "2024-10-01",
           "fileName": "2024-10-01 Маша — гимнастика для глаз.jpeg",
+          "displayName": "2024-10-01 Маша — гимнастика для глаз.jpeg",
           "href": "/MedsDataBase/documents/2024-10-01-masha-gimnastika-dlya-glaz-967aa702",
           "eventTitle": "Маша — офтальмолог — 01.10.2024"
         },
         {
           "date": "2024-10-01",
           "fileName": "2024-10-29 Маша — офтальмолог контроль 1.jpg",
+          "displayName": "2024-10-29 Маша — офтальмолог контроль 1.jpg",
           "href": "/MedsDataBase/documents/2024-10-29-masha-oftalmolog-kontrol-1-79482596",
           "eventTitle": "Маша — офтальмолог — 01.10.2024"
         },
         {
           "date": "2024-10-01",
           "fileName": "2024-10-29 Маша — офтальмолог контроль 2.jpg",
+          "displayName": "2024-10-29 Маша — офтальмолог контроль 2.jpg",
           "href": "/MedsDataBase/documents/2024-10-29-masha-oftalmolog-kontrol-2-7d2b34c9",
           "eventTitle": "Маша — офтальмолог — 01.10.2024"
         },
         {
           "date": "2025-10-14",
           "fileName": "2025-10-14 Маша — Офтальмолог.pdf",
+          "displayName": "2025-10-14 Маша — Офтальмолог.pdf",
           "href": "/MedsDataBase/documents/2025-10-14-masha-oftalmolog-7b7b9b37",
           "eventTitle": "Маша — офтальмолог — 14.10.2025"
         },
         {
           "date": "2025-10-20",
           "fileName": "2025-10-20 Маша — Офтальмолог.pdf",
+          "displayName": "2025-10-20 Маша — Офтальмолог.pdf",
           "href": "/MedsDataBase/documents/2025-10-20-masha-oftalmolog-99822582",
           "eventTitle": "Маша — офтальмолог — 20.10.2025"
         },
         {
           "date": "2026-02-04",
           "fileName": "2026-02-04 Маша — Офтальмолог.pdf",
+          "displayName": "2026-02-04 Маша — Офтальмолог.pdf",
           "href": "/MedsDataBase/documents/2026-02-04-masha-oftalmolog-a9be7ab2",
           "eventTitle": "Маша — офтальмолог — 04.02.2026"
         }
@@ -6835,6 +6949,7 @@
         {
           "date": "2026-01-28",
           "fileName": "2026-01-28 Маша Психолог.pdf",
+          "displayName": "2026-01-28 Маша Психолог.pdf",
           "href": "/MedsDataBase/documents/2026-01-28-masha-psiholog-a3efe103",
           "eventTitle": "2026-01-28 Маша — психолог"
         }
@@ -7064,12 +7179,14 @@
         {
           "date": "2024-10-22",
           "fileName": "2024-10-22 Маша — ревматолог МЕДСИ.jpg",
+          "displayName": "2024-10-22 Маша — ревматолог МЕДСИ.jpg",
           "href": "/MedsDataBase/documents/2024-10-22-masha-revmatolog-medsi-6b4492c9",
           "eventTitle": "Маша — ревматолог МЕДСИ — 22.10.2024"
         },
         {
           "date": "2024-11-15",
           "fileName": "2024-11-15 Маша — ревматолог Major Clinic.jpg",
+          "displayName": "2024-11-15 Маша — ревматолог Major Clinic.jpg",
           "href": "/MedsDataBase/documents/2024-11-15-masha-revmatolog-major-clinic-ec5dc864",
           "eventTitle": "Маша — ревматолог Major Clinic — 15.11.2024"
         }
@@ -7211,6 +7328,7 @@
         {
           "date": "2026-01-28",
           "fileName": "2026-01-28 Маша Терапевт.pdf",
+          "displayName": "2026-01-28 Маша Терапевт.pdf",
           "href": "/MedsDataBase/documents/2026-01-28-masha-terapevt-0b337ecd",
           "eventTitle": "2026-01-28 Маша — терапевт"
         }
@@ -7414,30 +7532,35 @@
         {
           "date": "2024-10-01",
           "fileName": "2024-10-01 Маша — травматолог-ортопед назначение.jpeg",
+          "displayName": "2024-10-01 Маша — травматолог-ортопед назначение.jpeg",
           "href": "/MedsDataBase/documents/2024-10-01-masha-travmatolog-ortoped-naznachenie-087b715d",
           "eventTitle": "Маша — травматолог-ортопед — 01.10.2024"
         },
         {
           "date": "2024-10-01",
           "fileName": "2024-10-01 Маша — рентген левого коленного сустава снимок.png",
+          "displayName": "2024-10-01 Маша — рентген левого коленного сустава снимок.png",
           "href": "/MedsDataBase/documents/2024-10-01-masha-rentgen-levogo-kolennogo-sustava-snimok-08dc35e7",
           "eventTitle": "Маша — травматолог-ортопед — 01.10.2024"
         },
         {
           "date": "2024-10-01",
           "fileName": "2024-10-01 Маша — протокол рентгена колена.png",
+          "displayName": "2024-10-01 Маша — протокол рентгена колена.png",
           "href": "/MedsDataBase/documents/2024-10-01-masha-protokol-rentgena-kolena-14c71b01",
           "eventTitle": "Маша — травматолог-ортопед — 01.10.2024"
         },
         {
           "date": "2024-10-01",
           "fileName": "2024-10-01 Маша — УЗИ левого коленного сустава снимки.jpeg",
+          "displayName": "2024-10-01 Маша — УЗИ левого коленного сустава снимки.jpeg",
           "href": "/MedsDataBase/documents/2024-10-01-masha-uzi-levogo-kolennogo-sustava-snimki-3f928967",
           "eventTitle": "Маша — травматолог-ортопед — 01.10.2024"
         },
         {
           "date": "2024-10-01",
           "fileName": "2024-10-01 Маша — УЗИ левого коленного сустава протокол.jpeg",
+          "displayName": "2024-10-01 Маша — УЗИ левого коленного сустава протокол.jpeg",
           "href": "/MedsDataBase/documents/2024-10-01-masha-uzi-levogo-kolennogo-sustava-protokol-1a25a533",
           "eventTitle": "Маша — травматолог-ортопед — 01.10.2024"
         }
@@ -7568,6 +7691,7 @@
         {
           "date": "2024-10-02",
           "fileName": "2024-10-02 Маша — УЗДГ вен нижних конечностей.jpeg",
+          "displayName": "2024-10-02 Маша — УЗДГ вен нижних конечностей.jpeg",
           "href": "/MedsDataBase/documents/2024-10-02-masha-uzdg-ven-nizhnih-konechnostey-07e5c6a8",
           "eventTitle": "Маша — УЗДГ вен нижних конечностей — 02.10.2024"
         }
@@ -7698,6 +7822,7 @@
         {
           "date": "2025-08-26",
           "fileName": "2025-08-26 Маша — ЭКГ.pdf",
+          "displayName": "2025-08-26 Маша — ЭКГ.pdf",
           "href": "/MedsDataBase/documents/2025-08-26-masha-ekg-c0ce40f3",
           "eventTitle": "Маша — ЭКГ — 26.08.2025"
         }
@@ -7839,6 +7964,7 @@
         {
           "date": "2024-10-02",
           "fileName": "2024-10-02 Маша — хирург венозная недостаточность.jpeg",
+          "displayName": "2024-10-02 Маша — хирург венозная недостаточность.jpeg",
           "href": "/MedsDataBase/documents/2024-10-02-masha-hirurg-venoznaya-nedostatochnost-dc7e0257",
           "eventTitle": "Маша — хирург — венозная недостаточность — 02.10.2024"
         }
@@ -8331,12 +8457,14 @@
         {
           "date": "2026-04-01",
           "fileName": "2026-04-01 Ника — Выписка из роддома.pdf",
+          "displayName": "2026-04-01 Ника — Выписка из роддома.pdf",
           "href": "/MedsDataBase/documents/2026-04-01-nika-vypiska-iz-roddoma-fc09dbe4",
           "eventTitle": "Ника — выписка из роддома — 01.04.2026"
         },
         {
           "date": "2026-04-10",
           "fileName": "2026-04-10 Ника — Педиатр.pdf",
+          "displayName": "2026-04-10 Ника — Педиатр.pdf",
           "href": "/MedsDataBase/documents/2026-04-10-nika-pediatr-8b8e34ae",
           "eventTitle": "Ника — педиатр — 10.04.2026"
         }

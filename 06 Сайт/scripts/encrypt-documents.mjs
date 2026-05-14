@@ -31,7 +31,7 @@ for (const document of manifest) {
   const header = Buffer.from(
     JSON.stringify({
       v: 1,
-      fileName: document.fileName,
+      fileName: document.displayName || document.fileName,
       extension: document.extension,
       mimeType: document.mimeType,
       kdf: {

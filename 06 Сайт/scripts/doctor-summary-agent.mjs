@@ -65,6 +65,7 @@ function sourceDocuments(events) {
       rows.push({
         date: event.date,
         fileName: document.fileName,
+        displayName: document.displayName || document.fileName,
         href: document.href,
         eventTitle: event.title,
       });
@@ -172,8 +173,8 @@ function renderMarkdown(record, updatedDate = new Date().toISOString().slice(0, 
 
   section(
     "Документы-источники",
-    record.documents.map((document) => `${document.date}: ${document.fileName}`),
-  );
+      record.documents.map((document) => `${document.date}: ${document.displayName || document.fileName}`),
+    );
 
   lines.push("", "## Техническая область чтения");
   lines.push("- Источник: `01 Члены семьи/**/*.md` с `type: medical_event` и `type: person_profile`.");

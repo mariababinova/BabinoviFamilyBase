@@ -31,6 +31,7 @@ type DoctorSummary = {
   documents?: Array<{
     date: string;
     fileName: string;
+    displayName?: string;
     href: string;
     eventTitle: string;
   }>;
@@ -153,7 +154,7 @@ function renderEvidence(items?: EvidenceItem[]) {
       <ul>
         {(summary.documents || []).map((document) => (
           <li>
-            <a href={document.href}>{document.fileName}</a>
+            <a href={document.href}>{document.displayName || document.fileName}</a>
             <span> · {formatDate(document.date)} · {document.eventTitle}</span>
           </li>
         ))}

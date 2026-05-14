@@ -4,6 +4,7 @@ import { formatDateShort } from "../lib/ui";
 interface DocumentItem {
   href: string;
   fileName: string;
+  displayName?: string;
   person?: string;
   date?: string;
   specialty?: string;
@@ -28,7 +29,7 @@ const { documents, compact = false } = Astro.props as { documents: DocumentItem[
           {document.specialty && <span class="chip">{document.specialty}</span>}
           {document.extension && <span class="chip muted">{document.extension.toUpperCase()}</span>}
         </div>
-        <h3><a href={document.href}>{document.fileName}</a></h3>
+        <h3><a href={document.href}>{document.displayName || document.fileName}</a></h3>
       </div>
       <div class="document-actions">
         <span class:list={["status-pill", document.isLinkedToEvent ? "linked" : "unlinked"]}>{document.linkStatusLabel}</span>

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-05-14T06:49:12.889Z",
+  "updated_at": "2026-05-14T10:13:30.404Z",
   "records": [
     {
       "id": "task-aleksandr-review-pre-treatment-consults",
@@ -164,9 +164,9 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "7ba5913fdbb469b6",
+      "source_document_id": "88b61d2acd1e1227",
       "source_files": [
-        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+        "2026-04-18 Артём — эндокринолог.pdf"
       ],
       "watchlist_topic_id": "",
       "source_text": "Гомоцистеин; Липопротеин (a); Общий анализ крови; После выполнения ЭГДС, колоноскопии, анализа кала и консультации гастроэнтеролога добавить результаты в базу; Свободный Т4; ТТГ; Омега-индекс развёрнутый",
@@ -182,9 +182,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -194,9 +194,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -206,9 +206,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -218,9 +218,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -230,9 +230,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -242,9 +242,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -254,9 +254,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         }
       ],
@@ -369,9 +369,9 @@
       "source_type": "event",
       "source_event_id": "2026-04-18-artem-endokrinolog",
       "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-      "source_document_id": "7ba5913fdbb469b6",
+      "source_document_id": "88b61d2acd1e1227",
       "source_files": [
-        "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+        "2026-04-18 Артём — эндокринолог.pdf"
       ],
       "watchlist_topic_id": "",
       "source_text": "Выполнение гастро-обследований в плановом порядке; Колоноскопия; Консультация гастроэнтеролога по результатам; Общий анализ кала",
@@ -401,9 +401,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -413,9 +413,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -425,9 +425,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         },
         {
@@ -437,9 +437,9 @@
           "specialty_id": "endokrinologiya",
           "source_event_id": "2026-04-18-artem-endokrinolog",
           "source_event_path": "01 Члены семьи/Артём/13 Эндокринолог/13 Эндокринолог 2026/2026-04-18 Артём — Эндокринолог.md",
-          "source_document_id": "7ba5913fdbb469b6",
+          "source_document_id": "88b61d2acd1e1227",
           "source_files": [
-            "2026-04-18 Артём — эндокринолог Доктор 3.pdf"
+            "2026-04-18 Артём — эндокринолог.pdf"
           ]
         }
       ]

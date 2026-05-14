@@ -297,6 +297,10 @@ function documentOutputName(relativePath) {
   return `${hashText(relativePath)}-${slugify(base, "document")}${ext}`;
 }
 
+function cleanDocumentDisplayName(fileName) {
+  return String(fileName || "").replace(/\s+Доктор\s*3(?=\.[^.]+$)/iu, "");
+}
+
 function mimeTypeFromExtension(extension) {
   const clean = String(extension || "").toLowerCase().replace(/^\./, "");
   if (clean === "pdf") return "application/pdf";
@@ -309,15 +313,18 @@ function documentFromPath(filePath, { isInboxItem = false, publicDocuments = doc
   const relativePath = repoRelative(filePath);
   const outputFileName = documentOutputName(relativePath);
   const encryptedOutputFileName = `${outputFileName}.enc`;
+  const fileName = path.basename(filePath);
+  const displayName = cleanDocumentDisplayName(fileName);
   const person = filePath.startsWith(membersDir) ? memberNameFromPath(filePath) : undefined;
   const inferredDate = isoDateFromText(path.basename(filePath)) || isoDateFromText(relativePath);
   const specialty = inferSpecialtyFromPath(filePath);
-  const slug = slugify(`${path.basename(filePath, path.extname(filePath))}-${hashText(relativePath, 8)}`, `document-${hashText(relativePath, 8)}`);
+  const slug = slugify(`${path.basename(displayName, path.extname(displayName))}-${hashText(relativePath, 8)}`, `document-${hashText(relativePath, 8)}`);
   const extension = path.extname(filePath).slice(1).toLowerCase();
   return {
     id: hashText(relativePath, 16),
     slug,
-    fileName: path.basename(filePath),
+    fileName,
+    displayName,
     originalPath: relativePath,
     routePath: `/documents/${slug}`,
     href: addBase(`/documents/${slug}`),
@@ -353,6 +360,7 @@ function documentForEvent(document, event) {
     specialty: event.specialty,
     specialtyId: event.specialtyId,
     date: event.date,
+    displayName: cleanDocumentDisplayName(document.displayName || document.fileName),
     isLinkedToEvent: true,
     linkStatus: "linked",
     linkStatusLabel: "Привязан к записи",
@@ -702,11 +710,11 @@ function buildSearchItems({ people, events, documents, tasks, doctorSummaries })
       extension: document.extension,
       linkStatus: document.linkStatus,
       linkStatusLabel: document.linkStatusLabel,
-      title: document.fileName,
+      title: document.displayName || document.fileName,
       routePath: document.routePath,
       href: document.href,
       subtitle: [document.person, document.date, document.specialty].filter(Boolean).join(" · "),
-      text: stripMarkdown(`${document.fileName} ${document.person || ""} ${document.specialty || ""}`),
+      text: stripMarkdown(`${document.displayName || document.fileName} ${document.person || ""} ${document.specialty || ""}`),
     })),
     ...tasks.map((task) => ({
       type: "task",
@@ -1230,6 +1238,7 @@ export async function writeDashboardData(options = {}) {
     id: document.id,
     slug: document.slug,
     fileName: document.fileName,
+    displayName: document.displayName,
     originalPath: document.originalPath,
     outputFileName: document.outputFileName,
     encryptedOutputFileName: document.encryptedOutputFileName,

@@ -7,15 +7,16 @@ export function getStaticPaths() {
 }
 
 const { document } = Astro.props;
+const documentTitle = document.displayName || document.fileName;
 const isImage = ["jpg", "jpeg", "png"].includes(document.extension);
 const canOpenOriginal = Boolean(document.publicUrl);
 const canOpenEncryptedOriginal = Boolean(document.encryptedUrl);
 ---
 
-<AppLayout title={`${document.fileName} · Медицинская база`}>
+<AppLayout title={`${documentTitle} · Медицинская база`}>
   <section class="page-header">
     <p class="eyebrow">{document.linkStatusLabel}</p>
-    <h1>{document.fileName}</h1>
+    <h1>{documentTitle}</h1>
     <p>{[document.person, document.date ? formatDate(document.date) : "", document.specialty].filter(Boolean).join(" · ")}</p>
   </section>
   <section class="document-detail">
@@ -41,7 +42,7 @@ const canOpenEncryptedOriginal = Boolean(document.encryptedUrl);
               type="button"
               data-encrypted-open
               data-encrypted-url={document.encryptedUrl}
-              data-file-name={document.fileName}
+              data-file-name={documentTitle}
               data-mime-type={document.mimeType}
               data-extension={document.extension}
             >
@@ -52,7 +53,7 @@ const canOpenEncryptedOriginal = Boolean(document.encryptedUrl);
               type="button"
               data-encrypted-download
               data-encrypted-url={document.encryptedUrl}
-              data-file-name={document.fileName}
+              data-file-name={documentTitle}
               data-mime-type={document.mimeType}
               data-extension={document.extension}
             >
@@ -68,9 +69,9 @@ const canOpenEncryptedOriginal = Boolean(document.encryptedUrl);
     </aside>
     <article class="document-preview card">
       {canOpenOriginal && isImage ? (
-        <img src={document.publicUrl} alt={document.fileName} />
+        <img src={document.publicUrl} alt={documentTitle} />
       ) : canOpenOriginal ? (
-        <iframe src={document.publicUrl} title={document.fileName}></iframe>
+        <iframe src={document.publicUrl} title={documentTitle}></iframe>
       ) : canOpenEncryptedOriginal ? (
         <div class="empty-state encrypted-document-state" data-encrypted-preview>
           <h2>Оригинал защищён</h2>
@@ -80,7 +81,7 @@ const canOpenEncryptedOriginal = Boolean(document.encryptedUrl);
             type="button"
             data-encrypted-open
             data-encrypted-url={document.encryptedUrl}
-            data-file-name={document.fileName}
+            data-file-name={documentTitle}
             data-mime-type={document.mimeType}
             data-extension={document.extension}
           >
