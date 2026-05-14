@@ -88,6 +88,18 @@ function isIsoDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(value || ""));
 }
 
+function hasPlaceholderText(value) {
+  return typeof value === "string" && /\?{3,}/.test(value);
+}
+
+function checkNoPlaceholderText(label, object, fields) {
+  for (const field of fields) {
+    if (hasPlaceholderText(object?.[field])) {
+      errors.push(`${label}: "${object.id || "unknown"}" has placeholder text in ${field}`);
+    }
+  }
+}
+
 async function walkMarkdown(dir, output = []) {
   let entries = [];
   try {
@@ -208,6 +220,10 @@ for (const record of taskRecords) {
   if (record.person_id && !personIds.has(record.person_id)) errors.push(`tasks.records: unknown person_id "${record.person_id}"`);
   if (!record.dedupe_key) errors.push(`tasks.records: "${record.id || "unknown"}" missing dedupe_key`);
   if (!record.action_text && !record.title) errors.push(`tasks.records: "${record.id || "unknown"}" missing action_text/title`);
+  checkNoPlaceholderText("tasks.records", record, ["person", "specialty", "title", "action_text", "reason", "source_text"]);
+  for (const item of record.items || []) {
+    checkNoPlaceholderText(`tasks.records.items:${record.id || "unknown"}`, item, ["title", "specialty"]);
+  }
   if (record.status && !validTaskStatuses.has(String(record.status))) {
     errors.push(`tasks.records: "${record.id || "unknown"}" has invalid status "${record.status}"`);
   }
