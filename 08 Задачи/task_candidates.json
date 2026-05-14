@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-05-14T11:40:08.064Z",
+  "records": [
+    {
+      "id": "task-ccdd328faf509e0e4e234fbc",
+      "type": "lab_control",
+      "status": "approved",
+      "person": "Маша",
+      "person_id": "masha",
+      "due_date": "2026-09-05",
+      "priority": "medium",
+      "specialty": "Гинекология",
+      "specialty_id": "ginekologiya",
+      "title": "Рекомендовано взятие мазка на онкоцитологию каждые 6 месяцев",
+      "action_text": "Рекомендовано взятие мазка на онкоцитологию каждые 6 месяцев",
+      "reason": "Из раздела \"Что важно отследить\" события \"Маша — гистология и ВПЧ — 05.09.2022\".",
+      "source_type": "event",
+      "source_event_id": "2022-09-05-masha-gistologiya-vpch",
+      "source_event_path": "01 Члены семьи/Маша/09 Анализы/09 Анализы 2022/Европейский медицинский центр/2022-09-05 Маша — гистология и ВПЧ.md",
+      "source_document_id": "2742cb76817343b3",
+      "source_files": [
+        "2022-09-05 Маша — гистология и ВПЧ.jpg"
+      ],
+      "watchlist_topic_id": "",
+      "source_text": "Рекомендовано взятие мазка на онкоцитологию каждые 6 месяцев",
+      "extraction_confidence": "high",
+      "dedupe_key": "ccdd328faf509e0e4e234fbc",
+      "source_agent": "tasks-agent",
+      "generated_at": "2026-05-14T11:24:34.304Z",
+      "candidate_id": "candidate-ccdd328faf509e0e4e234fbc",
+      "candidate_status": "approved",
+      "review_status": "approved",
+      "updated_at": "2026-05-14T11:40:08.064Z",
+      "reviewed_at": "2026-05-14T11:29:42.332Z",
+      "reviewed_by": "local_site"
+    }
+  ]
+}

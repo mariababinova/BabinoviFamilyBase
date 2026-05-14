@@ -20,6 +20,7 @@ const dryRun = flags.has("--dry-run");
 
 const referencesDir = path.join(repoRoot, "02 Справочники");
 const tasksPath = path.join(repoRoot, "08 Задачи", "tasks.json");
+const taskCandidatesPath = path.join(repoRoot, "08 Задачи", "task_candidates.json");
 const agentName = "tasks-agent";
 
 function usage() {
@@ -29,7 +30,8 @@ Usage:
   npm run agent:tasks
   npm run agent:tasks -- --dry-run
 
-The agent scans approved medical event notes and writes control tasks to 08 Задачи/tasks.json.
+The agent scans approved medical event notes, keeps confirmed tasks in 08 Задачи/tasks.json,
+and writes new unconfirmed suggestions to 08 Задачи/task_candidates.json.
 `);
 }
 
@@ -79,6 +81,18 @@ function addMonths(isoDate, months) {
   return date.toISOString().slice(0, 10);
 }
 
+function nextRecurringDueDate(eventDate, months) {
+  if (!eventDate || !months) return "";
+  let dueDate = addMonths(eventDate, months);
+  const today = todayIso();
+  let guard = 0;
+  while (dueDate && dueDate < today && guard < 120) {
+    dueDate = addMonths(dueDate, months);
+    guard += 1;
+  }
+  return dueDate;
+}
+
 function monthNumber(label) {
   const months = new Map([
     ["январ", 1],
@@ -124,6 +138,9 @@ function dueDateFromText(text, eventDate, followUpDate, { useFollowUpFallback = 
   const oneMonth = source.match(/(?:^|\s)в\s+1\s+месяц/u);
   if (oneMonth && eventDate) return addMonths(eventDate, 1);
 
+  const recurringMonths = source.match(/кажд(?:ые|ый|ого)\s+(\d+)\s*(месяц|мес)/u);
+  if (recurringMonths && eventDate) return nextRecurringDueDate(eventDate, Number(recurringMonths[1]));
+
   const namedMonth = source.match(/(?:^|\s)в\s+(январ[еья]|феврал[еья]|март[е]?|апрел[еья]|ма[еья]|июн[еья]|июл[еья]|август[е]?|сентябр[еья]|октябр[еья]|ноябр[еья]|декабр[еья])(?:\s+(\d{4}))?(?:\s|$)/u);
   if (namedMonth && eventDate) {
     const month = monthNumber(namedMonth[1]);
@@ -152,13 +169,13 @@ function isActionable(text, hasDueDate, context = "") {
     return false;
   }
 
-  const control = /(контрол|повтор|пересдат|сдать|записат|осмотр|консультац|узи|экг|эхо|анализ|обследован|явка|оценк|проверить|пройти|ттг|т4|липопротеин|гомоцистеин|гастроскоп|колоноскоп|индекс)/u.test(combined);
+  const control = /(контрол|повтор|пересдат|сдать|записат|осмотр|консультац|узи|экг|эхо|анализ|мазок|цитолог|онкоцитолог|обследован|явка|оценк|проверить|пройти|ттг|т4|липопротеин|гомоцистеин|гастроскоп|колоноскоп|индекс)/u.test(combined);
   return control && (hasDueDate || /планов|по\s+рекомендац/u.test(combined));
 }
 
 function taskTypeFor(text) {
   const source = normalizeText(text);
-  if (/анализ|пересдат|сдать|кров|моч|ттг|т4|липид|липопротеин|холестерин|гомоцистеин|индекс/u.test(source)) return "lab_control";
+  if (/анализ|мазок|цитолог|онкоцитолог|пересдат|сдать|кров|моч|ттг|т4|липид|липопротеин|холестерин|гомоцистеин|индекс/u.test(source)) return "lab_control";
   if (/узи|экг|эхо|обследован|рентген|скрининг|ктг|стресс-тест|гастроскоп|колоноскоп/u.test(source)) return "diagnostic_control";
   if (/записат|при[её]м|осмотр|консультац|явка|врач/u.test(source)) return "doctor_visit";
   return "control_task";
@@ -428,6 +445,42 @@ function mergeGeneratedTask(generated, previous) {
   return merged;
 }
 
+function candidateStatus(record) {
+  return String(record?.candidate_status || record?.review_status || record?.status || "needs_review");
+}
+
+function taskFromApprovedCandidate(candidate) {
+  const {
+    candidate_id,
+    candidate_status,
+    review_status,
+    reviewed_at,
+    reviewed_by,
+    review_comment,
+    ...task
+  } = candidate;
+  return {
+    ...task,
+    status: task.status && !["needs_review", "approved", "rejected", "merged"].includes(String(task.status)) ? task.status : "open",
+    source_agent: task.source_agent || agentName,
+  };
+}
+
+function candidateFromGenerated(record, previousCandidate) {
+  const status = candidateStatus(previousCandidate);
+  return {
+    ...record,
+    ...(previousCandidate || {}),
+    ...record,
+    candidate_id: previousCandidate?.candidate_id || `candidate-${record.dedupe_key}`,
+    candidate_status: status,
+    review_status: status,
+    status,
+    generated_at: previousCandidate?.generated_at || record.generated_at,
+    updated_at: new Date().toISOString(),
+  };
+}
+
 async function loadEvents(people) {
   const files = await findMarkdownFiles();
   const output = [];
@@ -485,9 +538,10 @@ function extractTasksFromEvent(item) {
 }
 
 async function scanTasks() {
-  const [peopleJson, tasksJson] = await Promise.all([
+  const [peopleJson, tasksJson, taskCandidatesJson] = await Promise.all([
     readJson(path.join(referencesDir, "people.json"), { people: [] }),
     readJson(tasksPath, { schema_version: 1, records: [] }),
+    readJson(taskCandidatesPath, { schema_version: 1, records: [] }),
   ]);
   const today = todayIso();
   const people = peopleJson.people || [];
@@ -500,6 +554,36 @@ async function scanTasks() {
       .filter((record) => record.source_agent === agentName && record.dedupe_key)
       .map((record) => [record.dedupe_key, record]),
   );
+  const previousCandidates = new Map(
+    (taskCandidatesJson.records || [])
+      .filter((record) => record.dedupe_key)
+      .map((record) => [record.dedupe_key, record]),
+  );
+  const generatedKeys = new Set(generated.map((record) => record.dedupe_key).filter(Boolean));
+  const approvedCandidateTasks = [];
+  const candidateRecords = [];
+  for (const record of generated) {
+    const previousTask = previousGenerated.get(record.dedupe_key);
+    const previousCandidate = previousCandidates.get(record.dedupe_key);
+    const reviewStatus = candidateStatus(previousCandidate);
+    if (previousTask) {
+      if (previousCandidate && ["approved", "rejected", "merged"].includes(reviewStatus)) {
+        candidateRecords.push(candidateFromGenerated(record, previousCandidate));
+      }
+      continue;
+    }
+    if (reviewStatus === "approved") {
+      approvedCandidateTasks.push(taskFromApprovedCandidate(candidateFromGenerated(record, previousCandidate)));
+    } else {
+      candidateRecords.push(candidateFromGenerated(record, previousCandidate));
+    }
+  }
+  for (const previousCandidate of previousCandidates.values()) {
+    if (generatedKeys.has(previousCandidate.dedupe_key)) continue;
+    if (["needs_review", "approved", "rejected", "merged"].includes(candidateStatus(previousCandidate))) {
+      candidateRecords.push(previousCandidate);
+    }
+  }
   const manualRecords = (tasksJson.records || []).filter(
     (record) => record.source_agent !== agentName && !isOpenOverdue(record, today),
   );
@@ -507,20 +591,29 @@ async function scanTasks() {
   const records = [
     ...manualRecords,
     ...generated
-      .filter((record) => !manualKeys.has(record.dedupe_key))
+      .filter((record) => previousGenerated.has(record.dedupe_key) && !manualKeys.has(record.dedupe_key))
       .map((record) => mergeGeneratedTask(record, previousGenerated.get(record.dedupe_key))),
+    ...approvedCandidateTasks.filter((record) => !manualKeys.has(record.dedupe_key)),
   ];
   const recordsChanged = JSON.stringify(tasksJson.records || []) !== JSON.stringify(records);
+  const candidatesChanged = JSON.stringify(taskCandidatesJson.records || []) !== JSON.stringify(candidateRecords);
 
   const payload = {
     schema_version: tasksJson.schema_version || 1,
     updated_at: recordsChanged || !tasksJson.updated_at ? new Date().toISOString() : tasksJson.updated_at,
     records,
   };
+  const candidatesPayload = {
+    schema_version: taskCandidatesJson.schema_version || 1,
+    updated_at: candidatesChanged || !taskCandidatesJson.updated_at ? new Date().toISOString() : taskCandidatesJson.updated_at,
+    records: candidateRecords,
+  };
 
   await writeJson(tasksPath, payload);
-  console.log(`Tasks scan complete: ${generated.length} generated task(s), ${manualRecords.length} manual task(s) preserved.`);
+  await writeJson(taskCandidatesPath, candidatesPayload);
+  console.log(`Tasks scan complete: ${records.length} confirmed task(s), ${candidateRecords.length} candidate(s) for review.`);
   console.log(`Output: ${repoRelative(tasksPath)}.`);
+  console.log(`Candidates: ${repoRelative(taskCandidatesPath)}.`);
   if (dryRun) console.log("Dry run: no files were written.");
 }
 

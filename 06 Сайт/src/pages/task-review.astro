@@ -1,0 +1,121 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { dashboard, formatDateShort } from "../lib/ui";
+
+const taskCandidates = (dashboard.operations?.taskCandidates?.records || []) as any[];
+const pending = taskCandidates.filter((candidate) => {
+  const status = candidate.candidate_status || candidate.review_status || candidate.status || "needs_review";
+  return status === "needs_review";
+});
+const resolved = taskCandidates.filter((candidate) => !pending.includes(candidate));
+---
+
+<AppLayout title="Проверка рекомендаций · Медицинская база">
+  <section class="page-header">
+    <p class="eyebrow">На проверке</p>
+    <h1>Рекомендации из документов</h1>
+    <p>Сюда попадают новые пункты, которые агент нашёл в медицинских записях, но ещё не превратил в реальные задачи. В обычных задачах они появятся только после подтверждения.</p>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Нужно решение</h2>
+      <span>{pending.length}</span>
+    </div>
+    {pending.length ? (
+      <div class="stack-list">
+        {pending.map((candidate) => (
+          <article class="card">
+            <p class="eyebrow">{candidate.person} · {candidate.specialty || "Контроль"}</p>
+            <h3>{candidate.title}</h3>
+            <dl class="details-list">
+              <div><dt>Дата</dt><dd>{candidate.due_date ? formatDateShort(candidate.due_date) : "Без даты"}</dd></div>
+              <div><dt>Источник</dt><dd>{candidate.source_event_id || candidate.source_event_path || "Не указан"}</dd></div>
+              <div><dt>Почему найдено</dt><dd>{candidate.reason || candidate.source_text || "Агент увидел действие в документе."}</dd></div>
+            </dl>
+            {Array.isArray(candidate.items) && candidate.items.length > 0 && (
+              <ul class="task-items" aria-label="Состав рекомендации">
+                {candidate.items.map((item: { title: string }) => <li>{item.title}</li>)}
+              </ul>
+            )}
+            <form class="review-actions" data-task-review-form data-candidate-id={candidate.candidate_id || candidate.id}>
+              <button class="button" type="submit" name="action" value="approve">Сделать задачей</button>
+              <button class="button secondary" type="submit" name="action" value="reject">Отклонить</button>
+              <p class="form-status" data-task-review-status aria-live="polite"></p>
+            </form>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p class="empty">Новых рекомендаций на проверке нет.</p>
+    )}
+  </section>
+
+  {resolved.length > 0 && (
+    <section>
+      <div class="section-title"><h2>Уже разобрано</h2></div>
+      <div class="chip-row">
+        {resolved.map((candidate) => (
+          <span class="chip">{candidate.candidate_status || candidate.review_status || candidate.status}: {candidate.title}</span>
+        ))}
+      </div>
+    </section>
+  )}
+  <script>
+    const forms = document.querySelectorAll("[data-task-review-form]");
+
+    forms.forEach((form) => {
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const htmlForm = form as HTMLFormElement;
+        const submitter = (event as SubmitEvent).submitter as HTMLButtonElement | null;
+        const status = htmlForm.querySelector("[data-task-review-status]") as HTMLElement | null;
+        const buttons = htmlForm.querySelectorAll("button");
+        const action = submitter?.value || "";
+        const candidateId = htmlForm.dataset.candidateId || "";
+
+        if (!status || !action || !candidateId) return;
+
+        status.textContent = action === "approve" ? "Создаю задачу..." : "Отклоняю рекомендацию...";
+        buttons.forEach((button) => button.setAttribute("disabled", "disabled"));
+
+        const request = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ candidateId, action }),
+          };
+
+        try {
+          let response = await fetch("/api/tasks/review", request);
+          if (response.status === 404 && ["127.0.0.1", "localhost"].includes(window.location.hostname)) {
+            response = await fetch("http://127.0.0.1:4330/api/tasks/review", request);
+          }
+
+          const contentType = response.headers.get("content-type") || "";
+          if (!contentType.includes("application/json")) {
+            throw new Error("Локальный сайт открыт без API. Запустите локальный API проверки рекомендаций.");
+          }
+
+          const result = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            throw new Error(result.error || "Не удалось обновить рекомендацию.");
+          }
+
+          const card = htmlForm.closest(".card");
+          card?.classList.add("is-resolved");
+          status.textContent =
+            action === "approve"
+              ? "Готово: рекомендация станет задачей после обновления сайта."
+              : "Готово: рекомендация отклонена, после обновления сайта она уйдёт из очереди.";
+        } catch (error) {
+          status.textContent =
+            error instanceof Error
+              ? error.message
+              : "Не удалось обновить рекомендацию. На локальном просмотре нужен локальный API, на сайте Vercel API работает штатно.";
+          buttons.forEach((button) => button.removeAttribute("disabled"));
+        }
+      });
+    });
+  </script>
+</AppLayout>

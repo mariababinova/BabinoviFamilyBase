@@ -1,6 +1,6 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
-import { dashboard, formatDateShort } from "../lib/ui";
+import { dashboard, formatDateShort, pageHref } from "../lib/ui";
 
 type DataIssue = { severity: string; message: string };
 
@@ -8,6 +8,7 @@ const operations = (dashboard.operations || {
   inbox: {},
   intakeState: { files: 0, updatedAt: "" },
   metricCandidates: { total: 0, byStatus: {}, generatedAt: "" },
+  taskCandidates: { total: 0, byStatus: {}, records: [], updatedAt: "" },
 }) as any;
 const issues = (dashboard.issues || []) as DataIssue[];
 
@@ -24,6 +25,10 @@ const candidateStatusCounts = (operations.metricCandidates.byStatus || {}) as Re
 const candidateStatuses = Object.entries(candidateStatusCounts).sort((a, b) =>
   String(a[0]).localeCompare(String(b[0]), "ru"),
 );
+const taskCandidateStatusCounts = (operations.taskCandidates.byStatus || {}) as Record<string, number>;
+const taskCandidateStatuses = Object.entries(taskCandidateStatusCounts).sort((a, b) =>
+  String(a[0]).localeCompare(String(b[0]), "ru"),
+);
 
 const blockingIssues = issues.filter((issue) => issue.severity === "fatal");
 const nextActions = [
@@ -32,6 +37,7 @@ const nextActions = [
   operations.inbox.approved > 0 && "Есть одобренные черновики: запустить `npm run agent:promote`.",
   operations.inbox.errors > 0 && "Есть ошибки intake: открыть `04 Входящие/99 Ошибки`.",
   candidateStatusCounts.needs_review > 0 && "Есть кандидаты показателей: открыть `07 Показатели/Проверка показателей.md`.",
+  taskCandidateStatusCounts.needs_review > 0 && "Есть рекомендации на проверке: открыть страницу `/task-review` и решить, что станет задачей.",
   blockingIssues.length > 0 && "Есть fatal data issues: сначала исправить их, потом собирать сайт.",
 ].filter(Boolean);
 ---
@@ -69,6 +75,22 @@ const nextActions = [
           <span class="chip muted">Кандидатов нет</span>
         )}
       </div>
+    </article>
+
+    <article class="card">
+      <h2>Рекомендации в задачи</h2>
+      <dl class="details-list">
+        <div><dt>Кандидаты</dt><dd>{operations.taskCandidates.total || 0}</dd></div>
+        <div><dt>Обновлено</dt><dd>{operations.taskCandidates.updatedAt ? formatDateShort(operations.taskCandidates.updatedAt.slice(0, 10)) : "Нет данных"}</dd></div>
+      </dl>
+      <div class="chip-row">
+        {taskCandidateStatuses.length ? (
+          taskCandidateStatuses.map(([status, count]) => <span class="chip">{status}: {count}</span>)
+        ) : (
+          <span class="chip muted">Кандидатов нет</span>
+        )}
+      </div>
+      <p class="muted-text"><a class="text-link" href={pageHref("/task-review")}>Открыть проверку рекомендаций</a></p>
     </article>
 
     <article class="card">

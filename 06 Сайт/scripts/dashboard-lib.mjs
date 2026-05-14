@@ -12,6 +12,7 @@ export const membersDir = path.join(repoRoot, "01 Члены семьи");
 export const inboxDir = path.join(repoRoot, "04 Входящие");
 export const metricsFilePath = path.join(repoRoot, "07 Показатели", "metrics.json");
 export const tasksFilePath = path.join(repoRoot, "08 Задачи", "tasks.json");
+export const taskCandidatesFilePath = path.join(repoRoot, "08 Задачи", "task_candidates.json");
 export const watchlistFilePath = path.join(repoRoot, "09 Наблюдение", "watchlist.json");
 export const doctorSummariesFilePath = path.join(repoRoot, "09 Наблюдение", "doctor-summaries.json");
 export const generatedDir = path.join(siteDir, "src", "generated");
@@ -767,6 +768,14 @@ async function readTasksFile() {
   return Array.isArray(parsed.records) ? parsed.records : [];
 }
 
+async function readTaskCandidatesFile() {
+  const parsed = await readJsonOrDefault(taskCandidatesFilePath, { records: [] });
+  return {
+    updatedAt: parsed.updated_at || parsed.updatedAt || "",
+    records: Array.isArray(parsed.records) ? parsed.records : [],
+  };
+}
+
 async function readWatchlistFile() {
   const parsed = await readJsonOrDefault(watchlistFilePath, { records: [], attention_zones: [] });
   return {
@@ -997,10 +1006,16 @@ async function loadOperationsData() {
   const metricCandidates = await readJsonOrDefault(path.join(repoRoot, "07 Показатели", "metric_candidates.json"), {
     candidates: [],
   });
+  const taskCandidates = await readTaskCandidatesFile();
   const candidateCounts = {};
   for (const candidate of metricCandidates.candidates || []) {
     const status = candidate.status || "unknown";
     candidateCounts[status] = (candidateCounts[status] || 0) + 1;
+  }
+  const taskCandidateCounts = {};
+  for (const candidate of taskCandidates.records || []) {
+    const status = candidate.candidate_status || candidate.review_status || candidate.status || "unknown";
+    taskCandidateCounts[status] = (taskCandidateCounts[status] || 0) + 1;
   }
 
   return {
@@ -1013,6 +1028,12 @@ async function loadOperationsData() {
       generatedAt: metricCandidates.generated_at || metricCandidates.generatedAt || "",
       total: Array.isArray(metricCandidates.candidates) ? metricCandidates.candidates.length : 0,
       byStatus: candidateCounts,
+    },
+    taskCandidates: {
+      updatedAt: taskCandidates.updatedAt || "",
+      total: taskCandidates.records.length,
+      byStatus: taskCandidateCounts,
+      records: taskCandidates.records,
     },
   };
 }
