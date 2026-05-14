@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-05-14T10:13:30.854Z",
+  "generated_at": "2026-05-14T11:17:42.306Z",
   "agent": {
     "id": "doctor-summary-agent",
     "name": "Doctor Summary Agent / агент сводок врачу",
@@ -4160,8 +4160,8 @@
       "routePath": "/doctor-summaries/masha-ginekologiya",
       "href": "/MedsDataBase/doctor-summaries/masha-ginekologiya",
       "markdownPath": "05 Индексы/Сводки врачу/Маша — Гинекология.md",
-      "sourceEventCount": 15,
-      "sourceDocumentCount": 17,
+      "sourceEventCount": 16,
+      "sourceDocumentCount": 18,
       "latestEventDate": "2026-04-13",
       "profileContext": [
         "Дата рождения: 01.12.1996",
@@ -4675,6 +4675,17 @@
       ],
       "events": [
         {
+          "id": "2022-09-05-masha-gistologiya-vpch",
+          "title": "Маша — гистология и ВПЧ — 05.09.2022",
+          "href": "/MedsDataBase/events/2022-09-05-masha-gistologiya-vpch",
+          "date": "2022-09-05",
+          "eventType": "Анализ",
+          "specialty": "Гинекология",
+          "doctor": "Максимова Юлия Владимировна",
+          "clinic": "Европейский медицинский центр",
+          "markdownPath": "01 Члены семьи/Маша/09 Анализы/09 Анализы 2022/Европейский медицинский центр/2022-09-05 Маша — гистология и ВПЧ.md"
+        },
+        {
           "id": "2025-08-25-masha-skoraya-pomosch",
           "title": "2025-08-25 Маша — скорая помощь",
           "href": "/MedsDataBase/events/2025-08-25-masha-skoraya-pomosch",
@@ -4841,6 +4852,13 @@
         }
       ],
       "documents": [
+        {
+          "date": "2022-09-05",
+          "fileName": "2022-09-05 Маша — гистология и ВПЧ.jpg",
+          "displayName": "2022-09-05 Маша — гистология и ВПЧ.jpg",
+          "href": "/MedsDataBase/documents/2022-09-05-masha-gistologiya-i-vpch-8f36578f",
+          "eventTitle": "Маша — гистология и ВПЧ — 05.09.2022"
+        },
         {
           "date": "2025-08-25",
           "fileName": "2025-08-25 Маша — Скорая помощь.pdf",
