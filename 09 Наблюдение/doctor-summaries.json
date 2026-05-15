@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-05-14T11:17:42.306Z",
+  "generated_at": "2026-05-15T07:24:47.258Z",
   "agent": {
     "id": "doctor-summary-agent",
     "name": "Doctor Summary Agent / агент сводок врачу",
@@ -4160,9 +4160,9 @@
       "routePath": "/doctor-summaries/masha-ginekologiya",
       "href": "/MedsDataBase/doctor-summaries/masha-ginekologiya",
       "markdownPath": "05 Индексы/Сводки врачу/Маша — Гинекология.md",
-      "sourceEventCount": 16,
-      "sourceDocumentCount": 18,
-      "latestEventDate": "2026-04-13",
+      "sourceEventCount": 19,
+      "sourceDocumentCount": 21,
+      "latestEventDate": "2026-05-14",
       "profileContext": [
         "Дата рождения: 01.12.1996",
         "Группа крови: B (III)",
@@ -4170,191 +4170,190 @@
         "Важный статус: 1 месяц после первых родов"
       ],
       "summary": [
-        "2026-04-13: Жалобы на изменение характера лохий: стали красноватыми.",
-        "2026-04-13: Роды 27.03.2026, срочные, в головном предлежании; девочка 3120 г / 51 см.",
-        "2026-04-13: Были разрывы малых половых губ, выполнено ушивание.",
-        "2026-04-13: На момент осмотра: умеренные сукровичные выделения, слизистая гиперемирована, швы с правой и левой стороны удалены в асептических условиях.",
-        "2026-04-13: По УЗИ полость матки не расширена, до 2 мм.",
-        "2026-04-13: Диагноз: рутинное послеродовое наблюдение, послеродовый период.",
-        "2026-04-10: Консультация состоялась 10.04.2026.",
-        "2026-04-10: Беременность завершена 27.03.2026 своевременными родами на сроке 39 недель 3 дня.",
-        "2026-04-10: Указан исход: один живорожденный ребёнок.",
-        "2026-04-10: Жалоб на момент консультации нет.",
-        "2026-04-10: Маша кормит грудью.",
-        "2026-03-26: Исследование выполнено 26.03.2026.",
-        "2026-03-26: Продолжительность записи КТГ: 20 минут.",
-        "2026-03-26: Базальный ритм: 126 уд/мин, оценён как норма.",
-        "2026-03-26: Вариабельность и децелерации оценены как норма.",
-        "2026-03-26: Заключение: нормальный тип КТГ."
+        "2026-05-14: Врач: Воронкова Ольга Ивановна.",
+        "2026-05-14: Дата и время приёма: 14.05.2026 11:40.",
+        "2026-05-14: Жалоб нет.",
+        "2026-05-14: В анамнезе указаны срочные роды 27.03.2026 в головном предлежании, ЩПЦ, девочка 3120 г / 51 см.",
+        "2026-05-14: Ребёнку 1,5 месяца; грудное вскармливание, молока достаточно.",
+        "2026-05-14: Указан приём: йодомарин 200 мкг, витамин D3 2000, омега-3, магния хелат.",
+        "2026-05-14: В гинекологическом анамнезе указаны ВПЧ 33 и 45 типа в 2022 году, лёгкая дисплазия, биопсия шейки матки без патологии; последняя онкоцитология в мае 2024 без атипии; ВПЧ не обнаружен в феврале 2024.",
+        "2026-05-14: Рост 164 см, вес 52 кг, ИМТ 19,33; пульс 81/мин, АД 90/60 мм рт. ст.",
+        "2026-05-14: Диагноз: Z39.2 «Рутинное послеродовое наблюдение», послеродовый период.",
+        "2026-05-14: Врач: Воронкова Ольга Ивановна.",
+        "2026-05-14: Дата и время приёма: 14.05.2026 11:40.",
+        "2026-05-14: Жалоб нет.",
+        "2026-05-14: В анамнезе указаны роды 26.03.2026.",
+        "2026-05-14: Мышечная сила 14.05.2026: максимальное напряжение 23.5, среднее 5.5.",
+        "2026-05-14: Врач: Воронкова Ольга Ивановна.",
+        "2026-05-14: Дата и время приёма: 14.05.2026 11:40."
       ],
       "summaryEvidence": [
         {
-          "text": "Жалобы на изменение характера лохий: стали красноватыми.",
-          "date": "2026-04-13",
-          "eventId": "2026-04-13-masha-ginekolog",
-          "eventTitle": "2026-04-13 Маша — гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-04-13-masha-ginekolog",
+          "text": "Врач: Воронкова Ольга Ивановна.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "43eb1f420a8a1b6f"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "Роды 27.03.2026, срочные, в головном предлежании; девочка 3120 г / 51 см.",
-          "date": "2026-04-13",
-          "eventId": "2026-04-13-masha-ginekolog",
-          "eventTitle": "2026-04-13 Маша — гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-04-13-masha-ginekolog",
+          "text": "Дата и время приёма: 14.05.2026 11:40.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "43eb1f420a8a1b6f"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "Были разрывы малых половых губ, выполнено ушивание.",
-          "date": "2026-04-13",
-          "eventId": "2026-04-13-masha-ginekolog",
-          "eventTitle": "2026-04-13 Маша — гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-04-13-masha-ginekolog",
+          "text": "Жалоб нет.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "43eb1f420a8a1b6f"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "На момент осмотра: умеренные сукровичные выделения, слизистая гиперемирована, швы с правой и левой стороны удалены в асептических условиях.",
-          "date": "2026-04-13",
-          "eventId": "2026-04-13-masha-ginekolog",
-          "eventTitle": "2026-04-13 Маша — гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-04-13-masha-ginekolog",
+          "text": "В анамнезе указаны срочные роды 27.03.2026 в головном предлежании, ЩПЦ, девочка 3120 г / 51 см.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "43eb1f420a8a1b6f"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "По УЗИ полость матки не расширена, до 2 мм.",
-          "date": "2026-04-13",
-          "eventId": "2026-04-13-masha-ginekolog",
-          "eventTitle": "2026-04-13 Маша — гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-04-13-masha-ginekolog",
+          "text": "Ребёнку 1,5 месяца; грудное вскармливание, молока достаточно.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "43eb1f420a8a1b6f"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "Диагноз: рутинное послеродовое наблюдение, послеродовый период.",
-          "date": "2026-04-13",
-          "eventId": "2026-04-13-masha-ginekolog",
-          "eventTitle": "2026-04-13 Маша — гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-04-13-masha-ginekolog",
+          "text": "Указан приём: йодомарин 200 мкг, витамин D3 2000, омега-3, магния хелат.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "43eb1f420a8a1b6f"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "Консультация состоялась 10.04.2026.",
-          "date": "2026-04-10",
-          "eventId": "2026-04-10-masha-zavershenie-beremennosti",
-          "eventTitle": "2026-04-10 Маша — завершение беременности",
-          "eventHref": "/MedsDataBase/events/2026-04-10-masha-zavershenie-beremennosti",
+          "text": "В гинекологическом анамнезе указаны ВПЧ 33 и 45 типа в 2022 году, лёгкая дисплазия, биопсия шейки матки без патологии; последняя онкоцитология в мае 2024 без атипии; ВПЧ не обнаружен в феврале 2024.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "a8216b2168cd107b"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "Беременность завершена 27.03.2026 своевременными родами на сроке 39 недель 3 дня.",
-          "date": "2026-04-10",
-          "eventId": "2026-04-10-masha-zavershenie-beremennosti",
-          "eventTitle": "2026-04-10 Маша — завершение беременности",
-          "eventHref": "/MedsDataBase/events/2026-04-10-masha-zavershenie-beremennosti",
+          "text": "Рост 164 см, вес 52 кг, ИМТ 19,33; пульс 81/мин, АД 90/60 мм рт. ст.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "a8216b2168cd107b"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "Указан исход: один живорожденный ребёнок.",
-          "date": "2026-04-10",
-          "eventId": "2026-04-10-masha-zavershenie-beremennosti",
-          "eventTitle": "2026-04-10 Маша — завершение беременности",
-          "eventHref": "/MedsDataBase/events/2026-04-10-masha-zavershenie-beremennosti",
+          "text": "Диагноз: Z39.2 «Рутинное послеродовое наблюдение», послеродовый период.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
           "documentIds": [
-            "a8216b2168cd107b"
+            "d824df9a3f6cfbcd"
           ]
         },
         {
-          "text": "Жалоб на момент консультации нет.",
-          "date": "2026-04-10",
-          "eventId": "2026-04-10-masha-zavershenie-beremennosti",
-          "eventTitle": "2026-04-10 Маша — завершение беременности",
-          "eventHref": "/MedsDataBase/events/2026-04-10-masha-zavershenie-beremennosti",
+          "text": "Врач: Воронкова Ольга Ивановна.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
           "documentIds": [
-            "a8216b2168cd107b"
+            "f7cfdafceb55ead9"
           ]
         },
         {
-          "text": "Маша кормит грудью.",
-          "date": "2026-04-10",
-          "eventId": "2026-04-10-masha-zavershenie-beremennosti",
-          "eventTitle": "2026-04-10 Маша — завершение беременности",
-          "eventHref": "/MedsDataBase/events/2026-04-10-masha-zavershenie-beremennosti",
+          "text": "Дата и время приёма: 14.05.2026 11:40.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
           "documentIds": [
-            "a8216b2168cd107b"
+            "f7cfdafceb55ead9"
           ]
         },
         {
-          "text": "Исследование выполнено 26.03.2026.",
-          "date": "2026-03-26",
-          "eventId": "2026-03-26-masha-kardiotokografiya",
-          "eventTitle": "2026-03-26 Маша — кардиотокография",
-          "eventHref": "/MedsDataBase/events/2026-03-26-masha-kardiotokografiya",
+          "text": "Жалоб нет.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
           "documentIds": [
-            "dba70f2d9d4b1b0b",
-            "fe40e9854e288f71"
+            "f7cfdafceb55ead9"
           ]
         },
         {
-          "text": "Продолжительность записи КТГ: 20 минут.",
-          "date": "2026-03-26",
-          "eventId": "2026-03-26-masha-kardiotokografiya",
-          "eventTitle": "2026-03-26 Маша — кардиотокография",
-          "eventHref": "/MedsDataBase/events/2026-03-26-masha-kardiotokografiya",
+          "text": "В анамнезе указаны роды 26.03.2026.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
           "documentIds": [
-            "dba70f2d9d4b1b0b",
-            "fe40e9854e288f71"
+            "f7cfdafceb55ead9"
           ]
         },
         {
-          "text": "Базальный ритм: 126 уд/мин, оценён как норма.",
-          "date": "2026-03-26",
-          "eventId": "2026-03-26-masha-kardiotokografiya",
-          "eventTitle": "2026-03-26 Маша — кардиотокография",
-          "eventHref": "/MedsDataBase/events/2026-03-26-masha-kardiotokografiya",
+          "text": "Мышечная сила 14.05.2026: максимальное напряжение 23.5, среднее 5.5.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
           "documentIds": [
-            "dba70f2d9d4b1b0b",
-            "fe40e9854e288f71"
+            "f7cfdafceb55ead9"
           ]
         },
         {
-          "text": "Вариабельность и децелерации оценены как норма.",
-          "date": "2026-03-26",
-          "eventId": "2026-03-26-masha-kardiotokografiya",
-          "eventTitle": "2026-03-26 Маша — кардиотокография",
-          "eventHref": "/MedsDataBase/events/2026-03-26-masha-kardiotokografiya",
+          "text": "Врач: Воронкова Ольга Ивановна.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-uzi-malogo-taza",
+          "eventTitle": "Маша — УЗИ малого таза — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-uzi-malogo-taza",
           "documentIds": [
-            "dba70f2d9d4b1b0b",
-            "fe40e9854e288f71"
+            "825d960340175ba2"
           ]
         },
         {
-          "text": "Заключение: нормальный тип КТГ.",
-          "date": "2026-03-26",
-          "eventId": "2026-03-26-masha-kardiotokografiya",
-          "eventTitle": "2026-03-26 Маша — кардиотокография",
-          "eventHref": "/MedsDataBase/events/2026-03-26-masha-kardiotokografiya",
+          "text": "Дата и время приёма: 14.05.2026 11:40.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-uzi-malogo-taza",
+          "eventTitle": "Маша — УЗИ малого таза — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-uzi-malogo-taza",
           "documentIds": [
-            "dba70f2d9d4b1b0b",
-            "fe40e9854e288f71"
+            "825d960340175ba2"
           ]
         }
       ],
       "track": [
+        "2026-05-14: В осмотре указано незначительное зияние половой щели и опущение больше задней стенки влагалища.",
+        "2026-05-14: Запланирована консультация акушера-гинеколога по результатам обследования на 19.05.2026 16:30.",
+        "2026-05-14: Документ относится к послеродовому восстановлению мышц тазового дна.",
+        "2026-05-14: Заключение не является клиническим диагнозом; в документе рекомендовано обратиться к специалисту.",
         "2026-04-13: Характер и объём лохий в динамике.",
         "2026-04-13: Заживление тканей после родов и удаления швов.",
         "2026-04-13: Общее самочувствие в послеродовом периоде.",
@@ -4364,13 +4363,49 @@
         "2026-03-26: Использовать результат как часть динамики наблюдения беременности.",
         "2026-03-26: Сопоставлять с последующими акушерскими осмотрами.",
         "2026-03-26: Использовать как электронную версию результата КТГ от 26.03.2026.",
-        "2026-03-25: Динамику самочувствия в последние недели беременности.",
-        "2026-03-25: Результаты КТГ и акушерского наблюдения рядом с родами.",
-        "2026-03-11: Плановое течение беременности в третьем триместре.",
-        "2026-03-11: Динамику КТГ и акушерских осмотров.",
-        "2026-02-25: Динамику самочувствия и акушерского наблюдения в третьем триместре."
+        "2026-03-25: Динамику самочувствия в последние недели беременности."
       ],
       "trackEvidence": [
+        {
+          "text": "В осмотре указано незначительное зияние половой щели и опущение больше задней стенки влагалища.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "documentIds": [
+            "d824df9a3f6cfbcd"
+          ]
+        },
+        {
+          "text": "Запланирована консультация акушера-гинеколога по результатам обследования на 19.05.2026 16:30.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "documentIds": [
+            "d824df9a3f6cfbcd"
+          ]
+        },
+        {
+          "text": "Документ относится к послеродовому восстановлению мышц тазового дна.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "documentIds": [
+            "f7cfdafceb55ead9"
+          ]
+        },
+        {
+          "text": "Заключение не является клиническим диагнозом; в документе рекомендовано обратиться к специалисту.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-uzi-malogo-taza",
+          "eventTitle": "Маша — УЗИ малого таза — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-uzi-malogo-taza",
+          "documentIds": [
+            "825d960340175ba2"
+          ]
+        },
         {
           "text": "Характер и объём лохий в динамике.",
           "date": "2026-04-13",
@@ -4472,49 +4507,13 @@
           "documentIds": [
             "3c5a1e1d59e7ddba"
           ]
-        },
-        {
-          "text": "Результаты КТГ и акушерского наблюдения рядом с родами.",
-          "date": "2026-03-25",
-          "eventId": "2026-03-25-masha-akusher-ginekolog",
-          "eventTitle": "2026-03-25 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-03-25-masha-akusher-ginekolog",
-          "documentIds": [
-            "3c5a1e1d59e7ddba"
-          ]
-        },
-        {
-          "text": "Плановое течение беременности в третьем триместре.",
-          "date": "2026-03-11",
-          "eventId": "2026-03-11-masha-akusher-ginekolog",
-          "eventTitle": "2026-03-11 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-03-11-masha-akusher-ginekolog",
-          "documentIds": [
-            "bdb058682f70a188"
-          ]
-        },
-        {
-          "text": "Динамику КТГ и акушерских осмотров.",
-          "date": "2026-03-11",
-          "eventId": "2026-03-11-masha-akusher-ginekolog",
-          "eventTitle": "2026-03-11 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-03-11-masha-akusher-ginekolog",
-          "documentIds": [
-            "bdb058682f70a188"
-          ]
-        },
-        {
-          "text": "Динамику самочувствия и акушерского наблюдения в третьем триместре.",
-          "date": "2026-02-25",
-          "eventId": "2026-02-25-masha-akusher-ginekolog",
-          "eventTitle": "2026-02-25 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-02-25-masha-akusher-ginekolog",
-          "documentIds": [
-            "0f753e4305ec198c"
-          ]
         }
       ],
       "nextActions": [
+        "2026-05-14: Рекомендованы гимнастика Кегеля, БОС-терапия, RF-терапия ЕВА.",
+        "2026-05-14: Продолжать йодомарин 200 и витамин D 2000 МЕ по назначению в документе.",
+        "2026-05-14: Рекомендована гимнастика Кегеля.",
+        "2026-05-14: Сопоставить с приёмом акушера-гинеколога и консультацией по результатам обследования.",
         "2026-04-13: Подмывание водой.",
         "2026-04-13: 1–2 раза в сутки: Мирамистин + мазь Левомеколь местно.",
         "2026-04-13: Продолжить приём витаминов.",
@@ -4524,13 +4523,49 @@
         "2026-03-26: Сопоставить с акушерскими осмотрами и выпиской по беременности.",
         "2026-03-25: Подробные рекомендации и назначения сверять с исходным заключением.",
         "2026-03-11: Подробные рекомендации и назначения сверять с исходным заключением.",
-        "2026-02-25: Подробные рекомендации и назначения сверять с исходным заключением.",
-        "2026-02-18: В документе указано приглашение на приём.",
-        "2026-02-12: Рекомендована консультация акушера-гинеколога.",
-        "2026-02-07: Сопоставить с последующими КТГ и акушерскими осмотрами.",
-        "2026-02-06: Подробные рекомендации и назначения сверять с исходным заключением."
+        "2026-02-25: Подробные рекомендации и назначения сверять с исходным заключением."
       ],
       "nextActionEvidence": [
+        {
+          "text": "Рекомендованы гимнастика Кегеля, БОС-терапия, RF-терапия ЕВА.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "documentIds": [
+            "d824df9a3f6cfbcd"
+          ]
+        },
+        {
+          "text": "Продолжать йодомарин 200 и витамин D 2000 МЕ по назначению в документе.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "documentIds": [
+            "d824df9a3f6cfbcd"
+          ]
+        },
+        {
+          "text": "Рекомендована гимнастика Кегеля.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "documentIds": [
+            "f7cfdafceb55ead9"
+          ]
+        },
+        {
+          "text": "Сопоставить с приёмом акушера-гинеколога и консультацией по результатам обследования.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-uzi-malogo-taza",
+          "eventTitle": "Маша — УЗИ малого таза — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-uzi-malogo-taza",
+          "documentIds": [
+            "825d960340175ba2"
+          ]
+        },
         {
           "text": "Подмывание водой.",
           "date": "2026-04-13",
@@ -4630,46 +4665,6 @@
           "eventHref": "/MedsDataBase/events/2026-02-25-masha-akusher-ginekolog",
           "documentIds": [
             "0f753e4305ec198c"
-          ]
-        },
-        {
-          "text": "В документе указано приглашение на приём.",
-          "date": "2026-02-18",
-          "eventId": "2026-02-18-masha-konsultatsiya-akushera-ginekologa",
-          "eventTitle": "2026-02-18 Маша — консультация акушера-гинеколога",
-          "eventHref": "/MedsDataBase/events/2026-02-18-masha-konsultatsiya-akushera-ginekologa",
-          "documentIds": [
-            "bef89da6c883af27"
-          ]
-        },
-        {
-          "text": "Рекомендована консультация акушера-гинеколога.",
-          "date": "2026-02-12",
-          "eventId": "2026-02-12-masha-uzi-matki-i-ploda",
-          "eventTitle": "Маша — УЗИ матки и плода — 12.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-12-masha-uzi-matki-i-ploda",
-          "documentIds": [
-            "9ed6f72874d51b2c"
-          ]
-        },
-        {
-          "text": "Сопоставить с последующими КТГ и акушерскими осмотрами.",
-          "date": "2026-02-07",
-          "eventId": "2026-02-07-masha-kardiotokografiya",
-          "eventTitle": "Маша — кардиотокография — 07.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-07-masha-kardiotokografiya",
-          "documentIds": [
-            "05dd513012e9508d"
-          ]
-        },
-        {
-          "text": "Подробные рекомендации и назначения сверять с исходным заключением.",
-          "date": "2026-02-06",
-          "eventId": "2026-02-06-masha-akusher-ginekolog",
-          "eventTitle": "2026-02-06 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-02-06-masha-akusher-ginekolog",
-          "documentIds": [
-            "1bebc276ac7497b2"
           ]
         }
       ],
@@ -4849,6 +4844,39 @@
           "doctor": "Маркова Анастасия Александровна",
           "clinic": "АМедКлиник",
           "markdownPath": "01 Члены семьи/Маша/02 Гинеколог/02 Гинеколог 2026/АМедКлиник/2026-04-13 Маша — Гинеколог.md"
+        },
+        {
+          "id": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "title": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
+          "href": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
+          "date": "2026-05-14",
+          "eventType": "Приём",
+          "specialty": "Гинекология",
+          "doctor": "Воронкова Ольга Ивановна",
+          "clinic": "АМедКлиник",
+          "markdownPath": "01 Члены семьи/Маша/02 Гинеколог/02 Гинеколог 2026/АМедКлиник/2026-05-14 Маша — акушер-гинеколог послеродовой прием.md"
+        },
+        {
+          "id": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "title": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
+          "href": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
+          "date": "2026-05-14",
+          "eventType": "Процедура",
+          "specialty": "Гинекология",
+          "doctor": "Воронкова Ольга Ивановна",
+          "clinic": "АМедКлиник",
+          "markdownPath": "01 Члены семьи/Маша/02 Гинеколог/02 Гинеколог 2026/АМедКлиник/2026-05-14 Маша — БОС-терапия мышц тазового дна.md"
+        },
+        {
+          "id": "2026-05-14-masha-uzi-malogo-taza",
+          "title": "Маша — УЗИ малого таза — 14.05.2026",
+          "href": "/MedsDataBase/events/2026-05-14-masha-uzi-malogo-taza",
+          "date": "2026-05-14",
+          "eventType": "Обследование",
+          "specialty": "Гинекология",
+          "doctor": "Воронкова Ольга Ивановна",
+          "clinic": "АМедКлиник",
+          "markdownPath": "01 Члены семьи/Маша/10 Исследования/10 Исследования 2026/АМедКлиник/2026-05-14 Маша — УЗИ малого таза.md"
         }
       ],
       "documents": [
@@ -4977,6 +5005,27 @@
           "displayName": "2026-04-13 Маша — Гинеколог.pdf",
           "href": "/MedsDataBase/documents/2026-04-13-masha-ginekolog-43eb1f42",
           "eventTitle": "2026-04-13 Маша — гинеколог"
+        },
+        {
+          "date": "2026-05-14",
+          "fileName": "2026-05-14 Маша — акушер-гинеколог послеродовой прием.pdf",
+          "displayName": "2026-05-14 Маша — акушер-гинеколог послеродовой прием.pdf",
+          "href": "/MedsDataBase/documents/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem-d824df9a",
+          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026"
+        },
+        {
+          "date": "2026-05-14",
+          "fileName": "2026-05-14 Маша — БОС-терапия мышц тазового дна.pdf",
+          "displayName": "2026-05-14 Маша — БОС-терапия мышц тазового дна.pdf",
+          "href": "/MedsDataBase/documents/2026-05-14-masha-bos-terapiya-myshts-tazovogo-dna-f7cfdafc",
+          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026"
+        },
+        {
+          "date": "2026-05-14",
+          "fileName": "2026-05-14 Маша — УЗИ малого таза.pdf",
+          "displayName": "2026-05-14 Маша — УЗИ малого таза.pdf",
+          "href": "/MedsDataBase/documents/2026-05-14-masha-uzi-malogo-taza-825d9603",
+          "eventTitle": "Маша — УЗИ малого таза — 14.05.2026"
         }
       ]
     },
@@ -4990,9 +5039,9 @@
       "routePath": "/doctor-summaries/masha-laboratoriya",
       "href": "/MedsDataBase/doctor-summaries/masha-laboratoriya",
       "markdownPath": "05 Индексы/Сводки врачу/Маша — Лаборатория.md",
-      "sourceEventCount": 17,
-      "sourceDocumentCount": 50,
-      "latestEventDate": "2026-03-13",
+      "sourceEventCount": 20,
+      "sourceDocumentCount": 53,
+      "latestEventDate": "2026-05-14",
       "profileContext": [
         "Дата рождения: 01.12.1996",
         "Группа крови: B (III)",
@@ -5000,245 +5049,190 @@
         "Важный статус: 1 месяц после первых родов"
       ],
       "summary": [
-        "2026-03-13: Биоматериал: мазок вагинально-ректальный, локус: влагалище.",
-        "2026-03-13: Streptococcus agalactiae: роста нет.",
-        "2026-03-13: Комментарий документа: бета-гемолитические стрептококки группы B не обнаружены.",
-        "2026-03-12: Вагинальное отделяемое: лейкоциты 3–5 в п/зр; эритроциты не обнаружены; палочки умеренно; эпителий поверхностный умеренно.",
-        "2026-03-12: Вагинальное отделяемое: грамотрицательные диплококки, дрожжевые клетки и Trichomonas vaginalis не обнаружены.",
-        "2026-03-12: Цервикальное отделяемое: лейкоциты 1–2 в п/зр; эритроциты не обнаружены; палочки умеренно; эпителий поверхностный умеренно.",
-        "2026-03-12: Цервикальное отделяемое: Trichomonas vaginalis, грамотрицательные диплококки и дрожжевые клетки не обнаружены.",
-        "2026-02-18: Медицинское учреждение: ГКБ №67 им. Л.А. Ворохобова, клинико-диагностическая лаборатория.",
-        "2026-02-18: Общий билирубин 6,8 мкмоль/л; прямой билирубин 1,0 мкмоль/л.",
-        "2026-02-18: АЛТ 12,9 ЕД/л; АСТ 16,4 ЕД/л.",
-        "2026-02-18: Мочевая кислота 250,7 мкмоль/л.",
-        "2026-02-18: Глюкоза 3,42 ммоль/л.",
-        "2026-02-18: Креатинин 44,9 мкмоль/л.",
-        "2026-02-18: Общий белок 60,9 г/л.",
-        "2026-02-03: Медицинское учреждение: ГКБ №67 им. Л.А. Ворохобова, клинико-диагностическая лаборатория.",
-        "2026-02-03: Биоматериал: цельная кровь, локус: вена."
+        "2026-05-14: Пациент: Мишина Мария Александровна, дата рождения 01.12.1996.",
+        "2026-05-14: Заказ: 136309484; заказчик: ООО «А медклиник».",
+        "2026-05-14: Биоматериал: плазма/сыворотка крови; дата взятия 14.05.2026 11:41.",
+        "2026-05-14: Дата выдачи результата: 14.05.2026.",
+        "2026-05-14: Глюкоза 4.39 ммоль/л.",
+        "2026-05-14: Общий белок 69.7 г/л; альбумин 45.9 г/л.",
+        "2026-05-14: Креатинин 55.5 мкмоль/л; мочевина 3.90 ммоль/л.",
+        "2026-05-14: АЛТ 16.9 Ед/л; АСТ 14.5 Ед/л.",
+        "2026-05-14: Железо сывороточное 18.2 мкмоль/л.",
+        "2026-05-14: ТТГ 1.750 мкМЕ/мл; Т4 свободный 12.70 пмоль/л.",
+        "2026-05-14: Пациент: Мишина Мария Александровна, дата рождения 01.12.1996.",
+        "2026-05-14: Заказ: 136309484; заказчик: ООО «А медклиник».",
+        "2026-05-14: Биоматериал: плазма крови; дата взятия 14.05.2026 11:41.",
+        "2026-05-14: Дата выдачи результата: 15.05.2026.",
+        "2026-05-14: Протромбиновое время 11.5 с; протромбин по Квику 82.1%; МНО 1.07.",
+        "2026-05-14: АЧТВ 24.8 с."
       ],
       "summaryEvidence": [
         {
-          "text": "Биоматериал: мазок вагинально-ректальный, локус: влагалище.",
-          "date": "2026-03-13",
-          "eventId": "2026-03-13-masha-posev-streptokokk-b",
-          "eventTitle": "Маша — посев на стрептококк группы B — 13.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-13-masha-posev-streptokokk-b",
+          "text": "Пациент: Мишина Мария Александровна, дата рождения 01.12.1996.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "667c820e5dbdf8a8"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Streptococcus agalactiae: роста нет.",
-          "date": "2026-03-13",
-          "eventId": "2026-03-13-masha-posev-streptokokk-b",
-          "eventTitle": "Маша — посев на стрептококк группы B — 13.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-13-masha-posev-streptokokk-b",
+          "text": "Заказ: 136309484; заказчик: ООО «А медклиник».",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "667c820e5dbdf8a8"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Комментарий документа: бета-гемолитические стрептококки группы B не обнаружены.",
-          "date": "2026-03-13",
-          "eventId": "2026-03-13-masha-posev-streptokokk-b",
-          "eventTitle": "Маша — посев на стрептококк группы B — 13.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-13-masha-posev-streptokokk-b",
+          "text": "Биоматериал: плазма/сыворотка крови; дата взятия 14.05.2026 11:41.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "667c820e5dbdf8a8"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Вагинальное отделяемое: лейкоциты 3–5 в п/зр; эритроциты не обнаружены; палочки умеренно; эпителий поверхностный умеренно.",
-          "date": "2026-03-12",
-          "eventId": "2026-03-12-masha-mazki-vlagalischa-tservikalnogo-kanala",
-          "eventTitle": "Маша — мазки влагалища и цервикального канала — 12.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-12-masha-mazki-vlagalischa-tservikalnogo-kanala",
+          "text": "Дата выдачи результата: 14.05.2026.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "bf98be1c10a80fa1",
-            "f185135ab9294fa9"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Вагинальное отделяемое: грамотрицательные диплококки, дрожжевые клетки и Trichomonas vaginalis не обнаружены.",
-          "date": "2026-03-12",
-          "eventId": "2026-03-12-masha-mazki-vlagalischa-tservikalnogo-kanala",
-          "eventTitle": "Маша — мазки влагалища и цервикального канала — 12.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-12-masha-mazki-vlagalischa-tservikalnogo-kanala",
+          "text": "Глюкоза 4.39 ммоль/л.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "bf98be1c10a80fa1",
-            "f185135ab9294fa9"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Цервикальное отделяемое: лейкоциты 1–2 в п/зр; эритроциты не обнаружены; палочки умеренно; эпителий поверхностный умеренно.",
-          "date": "2026-03-12",
-          "eventId": "2026-03-12-masha-mazki-vlagalischa-tservikalnogo-kanala",
-          "eventTitle": "Маша — мазки влагалища и цервикального канала — 12.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-12-masha-mazki-vlagalischa-tservikalnogo-kanala",
+          "text": "Общий белок 69.7 г/л; альбумин 45.9 г/л.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "bf98be1c10a80fa1",
-            "f185135ab9294fa9"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Цервикальное отделяемое: Trichomonas vaginalis, грамотрицательные диплококки и дрожжевые клетки не обнаружены.",
-          "date": "2026-03-12",
-          "eventId": "2026-03-12-masha-mazki-vlagalischa-tservikalnogo-kanala",
-          "eventTitle": "Маша — мазки влагалища и цервикального канала — 12.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-12-masha-mazki-vlagalischa-tservikalnogo-kanala",
+          "text": "Креатинин 55.5 мкмоль/л; мочевина 3.90 ммоль/л.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "bf98be1c10a80fa1",
-            "f185135ab9294fa9"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Медицинское учреждение: ГКБ №67 им. Л.А. Ворохобова, клинико-диагностическая лаборатория.",
-          "date": "2026-02-18",
-          "eventId": "2026-02-18-masha-biohimiya-krovi",
-          "eventTitle": "Маша — биохимия крови — 18.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-18-masha-biohimiya-krovi",
+          "text": "АЛТ 16.9 Ед/л; АСТ 14.5 Ед/л.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "a20bd8dcf9e72af0",
-            "09fd5626df06a7e6",
-            "16d6df56e8342735",
-            "f92ca444aab1e4ec",
-            "abdbb6302966d1dd",
-            "0118d32029457ffb",
-            "1d0614094721340a",
-            "e5a1b1ed2edf224e"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Общий билирубин 6,8 мкмоль/л; прямой билирубин 1,0 мкмоль/л.",
-          "date": "2026-02-18",
-          "eventId": "2026-02-18-masha-biohimiya-krovi",
-          "eventTitle": "Маша — биохимия крови — 18.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-18-masha-biohimiya-krovi",
+          "text": "Железо сывороточное 18.2 мкмоль/л.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "a20bd8dcf9e72af0",
-            "09fd5626df06a7e6",
-            "16d6df56e8342735",
-            "f92ca444aab1e4ec",
-            "abdbb6302966d1dd",
-            "0118d32029457ffb",
-            "1d0614094721340a",
-            "e5a1b1ed2edf224e"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "АЛТ 12,9 ЕД/л; АСТ 16,4 ЕД/л.",
-          "date": "2026-02-18",
-          "eventId": "2026-02-18-masha-biohimiya-krovi",
-          "eventTitle": "Маша — биохимия крови — 18.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-18-masha-biohimiya-krovi",
+          "text": "ТТГ 1.750 мкМЕ/мл; Т4 свободный 12.70 пмоль/л.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
           "documentIds": [
-            "a20bd8dcf9e72af0",
-            "09fd5626df06a7e6",
-            "16d6df56e8342735",
-            "f92ca444aab1e4ec",
-            "abdbb6302966d1dd",
-            "0118d32029457ffb",
-            "1d0614094721340a",
-            "e5a1b1ed2edf224e"
+            "56d0a42acc223c12"
           ]
         },
         {
-          "text": "Мочевая кислота 250,7 мкмоль/л.",
-          "date": "2026-02-18",
-          "eventId": "2026-02-18-masha-biohimiya-krovi",
-          "eventTitle": "Маша — биохимия крови — 18.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-18-masha-biohimiya-krovi",
+          "text": "Пациент: Мишина Мария Александровна, дата рождения 01.12.1996.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
           "documentIds": [
-            "a20bd8dcf9e72af0",
-            "09fd5626df06a7e6",
-            "16d6df56e8342735",
-            "f92ca444aab1e4ec",
-            "abdbb6302966d1dd",
-            "0118d32029457ffb",
-            "1d0614094721340a",
-            "e5a1b1ed2edf224e"
+            "2986fc1b6ebe387c"
           ]
         },
         {
-          "text": "Глюкоза 3,42 ммоль/л.",
-          "date": "2026-02-18",
-          "eventId": "2026-02-18-masha-biohimiya-krovi",
-          "eventTitle": "Маша — биохимия крови — 18.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-18-masha-biohimiya-krovi",
+          "text": "Заказ: 136309484; заказчик: ООО «А медклиник».",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
           "documentIds": [
-            "a20bd8dcf9e72af0",
-            "09fd5626df06a7e6",
-            "16d6df56e8342735",
-            "f92ca444aab1e4ec",
-            "abdbb6302966d1dd",
-            "0118d32029457ffb",
-            "1d0614094721340a",
-            "e5a1b1ed2edf224e"
+            "2986fc1b6ebe387c"
           ]
         },
         {
-          "text": "Креатинин 44,9 мкмоль/л.",
-          "date": "2026-02-18",
-          "eventId": "2026-02-18-masha-biohimiya-krovi",
-          "eventTitle": "Маша — биохимия крови — 18.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-18-masha-biohimiya-krovi",
+          "text": "Биоматериал: плазма крови; дата взятия 14.05.2026 11:41.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
           "documentIds": [
-            "a20bd8dcf9e72af0",
-            "09fd5626df06a7e6",
-            "16d6df56e8342735",
-            "f92ca444aab1e4ec",
-            "abdbb6302966d1dd",
-            "0118d32029457ffb",
-            "1d0614094721340a",
-            "e5a1b1ed2edf224e"
+            "2986fc1b6ebe387c"
           ]
         },
         {
-          "text": "Общий белок 60,9 г/л.",
-          "date": "2026-02-18",
-          "eventId": "2026-02-18-masha-biohimiya-krovi",
-          "eventTitle": "Маша — биохимия крови — 18.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-18-masha-biohimiya-krovi",
+          "text": "Дата выдачи результата: 15.05.2026.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
           "documentIds": [
-            "a20bd8dcf9e72af0",
-            "09fd5626df06a7e6",
-            "16d6df56e8342735",
-            "f92ca444aab1e4ec",
-            "abdbb6302966d1dd",
-            "0118d32029457ffb",
-            "1d0614094721340a",
-            "e5a1b1ed2edf224e"
+            "2986fc1b6ebe387c"
           ]
         },
         {
-          "text": "Медицинское учреждение: ГКБ №67 им. Л.А. Ворохобова, клинико-диагностическая лаборатория.",
-          "date": "2026-02-03",
-          "eventId": "2026-02-03-masha-infektsionnyy-skrining",
-          "eventTitle": "Маша — инфекционный скрининг — 03.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-03-masha-infektsionnyy-skrining",
+          "text": "Протромбиновое время 11.5 с; протромбин по Квику 82.1%; МНО 1.07.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
           "documentIds": [
-            "39af85d08c79c39a",
-            "3e31c2738f790f27",
-            "3704087c0a9a9464",
-            "0a56cfc5f95aef59"
+            "2986fc1b6ebe387c"
           ]
         },
         {
-          "text": "Биоматериал: цельная кровь, локус: вена.",
-          "date": "2026-02-03",
-          "eventId": "2026-02-03-masha-infektsionnyy-skrining",
-          "eventTitle": "Маша — инфекционный скрининг — 03.02.2026",
-          "eventHref": "/MedsDataBase/events/2026-02-03-masha-infektsionnyy-skrining",
+          "text": "АЧТВ 24.8 с.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
           "documentIds": [
-            "39af85d08c79c39a",
-            "3e31c2738f790f27",
-            "3704087c0a9a9464",
-            "0a56cfc5f95aef59"
+            "2986fc1b6ebe387c"
           ]
         }
       ],
       "track": [
+        "2026-05-14: Ферритин на нижней границе/ниже референса в контексте послеродового периода и грудного вскармливания.",
+        "2026-05-14: Сопоставить с послеродовым периодом и консультацией врача по результатам обследования.",
+        "2026-05-14: В PDF также повторяются результаты биохимии/ТТГ/Т4 из заявки 136309484.",
+        "2026-05-14: Сопоставить с остальными анализами чекапа от 14.05.2026, особенно с ферритином.",
         "2026-03-13: Хранить как результат скрининга на GBS в конце беременности.",
         "2026-03-12: Хранить вместе с результатами посева на стрептококк группы B.",
         "2026-02-18: Динамику глюкозы, общего белка и креатинина.",
@@ -5248,13 +5242,49 @@
         "2025-05-23: Динамику липидного профиля, ферритина и гомоцистеина.",
         "2024-10-24: Сопоставить с аллергологическими симптомами и консультациями.",
         "2024-10-17: Сопоставить мазок из зева с ЛОР-эпизодом и жалобами на горло/миндалины.",
-        "2024-10-11: Сопоставить стероидный профиль с жалобами, фазой цикла и назначениями врача.",
-        "2024-10-03: При необходимости сверить таблицу мазка и Фемофлор по оригинальным PDF вручную.",
-        "2024-07-04: Сопоставить с местом удаления и рекомендациями дерматолога/хирурга, если они есть.",
-        "2024-05-21: При необходимости сверить Фемофлор по оригинальному PDF вручную.",
-        "2024-05-16: Динамику ферритина, витамина D, В12, липидного профиля и гомоцистеина."
+        "2024-10-11: Сопоставить стероидный профиль с жалобами, фазой цикла и назначениями врача."
       ],
       "trackEvidence": [
+        {
+          "text": "Ферритин на нижней границе/ниже референса в контексте послеродового периода и грудного вскармливания.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "documentIds": [
+            "56d0a42acc223c12"
+          ]
+        },
+        {
+          "text": "Сопоставить с послеродовым периодом и консультацией врача по результатам обследования.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
+          "documentIds": [
+            "2986fc1b6ebe387c"
+          ]
+        },
+        {
+          "text": "В PDF также повторяются результаты биохимии/ТТГ/Т4 из заявки 136309484.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
+          "documentIds": [
+            "2986fc1b6ebe387c"
+          ]
+        },
+        {
+          "text": "Сопоставить с остальными анализами чекапа от 14.05.2026, особенно с ферритином.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-oak-soe",
+          "eventTitle": "Маша — ОАК и СОЭ — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-oak-soe",
+          "documentIds": [
+            "63156303e5610ffd"
+          ]
+        },
         {
           "text": "Хранить как результат скрининга на GBS в конце беременности.",
           "date": "2026-03-13",
@@ -5377,56 +5407,12 @@
             "d16d6b635b1b474e",
             "357290e571192f18"
           ]
-        },
-        {
-          "text": "При необходимости сверить таблицу мазка и Фемофлор по оригинальным PDF вручную.",
-          "date": "2024-10-03",
-          "eventId": "2024-10-03-masha-mazki-femoflor",
-          "eventTitle": "Маша — мазки и Фемофлор — 03.10.2024",
-          "eventHref": "/MedsDataBase/events/2024-10-03-masha-mazki-femoflor",
-          "documentIds": [
-            "69e7f11eeda0e8da",
-            "b1b424eb9e71ee49"
-          ]
-        },
-        {
-          "text": "Сопоставить с местом удаления и рекомендациями дерматолога/хирурга, если они есть.",
-          "date": "2024-07-04",
-          "eventId": "2024-07-04-masha-gistologiya-nevusa",
-          "eventTitle": "Маша — гистология невуса — 04.07.2024",
-          "eventHref": "/MedsDataBase/events/2024-07-04-masha-gistologiya-nevusa",
-          "documentIds": [
-            "d42c64b065fb80e2"
-          ]
-        },
-        {
-          "text": "При необходимости сверить Фемофлор по оригинальному PDF вручную.",
-          "date": "2024-05-21",
-          "eventId": "2024-05-21-masha-tsitologiya-femoflor",
-          "eventTitle": "Маша — цитология и Фемофлор — 21.05.2024",
-          "eventHref": "/MedsDataBase/events/2024-05-21-masha-tsitologiya-femoflor",
-          "documentIds": [
-            "d8b030df530cd5a5",
-            "40d863ee381f709b",
-            "6752b8a4fc7d1c6b"
-          ]
-        },
-        {
-          "text": "Динамику ферритина, витамина D, В12, липидного профиля и гомоцистеина.",
-          "date": "2024-05-16",
-          "eventId": "2024-05-16-masha-laboratornye-analizy",
-          "eventTitle": "Маша — лабораторные анализы — 16.05.2024",
-          "eventHref": "/MedsDataBase/events/2024-05-16-masha-laboratornye-analizy",
-          "documentIds": [
-            "70735f46592ccd06",
-            "ee194ee9590f1c51",
-            "c333f9ed931ea89c",
-            "3dbf7f8711254bc9",
-            "6f3c35d163b563ac"
-          ]
         }
       ],
       "nextActions": [
+        "2026-05-14: Обсудить с врачом на консультации по результатам обследования.",
+        "2026-05-14: Интерпретация результатов — с лечащим врачом.",
+        "2026-05-14: Интерпретация результатов — с лечащим врачом.",
         "2026-03-13: Сопоставить с акушерскими рекомендациями перед родами.",
         "2026-03-12: Сопоставить с акушерским планом наблюдения.",
         "2026-02-18: Сопоставить с акушерским осмотром и сроком беременности.",
@@ -5437,12 +5423,39 @@
         "2024-10-24: Хранить для динамики аллергологического/иммунологического наблюдения.",
         "2024-10-17: Хранить для динамики воспалительных, ревматологических и ЛОР-показателей.",
         "2024-10-11: Хранить для динамики гормональных и нутритивных показателей.",
-        "2024-10-03: Хранить вместе с гинекологическими обследованиями.",
-        "2024-07-04: Хранить результат как гистологическое подтверждение.",
-        "2024-05-21: Хранить вместе с гинекологическими обследованиями.",
-        "2024-05-16: Сопоставить с назначениями врача и последующими анализами."
+        "2024-10-03: Хранить вместе с гинекологическими обследованиями."
       ],
       "nextActionEvidence": [
+        {
+          "text": "Обсудить с врачом на консультации по результатам обследования.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "documentIds": [
+            "56d0a42acc223c12"
+          ]
+        },
+        {
+          "text": "Интерпретация результатов — с лечащим врачом.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-koagulogramma",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
+          "documentIds": [
+            "2986fc1b6ebe387c"
+          ]
+        },
+        {
+          "text": "Интерпретация результатов — с лечащим врачом.",
+          "date": "2026-05-14",
+          "eventId": "2026-05-14-masha-oak-soe",
+          "eventTitle": "Маша — ОАК и СОЭ — 14.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-14-masha-oak-soe",
+          "documentIds": [
+            "63156303e5610ffd"
+          ]
+        },
         {
           "text": "Сопоставить с акушерскими рекомендациями перед родами.",
           "date": "2026-03-13",
@@ -5575,42 +5588,6 @@
           "documentIds": [
             "69e7f11eeda0e8da",
             "b1b424eb9e71ee49"
-          ]
-        },
-        {
-          "text": "Хранить результат как гистологическое подтверждение.",
-          "date": "2024-07-04",
-          "eventId": "2024-07-04-masha-gistologiya-nevusa",
-          "eventTitle": "Маша — гистология невуса — 04.07.2024",
-          "eventHref": "/MedsDataBase/events/2024-07-04-masha-gistologiya-nevusa",
-          "documentIds": [
-            "d42c64b065fb80e2"
-          ]
-        },
-        {
-          "text": "Хранить вместе с гинекологическими обследованиями.",
-          "date": "2024-05-21",
-          "eventId": "2024-05-21-masha-tsitologiya-femoflor",
-          "eventTitle": "Маша — цитология и Фемофлор — 21.05.2024",
-          "eventHref": "/MedsDataBase/events/2024-05-21-masha-tsitologiya-femoflor",
-          "documentIds": [
-            "d8b030df530cd5a5",
-            "40d863ee381f709b",
-            "6752b8a4fc7d1c6b"
-          ]
-        },
-        {
-          "text": "Сопоставить с назначениями врача и последующими анализами.",
-          "date": "2024-05-16",
-          "eventId": "2024-05-16-masha-laboratornye-analizy",
-          "eventTitle": "Маша — лабораторные анализы — 16.05.2024",
-          "eventHref": "/MedsDataBase/events/2024-05-16-masha-laboratornye-analizy",
-          "documentIds": [
-            "70735f46592ccd06",
-            "ee194ee9590f1c51",
-            "c333f9ed931ea89c",
-            "3dbf7f8711254bc9",
-            "6f3c35d163b563ac"
           ]
         }
       ],
@@ -5801,6 +5778,39 @@
           "doctor": "",
           "clinic": "МНПЦЛИ ДЗМ",
           "markdownPath": "01 Члены семьи/Маша/09 Анализы/09 Анализы 2026/ГКБ №67/2026-03-13 Маша — посев на стрептококк группы B.md"
+        },
+        {
+          "id": "2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "title": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026",
+          "href": "/MedsDataBase/events/2026-05-14-masha-biohimiya-ferritin-ttg-t4",
+          "date": "2026-05-14",
+          "eventType": "Анализ",
+          "specialty": "Лаборатория",
+          "doctor": "Куликова М.М.",
+          "clinic": "АМедКлиник / Ситилаб",
+          "markdownPath": "01 Члены семьи/Маша/09 Анализы/09 Анализы 2026/АМедКлиник/2026-05-14 Маша — биохимия ферритин ТТГ Т4.md"
+        },
+        {
+          "id": "2026-05-14-masha-koagulogramma",
+          "title": "Маша — коагулограмма — 14.05.2026",
+          "href": "/MedsDataBase/events/2026-05-14-masha-koagulogramma",
+          "date": "2026-05-14",
+          "eventType": "Анализ",
+          "specialty": "Лаборатория",
+          "doctor": "Куликова М.М.",
+          "clinic": "АМедКлиник / Ситилаб",
+          "markdownPath": "01 Члены семьи/Маша/09 Анализы/09 Анализы 2026/АМедКлиник/2026-05-14 Маша — коагулограмма.md"
+        },
+        {
+          "id": "2026-05-14-masha-oak-soe",
+          "title": "Маша — ОАК и СОЭ — 14.05.2026",
+          "href": "/MedsDataBase/events/2026-05-14-masha-oak-soe",
+          "date": "2026-05-14",
+          "eventType": "Анализ",
+          "specialty": "Лаборатория",
+          "doctor": "",
+          "clinic": "АМедКлиник / Ситилаб",
+          "markdownPath": "01 Члены семьи/Маша/09 Анализы/09 Анализы 2026/АМедКлиник/2026-05-14 Маша — ОАК и СОЭ.md"
         }
       ],
       "documents": [
@@ -6153,6 +6163,27 @@
           "displayName": "2026-03-13 Маша — Посев на стрептококк группы B.pdf",
           "href": "/MedsDataBase/documents/2026-03-13-masha-posev-na-streptokokk-gruppy-b-667c820e",
           "eventTitle": "Маша — посев на стрептококк группы B — 13.03.2026"
+        },
+        {
+          "date": "2026-05-14",
+          "fileName": "2026-05-14 Маша — биохимия ферритин ТТГ Т4.pdf",
+          "displayName": "2026-05-14 Маша — биохимия ферритин ТТГ Т4.pdf",
+          "href": "/MedsDataBase/documents/2026-05-14-masha-biohimiya-ferritin-ttg-t4-56d0a42a",
+          "eventTitle": "Маша — биохимия, ферритин, ТТГ и Т4 — 14.05.2026"
+        },
+        {
+          "date": "2026-05-14",
+          "fileName": "2026-05-14 Маша — коагулограмма.pdf",
+          "displayName": "2026-05-14 Маша — коагулограмма.pdf",
+          "href": "/MedsDataBase/documents/2026-05-14-masha-koagulogramma-2986fc1b",
+          "eventTitle": "Маша — коагулограмма — 14.05.2026"
+        },
+        {
+          "date": "2026-05-14",
+          "fileName": "2026-05-14 Маша — ОАК и СОЭ.pdf",
+          "displayName": "2026-05-14 Маша — ОАК и СОЭ.pdf",
+          "href": "/MedsDataBase/documents/2026-05-14-masha-oak-i-soe-63156303",
+          "eventTitle": "Маша — ОАК и СОЭ — 14.05.2026"
         }
       ]
     },
