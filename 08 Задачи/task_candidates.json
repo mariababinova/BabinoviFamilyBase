@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-05-17T17:04:25.174Z",
+  "updated_at": "2026-05-17T17:25:48.498Z",
   "records": [
     {
       "id": "task-31a36a1e96df8bd742374e3e",
@@ -31,7 +31,7 @@
       "candidate_id": "candidate-31a36a1e96df8bd742374e3e",
       "candidate_status": "needs_review",
       "review_status": "needs_review",
-      "updated_at": "2026-05-17T17:04:25.174Z"
+      "updated_at": "2026-05-17T17:25:48.498Z"
     },
     {
       "id": "task-85804529edd34b8da3aa92cd",
@@ -62,7 +62,7 @@
       "candidate_id": "candidate-85804529edd34b8da3aa92cd",
       "candidate_status": "needs_review",
       "review_status": "needs_review",
-      "updated_at": "2026-05-17T17:04:25.174Z"
+      "updated_at": "2026-05-17T17:25:48.498Z"
     },
     {
       "id": "task-ccdd328faf509e0e4e234fbc",
@@ -93,7 +93,7 @@
       "candidate_id": "candidate-ccdd328faf509e0e4e234fbc",
       "candidate_status": "approved",
       "review_status": "approved",
-      "updated_at": "2026-05-17T17:04:25.174Z",
+      "updated_at": "2026-05-17T17:25:48.498Z",
       "reviewed_at": "2026-05-14T11:29:42.332Z",
       "reviewed_by": "local_site"
     }
