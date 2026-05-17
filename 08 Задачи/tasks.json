@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-05-14T11:39:13.898Z",
+  "updated_at": "2026-05-17T08:07:30.503Z",
   "records": [
     {
       "id": "task-aleksandr-review-pre-treatment-consults",
@@ -443,33 +443,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "task-631d4af5dbb10f1abb3a1771",
-      "type": "control_task",
-      "status": "open",
-      "person": "Маша",
-      "person_id": "masha",
-      "due_date": "2026-05-15",
-      "priority": "medium",
-      "specialty": "Гинекология",
-      "specialty_id": "ginekologiya",
-      "title": "Пройти контрольный чек-ап в середине мая",
-      "action_text": "Пройти контрольный чек-ап в середине мая",
-      "reason": "Из раздела \"Что делать дальше\" события \"2026-04-13 Маша — гинеколог\".",
-      "source_type": "event",
-      "source_event_id": "2026-04-13-masha-ginekolog",
-      "source_event_path": "01 Члены семьи/Маша/02 Гинеколог/02 Гинеколог 2026/АМедКлиник/2026-04-13 Маша — Гинеколог.md",
-      "source_document_id": "8ae180c10b28fe6d",
-      "source_files": [
-        "2026-04-13 Маша — Гинеколог.pdf"
-      ],
-      "watchlist_topic_id": "",
-      "source_text": "Пройти контрольный чек-ап в середине мая",
-      "extraction_confidence": "high",
-      "dedupe_key": "631d4af5dbb10f1abb3a1771",
-      "source_agent": "tasks-agent",
-      "generated_at": "2026-05-12T22:17:23.468Z"
     },
     {
       "id": "task-ccdd328faf509e0e4e234fbc",
