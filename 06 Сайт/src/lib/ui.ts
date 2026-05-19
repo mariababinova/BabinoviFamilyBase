@@ -1,10 +1,11 @@
 import data from "../generated/dashboard-data.json";
 
 export const dashboard = data;
-export const basePath = data.basePath || "";
+export const basePath = data.basePath === "/" ? "" : (data.basePath || "").replace(/\/$/, "");
 
 export function pageHref(path: string) {
   if (path.startsWith("http")) return path;
+  if (!path) return basePath || "/";
   return `${basePath}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
@@ -102,4 +103,3 @@ export function uniqueBy<T>(items: T[], keyFn: (item: T) => string) {
   }
   return result;
 }
-

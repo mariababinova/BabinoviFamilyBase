@@ -13,6 +13,7 @@ const dryRun = flags.has("--dry-run");
 const includeAll = flags.has("--all");
 const noAi = flags.has("--no-ai");
 const moveErrors = flags.has("--move-errors");
+const failAfterIntakeStage = args.find((arg) => arg.startsWith("--fail-after-intake-stage="))?.split("=").slice(1).join("=") || "";
 
 loadEnvFile(path.join(repoRoot, ".env"));
 loadEnvFile(path.join(repoRoot, "06 Сайт", ".env"));
@@ -94,17 +95,54 @@ async function loadReferences() {
 }
 
 async function ensureFolders() {
+  if (dryRun) {
+    const missing = Object.values(paths).filter((dir) => !fs.existsSync(dir));
+    if (missing.length) {
+      console.log(`Dry run: ${missing.length} intake folder(s) would be created.`);
+      for (const dir of missing) console.log(`- ${repoRelative(dir)}`);
+    }
+    return;
+  }
   await Promise.all(Object.values(paths).map((dir) => fsp.mkdir(dir, { recursive: true })));
 }
 
 async function loadState() {
-  return readJsonOrDefault(statePath, { schema_version: 1, files: [] });
+  const state = await readJsonOrDefault(statePath, { schema_version: 2, files: [] });
+  return normalizeState(state);
 }
 
 async function saveState(state) {
   if (dryRun) return;
+  state.schema_version = 2;
   state.updated_at = new Date().toISOString();
   await atomicWriteJson(statePath, state);
+}
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function normalizeState(state) {
+  const normalized = {
+    schema_version: Math.max(Number(state?.schema_version) || 1, 2),
+    files: Array.isArray(state?.files) ? state.files : [],
+  };
+  for (const record of normalized.files) {
+    if (!record.file_hash && record.fingerprint) record.file_hash = record.fingerprint;
+    if (!record.fingerprint && record.file_hash) record.fingerprint = record.file_hash;
+    if (!record.original_path && record.original_source_file) record.original_path = record.original_source_file;
+    if (!record.renamed_path && record.source_file) record.renamed_path = record.source_file;
+    if (!record.draft_path && record.draft_file) record.draft_path = record.draft_file;
+    if (!record.last_status && record.status) record.last_status = record.status;
+    if (!record.status && record.last_status) record.status = record.last_status;
+  }
+  return normalized;
+}
+
+function maybeFailAfterIntakeStage(stage) {
+  if (failAfterIntakeStage === stage) {
+    throw new Error(`Injected intake failure after ${stage}`);
+  }
 }
 
 async function walkFiles(dir, output = []) {
@@ -124,6 +162,27 @@ async function walkFiles(dir, output = []) {
 async function fileFingerprint(filePath) {
   const bytes = await fsp.readFile(filePath);
   return crypto.createHash("sha256").update(bytes).digest("hex").slice(0, 16);
+}
+
+async function fileExists(filePath) {
+  try {
+    await fsp.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function findFileByFingerprint(dir, fingerprint) {
+  const files = await walkFiles(dir);
+  for (const candidate of files) {
+    try {
+      if ((await fileFingerprint(candidate)) === fingerprint) return candidate;
+    } catch {
+      continue;
+    }
+  }
+  return null;
 }
 
 function normalizeText(value) {
@@ -506,6 +565,21 @@ function normalizeAnalysis(raw, references, filePath, extraction, extractionWarn
   if (extractionWarning) uncertainties.push(extractionWarning);
   if (!person) uncertainties.push("Не удалось уверенно определить члена семьи.");
   if (!eventDate) uncertainties.push("Не удалось уверенно определить дату документа.");
+  const metrics = normalizeMetricCandidates(raw.metrics || [], references.metrics);
+  const tasks = Array.isArray(raw.tasks) ? raw.tasks.map(stripMarkdown).filter(Boolean).slice(0, 12) : [];
+  const confidence = ["high", "medium", "low"].includes(raw.confidence) ? raw.confidence : "low";
+  const extractionConfidence = extractionConfidenceLevel({ confidence, extraction, person, eventDate, documentType });
+  const review = reviewFieldsAndReasons({
+    confidence,
+    extraction,
+    extractionWarning,
+    person,
+    eventDate,
+    documentType,
+    metrics,
+    tasks,
+    uncertainties,
+  });
 
   return {
     source_file: repoRelative(filePath),
@@ -523,11 +597,23 @@ function normalizeAnalysis(raw, references, filePath, extraction, extractionWarn
     document_title: stripMarkdown(raw.document_title || raw.recommended_file_title || ""),
     recommended_file_title: stripMarkdown(raw.recommended_file_title || raw.document_title || ""),
     summary,
-    metrics: normalizeMetricCandidates(raw.metrics || [], references.metrics),
-    tasks: Array.isArray(raw.tasks) ? raw.tasks.map(stripMarkdown).filter(Boolean).slice(0, 12) : [],
-    confidence: ["high", "medium", "low"].includes(raw.confidence) ? raw.confidence : "low",
+    metrics,
+    tasks,
+    confidence,
+    extraction_confidence: extractionConfidence,
+    confidence_details: {
+      extraction,
+      model: extraction === "openai" ? openaiModel : "",
+      person: person ? (personByModel ? "model_id" : "fallback_alias") : "missing",
+      event_date: eventDate ? (isoDateFromText(raw.event_date) ? "model_value" : "fallback_text") : "missing",
+      document_type: documentType?.id && documentType.id !== "unknown" ? (documentTypeByModel ? "model_id" : "fallback_alias") : "unknown",
+      metrics_count: metrics.length,
+      tasks_count: tasks.length,
+    },
     needs_human_review: raw.needs_human_review !== false || !person || !eventDate,
-    uncertainties: [...new Set(uncertainties)],
+    uncertainties: uniqueClean(uncertainties),
+    fields_needing_review: review.fields_needing_review,
+    review_reasons: review.review_reasons,
   };
 }
 
@@ -546,6 +632,54 @@ function normalizeMetricCandidates(metrics, dictionary) {
     })
     .filter((metric) => metric.label || metric.metric_id || metric.value)
     .slice(0, 20);
+}
+
+function uniqueClean(values) {
+  return [...new Set(values.map((value) => stripMarkdown(value || "").trim()).filter(Boolean))];
+}
+
+function extractionConfidenceLevel({ confidence, extraction, person, eventDate, documentType }) {
+  let score = confidence === "high" ? 3 : confidence === "medium" ? 2 : 1;
+  if (extraction === "metadata_only" || extraction === "unsupported") score -= 1;
+  if (!person) score -= 1;
+  if (!eventDate) score -= 1;
+  if (!documentType || documentType.id === "unknown") score -= 1;
+  if (score >= 3) return "high";
+  if (score >= 2) return "medium";
+  return "low";
+}
+
+function reviewFieldsAndReasons({ confidence, extraction, extractionWarning, person, eventDate, documentType, metrics, tasks, uncertainties }) {
+  const fields = [];
+  const reasons = [];
+
+  if (!person) {
+    fields.push("person");
+    reasons.push("Не удалось уверенно определить члена семьи.");
+  }
+  if (!eventDate) {
+    fields.push("event_date");
+    reasons.push("Не удалось уверенно определить дату документа.");
+  }
+  if (!documentType || documentType.id === "unknown") {
+    fields.push("document_type");
+    reasons.push("Тип документа не определен уверенно.");
+  }
+  if (extraction === "metadata_only" || extraction === "unsupported") {
+    fields.push("document_text");
+    reasons.push(extractionWarning || "Содержимое документа не было прочитано полностью.");
+  }
+  if (confidence !== "high") {
+    fields.push("overall_confidence");
+    reasons.push(`Общая уверенность распознавания: ${confidence}.`);
+  }
+  if (!metrics.length) fields.push("metrics_if_any");
+  if (!tasks.length) fields.push("tasks_if_any");
+
+  return {
+    fields_needing_review: uniqueClean(fields),
+    review_reasons: uniqueClean([...reasons, ...uncertainties]),
+  };
 }
 
 async function extractDocument(filePath, references) {
@@ -605,6 +739,115 @@ function draftSlug(analysis, fingerprint) {
   return `${datePart}-${personPart}-${typePart}-${fingerprint.slice(0, 8)}`;
 }
 
+function findStateRecord(state, fingerprint) {
+  return state.files.find((record) => record.fingerprint === fingerprint || record.file_hash === fingerprint) || null;
+}
+
+function upsertStateRecord(state, fingerprint, patch) {
+  let record = findStateRecord(state, fingerprint);
+  if (!record) {
+    record = {
+      fingerprint,
+      file_hash: fingerprint,
+      status: patch.status || patch.last_status || "seen",
+      first_seen_at: patch.first_seen_at || nowIso(),
+    };
+    state.files.push(record);
+  }
+
+  Object.assign(record, patch, {
+    fingerprint,
+    file_hash: fingerprint,
+    last_seen_at: nowIso(),
+  });
+
+  if (patch.status && !patch.last_status) record.last_status = patch.status;
+  if (patch.last_status && !patch.status) record.status = patch.last_status;
+  return record;
+}
+
+function buildOperationPlan({ filePath, fingerprint, analysis, rename, draftPath }) {
+  const originalPath = repoRelative(filePath);
+  return {
+    file_hash: fingerprint,
+    original_path: originalPath,
+    renamed_path: rename.newPath,
+    draft_path: repoRelative(draftPath),
+    operations: [
+      rename.renamed ? { type: "rename", from: originalPath, to: rename.newPath } : { type: "keep_name", path: originalPath },
+      { type: "write_draft", path: repoRelative(draftPath) },
+      { type: "save_state", path: repoRelative(statePath) },
+    ],
+    analysis: {
+      extraction_method: analysis.extraction,
+      extraction_model: analysis.model || "",
+      confidence: analysis.confidence,
+      person_id: analysis.person?.id || "",
+      event_date: analysis.event_date || "",
+      document_type_id: analysis.document_type?.id || "",
+    },
+  };
+}
+
+async function reconcileState(state) {
+  const reconciled = [];
+  const draftFiles = [
+    ...(await walkFiles(paths.drafts)),
+    ...(await walkFiles(paths.review)),
+    ...(await walkFiles(paths.approved)),
+    ...(await walkFiles(paths.processed)),
+  ].filter((filePath) => path.extname(filePath).toLowerCase() === ".md");
+
+  for (const draftPath of draftFiles) {
+    let parsed;
+    try {
+      parsed = matter(await fsp.readFile(draftPath, "utf8"));
+    } catch {
+      continue;
+    }
+    if (parsed.data?.type !== "ai_review_draft" || !parsed.data?.source_fingerprint) continue;
+
+    const fingerprint = String(parsed.data.source_fingerprint);
+    const source = Array.isArray(parsed.data.source_files) ? parsed.data.source_files[0] : "";
+    const draftRelative = repoRelative(draftPath);
+    const existing = findStateRecord(state, fingerprint);
+    const existingDraftExists = existing?.draft_path ? await fileExists(path.join(repoRoot, existing.draft_path)) : false;
+    const existingNeedsRecovery =
+      !existing ||
+      !existingDraftExists ||
+      existing.status === "failed" ||
+      existing.last_status === "failed" ||
+      !existing.draft_path ||
+      !existing.draft_file;
+    if (!existingNeedsRecovery) continue;
+
+    upsertStateRecord(state, fingerprint, {
+      original_path: existing?.original_path || existing?.original_source_file || source,
+      original_source_file: existing?.original_source_file || existing?.original_path || source,
+      renamed_path: existing?.renamed_path || existing?.source_file || source,
+      source_file: existing?.source_file || existing?.renamed_path || source,
+      draft_path: draftRelative,
+      draft_file: draftRelative,
+      status: existing?.status === "processed" ? "processed" : "draft_created",
+      last_status: existing?.status === "processed" ? "processed" : "draft_created",
+      recovered: true,
+      recovered_at: nowIso(),
+      last_error: "",
+      operation_plan: existing?.operation_plan || {
+        file_hash: fingerprint,
+        original_path: existing?.original_path || source,
+        renamed_path: existing?.renamed_path || source,
+        draft_path: draftRelative,
+        operations: [{ type: "reconciled_existing_draft", path: draftRelative }],
+      },
+    });
+    reconciled.push(draftRelative);
+  }
+
+  if (reconciled.length) await saveState(state);
+  return reconciled;
+}
+
 function draftMarkdown(analysis, fingerprint) {
   const id = `draft-${fingerprint}`;
   const createdAt = frontmatterDate();
@@ -626,6 +869,7 @@ function draftMarkdown(analysis, fingerprint) {
     status: "needs_review",
     created_at: createdAt,
     source_files: sourceFiles,
+    source_fingerprint: fingerprint,
     original_file_name: yamlScalar(analysis.original_file_name),
     canonical_file_name: yamlScalar(path.basename(analysis.source_file)),
     extraction_method: analysis.extraction,
@@ -639,8 +883,19 @@ function draftMarkdown(analysis, fingerprint) {
     candidate_doctor: yamlScalar(analysis.doctor),
     candidate_clinic: yamlScalar(analysis.clinic),
     confidence: analysis.confidence,
+    extraction_confidence: analysis.extraction_confidence,
+    confidence_details: analysis.confidence_details,
+    fields_needing_review: analysis.fields_needing_review,
+    review_reasons: analysis.review_reasons,
     needs_human_review: true,
   };
+  const confidenceDetailLines = Object.entries(analysis.confidence_details || {})
+    .map(([key, value]) => `- ${key}: ${value}`)
+    .join("\n");
+  const fieldReviewLines = analysis.fields_needing_review?.length ? analysis.fields_needing_review.map((field) => `- ${field}`).join("\n") : "- Нет отдельных полей";
+  const reviewReasonLines = analysis.review_reasons?.length
+    ? analysis.review_reasons.map((reason) => `- ${reason}`).join("\n")
+    : "- Стандартная ручная проверка перед переносом в базу.";
 
   const body = `# Черновик AI-разбора — ${titlePerson}, ${titleDate}
 
@@ -656,7 +911,17 @@ ${sourceFiles.map((source) => `- ${source}`).join("\n")}
 - Врач: ${analysis.doctor || ""}
 - Клиника: ${analysis.clinic || ""}
 - Уверенность: ${analysis.confidence}
+- Уверенность извлечения: ${analysis.extraction_confidence || analysis.confidence}
 - Метод чтения: ${analysis.extraction}${analysis.model ? ` (${analysis.model})` : ""}
+
+## Почему нужна проверка
+${reviewReasonLines}
+
+## Поля для проверки
+${fieldReviewLines}
+
+## Детали уверенности
+${confidenceDetailLines || "- "}
 
 ## Краткая сводка
 ${summaryLines}
@@ -698,7 +963,7 @@ async function scanInbox() {
   await ensureFolders();
   const references = await loadReferences();
   const state = await loadState();
-  const known = new Set(state.files.map((record) => record.fingerprint));
+  const reconciled = await reconcileState(state);
   const files = await walkFiles(paths.inboxNew);
   const created = [];
   const skipped = [];
@@ -706,38 +971,83 @@ async function scanInbox() {
 
   for (const filePath of files) {
     const fingerprint = await fileFingerprint(filePath);
-    if (!includeAll && known.has(fingerprint)) {
+    const existing = findStateRecord(state, fingerprint);
+    const existingDraftExists = existing?.draft_path ? await fileExists(path.join(repoRoot, existing.draft_path)) : false;
+    const existingProcessed = existing?.status === "processed" || existing?.last_status === "processed";
+    if (!includeAll && (existingDraftExists || existingProcessed)) {
       skipped.push(repoRelative(filePath));
       continue;
     }
 
     try {
       const originalPath = repoRelative(filePath);
+      upsertStateRecord(state, fingerprint, {
+        original_path: existing?.original_path || originalPath,
+        original_source_file: existing?.original_source_file || originalPath,
+        current_path: originalPath,
+        status: "extracting",
+        last_status: "extracting",
+        last_error: "",
+      });
+      await saveState(state);
+
       let analysis = await extractDocument(filePath, references);
       const rename = await renameIncomingFile(filePath, analysis);
+      upsertStateRecord(state, fingerprint, {
+        original_path: existing?.original_path || originalPath,
+        original_source_file: existing?.original_source_file || originalPath,
+        renamed_path: rename.newPath,
+        source_file: rename.newPath,
+        current_path: rename.newPath,
+        renamed: rename.renamed,
+        extraction_method: analysis.extraction,
+        extraction_model: analysis.model || "",
+        confidence: analysis.confidence,
+        status: "renamed",
+        last_status: "renamed",
+        last_error: "",
+      });
+      await saveState(state);
+      maybeFailAfterIntakeStage("rename");
+
       analysis = { ...analysis, source_file: rename.newPath, file_name: path.basename(rename.newPath), original_file_name: path.basename(originalPath) };
       const slug = draftSlug(analysis, fingerprint);
       const draftPath = path.join(paths.drafts, `${slug}.md`);
       const draftRelative = repoRelative(draftPath);
       const draftContent = draftMarkdown(analysis, fingerprint);
+      const operationPlan = buildOperationPlan({ filePath, fingerprint, analysis, rename, draftPath });
+
+      upsertStateRecord(state, fingerprint, {
+        operation_plan: operationPlan,
+      });
+      await saveState(state);
 
       if (!dryRun) {
         if (fs.existsSync(draftPath)) {
-          throw new Error(`Draft already exists and will not be overwritten: ${draftRelative}`);
+          upsertStateRecord(state, fingerprint, {
+            draft_path: draftRelative,
+            draft_file: draftRelative,
+            status: "draft_created",
+            last_status: "draft_created",
+            last_error: "",
+            reconciled_existing_draft_at: nowIso(),
+          });
+          await saveState(state);
+          skipped.push(`${rename.newPath} (existing draft: ${draftRelative})`);
+          continue;
         }
         await atomicWriteText(draftPath, draftContent);
-        state.files.push({
-          fingerprint,
-          original_source_file: originalPath,
-          source_file: rename.newPath,
+        maybeFailAfterIntakeStage("draft-write");
+        upsertStateRecord(state, fingerprint, {
+          draft_path: draftRelative,
           draft_file: draftRelative,
-          renamed: rename.renamed,
-          extraction_method: analysis.extraction,
-          extraction_model: analysis.model || "",
-          confidence: analysis.confidence,
           status: "draft_created",
-          created_at: new Date().toISOString(),
+          last_status: "draft_created",
+          created_at: existing?.created_at || nowIso(),
+          last_error: "",
         });
+        maybeFailAfterIntakeStage("state-save");
+        await saveState(state);
       }
 
       created.push({
@@ -748,16 +1058,36 @@ async function scanInbox() {
         extraction: analysis.extraction,
       });
     } catch (error) {
-      const failedItem = moveErrors
-        ? await moveToError(filePath, error)
-        : { source: repoRelative(filePath), target: "", error: error.message };
+      const currentRecord = findStateRecord(state, fingerprint);
+      const recordedFailurePath = currentRecord?.current_path ? path.join(repoRoot, currentRecord.current_path) : filePath;
+      const failurePath = (await fileExists(recordedFailurePath)) ? recordedFailurePath : (await findFileByFingerprint(paths.inboxNew, fingerprint)) || recordedFailurePath;
+      upsertStateRecord(state, fingerprint, {
+        status: "failed",
+        last_status: "failed",
+        last_error: error.message,
+        failed_at: nowIso(),
+        current_path: repoRelative(failurePath),
+      });
+      await saveState(state);
+      const failedItem = moveErrors ? await moveToError(failurePath, error) : { source: repoRelative(failurePath), target: "", error: error.message };
+      if (moveErrors && failedItem.target) {
+        upsertStateRecord(state, fingerprint, {
+          status: "failed",
+          last_status: "failed",
+          current_path: failedItem.target,
+          error_file: failedItem.target,
+          last_error: error.message,
+        });
+        await saveState(state);
+      }
       failed.push(failedItem);
     }
   }
 
   await saveState(state);
 
-  console.log(`Intake scan complete: ${created.length} draft(s), ${skipped.length} skipped, ${failed.length} failed.`);
+  console.log(`Intake scan complete: ${created.length} draft(s), ${skipped.length} skipped, ${failed.length} failed, ${reconciled.length} reconciled.`);
+  for (const item of reconciled) console.log(`~ reconciled ${item}`);
   for (const item of created) {
     const renameText = item.source === item.renamedTo ? item.source : `${item.source} -> ${item.renamedTo}`;
     console.log(`+ ${renameText} -> ${item.draft} (${item.confidence}, ${item.extraction})`);
@@ -900,6 +1230,21 @@ ${tasks.length ? tasks.map((item) => `- ${item}`).join("\n") : "- "}
   return matter.stringify(body, frontmatter);
 }
 
+async function findExistingEventForDraft(person, draftRelative) {
+  const personDir = path.join(repoRoot, person.folder);
+  const files = (await walkFiles(personDir)).filter((filePath) => path.extname(filePath).toLowerCase() === ".md");
+  for (const filePath of files) {
+    try {
+      const raw = await fsp.readFile(filePath, "utf8");
+      const parsed = matter(raw);
+      if (parsed.data?.type === "medical_event" && raw.includes(draftRelative)) return filePath;
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
 async function promoteDrafts() {
   await ensureFolders();
   const references = await loadReferences();
@@ -924,7 +1269,9 @@ async function promoteDrafts() {
     const yearDir = path.join(specialtyDir, `${path.basename(specialtyDir)} ${eventDate.slice(0, 4)}`);
     const clinicDir = path.join(yearDir, data.candidate_clinic || "Без клиники");
     const eventFileName = `${eventDate} ${person.name} — ${data.candidate_document_title || specialtyLabel}.md`;
-    const eventPath = await uniquePath(path.join(clinicDir, sanitizeFilenamePart(eventFileName, "medical-event.md")));
+    const draftRelative = repoRelative(draft.filePath);
+    const existingEventPath = await findExistingEventForDraft(person, draftRelative);
+    const eventPath = existingEventPath || (await uniquePath(path.join(clinicDir, sanitizeFilenamePart(eventFileName, "medical-event.md"))));
     const sourceRefs = data.source_files || [];
     const copiedFiles = [];
 
@@ -934,7 +1281,7 @@ async function promoteDrafts() {
     }
 
     const missingSources = sourceRefs.filter((source) => !fs.existsSync(path.join(repoRoot, source)));
-    if (missingSources.length) {
+    if (missingSources.length && !existingEventPath) {
       for (const source of missingSources) {
         errors.push(`${repoRelative(draft.filePath)}: source file not found: ${source}`);
       }
@@ -966,22 +1313,28 @@ async function promoteDrafts() {
 
     const processedDraftPath = path.join(paths.processed, path.basename(draft.filePath));
     if (!dryRun) {
-      await fsp.mkdir(clinicDir, { recursive: true });
-      for (const plan of copyPlans) {
-        await fsp.copyFile(plan.sourcePath, plan.targetPath);
+      if (!existingEventPath) {
+        await fsp.mkdir(clinicDir, { recursive: true });
+        for (const plan of copyPlans) {
+          await fsp.copyFile(plan.sourcePath, plan.targetPath);
+        }
+        await atomicWriteText(eventPath, eventContent);
       }
-      await atomicWriteText(eventPath, eventContent);
 
       for (const plan of copyPlans) {
+        if (!fs.existsSync(plan.sourcePath)) continue;
         if (plan.sourcePath.startsWith(inboxDir + path.sep) && !plan.sourcePath.startsWith(paths.processed + path.sep)) {
           const processedSourcePath = await uniquePath(path.join(paths.processed, path.basename(plan.sourcePath)));
           await fsp.rename(plan.sourcePath, processedSourcePath);
           const stateRecord = state.files.find((record) => record.source_file === plan.source);
           if (stateRecord) {
             stateRecord.status = "processed";
+            stateRecord.last_status = "processed";
             stateRecord.source_file_processed = repoRelative(processedSourcePath);
+            stateRecord.current_path = repoRelative(processedSourcePath);
             stateRecord.event_file = repoRelative(eventPath);
-            stateRecord.processed_at = new Date().toISOString();
+            stateRecord.processed_at = nowIso();
+            stateRecord.last_error = "";
           }
         }
       }
@@ -991,9 +1344,11 @@ async function promoteDrafts() {
       const draftRelative = repoRelative(draft.filePath);
       for (const stateRecord of state.files.filter((record) => record.draft_file === draftRelative)) {
         stateRecord.status = "processed";
+        stateRecord.last_status = "processed";
         stateRecord.draft_file_processed = repoRelative(finalProcessedDraftPath);
         stateRecord.event_file = repoRelative(eventPath);
-        stateRecord.processed_at = new Date().toISOString();
+        stateRecord.processed_at = nowIso();
+        stateRecord.last_error = "";
       }
     }
 

@@ -15,6 +15,7 @@ import {
 import { atomicWriteJson, readJsonOrDefault } from "./agent-utils.mjs";
 
 const args = process.argv.slice(2);
+const command = args.find((arg) => !arg.startsWith("--")) || "refresh";
 const flags = new Set(args.filter((arg) => arg.startsWith("--")));
 const dryRun = flags.has("--dry-run");
 
@@ -28,10 +29,15 @@ function usage() {
 
 Usage:
   npm run agent:tasks
+  npm run agent:tasks -- scan
+  npm run agent:tasks -- apply
+  npm run agent:tasks -- refresh
   npm run agent:tasks -- --dry-run
 
-The agent scans approved medical event notes, keeps confirmed tasks in 08 Задачи/tasks.json,
-and writes new unconfirmed suggestions to 08 Задачи/task_candidates.json.
+Workflow:
+  scan     Refresh task_candidates.json only; new recommendations remain candidates.
+  apply    Import approved candidates into tasks.json and keep rejected candidates out.
+  refresh  Backward-compatible full refresh: scan plus apply approved candidates.
 `);
 }
 
@@ -537,7 +543,32 @@ function extractTasksFromEvent(item) {
   return candidates;
 }
 
-async function scanTasks() {
+function taskReport({ previousTasks, nextTasks, previousCandidates, nextCandidates, applyApproved }) {
+  const previousTaskKeys = new Set(previousTasks.map((record) => record.dedupe_key).filter(Boolean));
+  const nextTaskKeys = new Set(nextTasks.map((record) => record.dedupe_key).filter(Boolean));
+  const nextCandidateStatuses = new Map(nextCandidates.map((record) => [record.dedupe_key, candidateStatus(record)]));
+  const previousCandidateStatuses = new Map(previousCandidates.map((record) => [record.dedupe_key, candidateStatus(record)]));
+  const newCandidates = nextCandidates.filter((record) => !previousCandidateStatuses.has(record.dedupe_key));
+  const changedCandidates = nextCandidates.filter((record) => {
+    const previous = previousCandidateStatuses.get(record.dedupe_key);
+    return previous !== undefined && previous !== candidateStatus(record);
+  });
+  const rejected = [...nextCandidateStatuses.values()].filter((status) => status === "rejected").length;
+  const confirmed = nextTasks.filter((record) => nextTaskKeys.has(record.dedupe_key)).length;
+  const imported = nextTasks.filter((record) => !previousTaskKeys.has(record.dedupe_key));
+  return {
+    mode: applyApproved ? "apply" : "scan",
+    confirmed,
+    candidates: nextCandidates.length,
+    new_candidates: newCandidates.length,
+    changed_candidates: changedCandidates.length,
+    rejected_candidates: rejected,
+    imported_approved: imported.length,
+    source_links: [...new Set([...nextCandidates, ...imported].map((record) => record.source_event_path).filter(Boolean))].slice(0, 20),
+  };
+}
+
+async function scanTasks({ applyApproved = true } = {}) {
   const [peopleJson, tasksJson, taskCandidatesJson] = await Promise.all([
     readJson(path.join(referencesDir, "people.json"), { people: [] }),
     readJson(tasksPath, { schema_version: 1, records: [] }),
@@ -572,7 +603,7 @@ async function scanTasks() {
       }
       continue;
     }
-    if (reviewStatus === "approved") {
+    if (reviewStatus === "approved" && applyApproved) {
       approvedCandidateTasks.push(taskFromApprovedCandidate(candidateFromGenerated(record, previousCandidate)));
     } else {
       candidateRecords.push(candidateFromGenerated(record, previousCandidate));
@@ -595,6 +626,13 @@ async function scanTasks() {
       .map((record) => mergeGeneratedTask(record, previousGenerated.get(record.dedupe_key))),
     ...approvedCandidateTasks.filter((record) => !manualKeys.has(record.dedupe_key)),
   ];
+  const report = taskReport({
+    previousTasks: tasksJson.records || [],
+    nextTasks: records,
+    previousCandidates: taskCandidatesJson.records || [],
+    nextCandidates: candidateRecords,
+    applyApproved,
+  });
   const recordsChanged = JSON.stringify(tasksJson.records || []) !== JSON.stringify(records);
   const candidatesChanged = JSON.stringify(taskCandidatesJson.records || []) !== JSON.stringify(candidateRecords);
 
@@ -611,14 +649,24 @@ async function scanTasks() {
 
   await writeJson(tasksPath, payload);
   await writeJson(taskCandidatesPath, candidatesPayload);
-  console.log(`Tasks scan complete: ${records.length} confirmed task(s), ${candidateRecords.length} candidate(s) for review.`);
+  console.log(`Tasks ${report.mode} complete: ${records.length} confirmed task(s), ${candidateRecords.length} candidate(s) for review.`);
+  console.log(
+    `Report: ${report.new_candidates} new, ${report.changed_candidates} changed, ${report.rejected_candidates} rejected, ${report.imported_approved} approved imported.`,
+  );
   console.log(`Output: ${repoRelative(tasksPath)}.`);
   console.log(`Candidates: ${repoRelative(taskCandidatesPath)}.`);
+  for (const source of report.source_links.slice(0, 5)) console.log(`Source: ${source}`);
+  if (report.source_links.length > 5) console.log(`...and ${report.source_links.length - 5} more source link(s).`);
   if (dryRun) console.log("Dry run: no files were written.");
 }
 
 if (flags.has("--help") || flags.has("-h")) {
   usage();
+} else if (command === "scan") {
+  await scanTasks({ applyApproved: false });
+} else if (command === "apply" || command === "refresh") {
+  await scanTasks({ applyApproved: true });
 } else {
-  await scanTasks();
+  usage();
+  process.exitCode = 1;
 }

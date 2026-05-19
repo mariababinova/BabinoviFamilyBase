@@ -1,4 +1,4 @@
----
+﻿---
 import AppLayout from "../../layouts/AppLayout.astro";
 import { dashboard, formatDate, formatDateShort } from "../../lib/ui";
 
@@ -11,8 +11,13 @@ export function getStaticPaths() {
 
 const { group } = Astro.props;
 const latest = group.latest;
-const previous = group.previous;
 const questions = group.doctorQuestions || [];
+
+function statusBadgeLabel(record: any) {
+  if (!record) return "Нет данных";
+  const reference = record.referenceDisplay && record.referenceDisplay !== "Референс не указан" ? ` · ${record.referenceDisplay}` : "";
+  return `${record.assessmentLabel}${reference}`;
+}
 ---
 
 <AppLayout title={`${group.metricLabel} · Показатели`}>
@@ -23,15 +28,18 @@ const questions = group.doctorQuestions || [];
   </section>
 
   <section class="metrics-summary">
-    <article class="card">
+    <article class:list={["card", "metric-summary-card", latest?.assessmentStatus || "unknown"]} data-assessment-label={statusBadgeLabel(latest)}>
+      <span class:list={["metric-reference-badge", latest?.assessmentStatus || "unknown"]}>
+        {statusBadgeLabel(latest)}
+      </span>
       <span class="muted-text">Последнее значение</span>
       <strong>{latest?.displayValue || "Нет данных"}</strong>
       {latest && <small>{formatDate(latest.date)}</small>}
     </article>
     <article class="card">
-      <span class="muted-text">Предыдущее</span>
-      <strong>{previous?.displayValue || "Нет данных"}</strong>
-      {previous && <small>{formatDate(previous.date)}</small>}
+      <span class="muted-text">Референс последней записи</span>
+      <strong>{latest?.referenceDisplay || "Нет данных"}</strong>
+      {latest?.labName && <small>{latest.labName}</small>}
     </article>
     <article class="card">
       <span class="muted-text">Динамика</span>
@@ -49,6 +57,7 @@ const questions = group.doctorQuestions || [];
             <tr>
               <th>Дата</th>
               <th>Значение</th>
+              <th>Статус</th>
               <th>Референс</th>
               <th>Источник</th>
             </tr>
@@ -58,7 +67,8 @@ const questions = group.doctorQuestions || [];
               <tr>
                 <td>{formatDateShort(record.date)}</td>
                 <td><strong>{record.displayValue}</strong></td>
-                <td>{record.reference_text || <span class="muted-text">нет</span>}</td>
+                <td><span class:list={["metric-status", record.assessmentStatus]}>{record.assessmentLabel}</span></td>
+                <td>{record.referenceDisplay}</td>
                 <td>{record.eventHref ? <a href={record.eventHref}>{record.eventTitle || "событие"}</a> : <span class="muted-text">запись</span>}</td>
               </tr>
             ))}
@@ -66,6 +76,15 @@ const questions = group.doctorQuestions || [];
         </table>
       </div>
     </article>
+
+    {(group.metricDescription || group.metricMeaning) && (
+      <article class="card">
+        <h2>Что означает показатель</h2>
+        {group.metricDescription && <p>{group.metricDescription}</p>}
+        {group.metricMeaning && <p class="muted-text">{group.metricMeaning}</p>}
+        <p class="empty">Референсы зависят от лаборатории, метода, единиц измерения и личного контекста, поэтому здесь используется референс из конкретного документа.</p>
+      </article>
+    )}
 
     <article class="card">
       <h2>Вопросы врачу</h2>

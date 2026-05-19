@@ -506,6 +506,92 @@ select {
   margin: 0;
 }
 
+.metric-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metric-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 24px;
+  padding: 0.14rem 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.metric-status.normal {
+  background: #eaf8ef;
+  color: #17613a;
+}
+
+.metric-status.low {
+  background: #fff7d6;
+  color: #806000;
+}
+
+.metric-status.high {
+  background: #ffe9e6;
+  color: #a33a31;
+}
+
+.metric-status.unknown {
+  background: #f3f4f6;
+  color: var(--muted);
+}
+
+.metric-card::before,
+.metric-summary-card::before {
+  content: none;
+  display: none;
+}
+
+.metric-reference-badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  width: fit-content;
+  height: auto;
+  min-height: 28px;
+  padding: 0.16rem 0.65rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 850;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.metric-reference-badge.normal {
+  background: #eaf8ef;
+  color: #17613a;
+}
+
+.metric-reference-badge.low {
+  background: #fff7d6;
+  color: #806000;
+}
+
+.metric-reference-badge.high {
+  background: #ffe9e6;
+  color: #a33a31;
+}
+
+.metric-reference-badge.unknown {
+  background: #f3f4f6;
+  color: var(--muted);
+}
+
 .delta-pill {
   display: inline-flex;
   align-items: center;
@@ -608,7 +694,7 @@ select {
   min-width: 0;
 }
 
-.card::before {
+.card:not(.metric-card):not(.metric-summary-card)::before {
   content: "";
   display: block;
   width: 68px;
@@ -618,15 +704,15 @@ select {
   background: var(--lime);
 }
 
-.card:nth-child(3n + 1)::before {
+.card:not(.metric-card):not(.metric-summary-card):nth-child(3n + 1)::before {
   background: var(--coral);
 }
 
-.card:nth-child(3n + 2)::before {
+.card:not(.metric-card):not(.metric-summary-card):nth-child(3n + 2)::before {
   background: var(--sky);
 }
 
-.card:nth-child(3n + 3)::before {
+.card:not(.metric-card):not(.metric-summary-card):nth-child(3n + 3)::before {
   background: var(--pink);
 }
 

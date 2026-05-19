@@ -33,6 +33,12 @@ function categoryLabel(category: string) {
   return categoryLabels[category] || category || "Другое";
 }
 
+function statusBadgeLabel(record: any) {
+  if (!record) return "Нет данных";
+  const reference = record.referenceDisplay && record.referenceDisplay !== "Референс не указан" ? ` · ${record.referenceDisplay}` : "";
+  return `${record.assessmentLabel}${reference}`;
+}
+
 function sparkline(records: Array<{ numeric_value?: number | null }>) {
   const points = records
     .filter((record) => record.numeric_value !== null && record.numeric_value !== undefined)
@@ -108,12 +114,16 @@ function sparkline(records: Array<{ numeric_value?: number | null }>) {
         const points = sparkline(group.records);
         return (
           <article
-            class="card metric-card"
+            class:list={["card", "metric-card", latest?.assessmentStatus || "unknown"]}
             data-metric-card
             data-person={group.person}
             data-category={group.metricCategory}
             data-name={group.metricLabel.toLowerCase()}
+            data-assessment-label={statusBadgeLabel(latest)}
           >
+            <span class:list={["metric-reference-badge", latest?.assessmentStatus || "unknown"]}>
+              {statusBadgeLabel(latest)}
+            </span>
             <div class="metric-card-header">
               <div>
                 <span class="chip muted">{group.person}</span>
@@ -157,6 +167,8 @@ function sparkline(records: Array<{ numeric_value?: number | null }>) {
             <th>Человек</th>
             <th>Показатель</th>
             <th>Значение</th>
+            <th>Статус</th>
+            <th>Референс</th>
             <th>Источник</th>
           </tr>
         </thead>
@@ -167,6 +179,8 @@ function sparkline(records: Array<{ numeric_value?: number | null }>) {
               <td>{record.person}</td>
               <td>{record.metric_label}</td>
               <td><strong>{record.displayValue}</strong></td>
+              <td><span class:list={["metric-status", record.assessmentStatus]}>{record.assessmentLabel}</span></td>
+              <td>{record.referenceDisplay}</td>
               <td>{record.eventHref ? <a href={record.eventHref}>событие</a> : <span class="muted-text">запись</span>}</td>
             </tr>
           ))}

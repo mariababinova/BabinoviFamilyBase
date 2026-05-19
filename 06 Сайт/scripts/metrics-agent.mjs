@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
 import {
   findMarkdownFiles,
@@ -26,6 +28,8 @@ const inboxDir = path.join(repoRoot, "04 Входящие");
 const metricsPath = path.join(metricsDir, "metrics.json");
 const candidatesPath = path.join(metricsDir, "metric_candidates.json");
 const reviewPath = path.join(metricsDir, "Проверка показателей.md");
+const pdfTextExtractorPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "extract-pdf-text.py");
+const pdfTextCache = new Map();
 
 function usage() {
   console.log(`Metrics agent
@@ -34,12 +38,15 @@ Usage:
   npm run agent:metrics
   npm run agent:metrics -- scan
   npm run agent:metrics -- apply
+  npm run agent:metrics -- enrich
   npm run agent:metrics -- scan --dry-run
   npm run agent:metrics -- apply --dry-run
+  npm run agent:metrics -- enrich --dry-run
 
 Workflow:
   scan   Create 07 Показатели/metric_candidates.json with status: needs_review.
   apply  Append only candidates marked status: approved to 07 Показатели/metrics.json.
+  enrich Fill missing reference ranges in existing metrics from linked event notes.
 `);
 }
 
@@ -128,10 +135,37 @@ function parseReference(text) {
 
   const oneSided = source.match(/(?:референс|норм[аы]?|reference|ref\.?)\D{0,20}([<>≤≥])\s*(\d+(?:[,.]\d+)?)/iu);
   if (oneSided) {
+    const value = parseNumber(oneSided[2]);
+    const isUpperBound = /[<≤]/u.test(oneSided[1]);
     return {
-      reference_low: null,
-      reference_high: null,
+      reference_low: isUpperBound ? null : value,
+      reference_high: isUpperBound ? value : null,
       reference_text: oneSided[0],
+    };
+  }
+
+  return { reference_low: null, reference_high: null, reference_text: "" };
+}
+
+function parseBareReference(text) {
+  const source = stripMarkdown(text || "");
+  const range = source.match(/^\s*([<>≤≥]?\s*\d+(?:[,.]\d+)?)\s*[-–—]\s*([<>≤≥]?\s*\d+(?:[,.]\d+)?)\s*$/u);
+  if (range) {
+    return {
+      reference_low: parseNumber(range[1].replace(/[<>≤≥]/g, "")),
+      reference_high: parseNumber(range[2].replace(/[<>≤≥]/g, "")),
+      reference_text: range[0].trim(),
+    };
+  }
+
+  const oneSided = source.match(/^\s*([<>≤≥])\s*(\d+(?:[,.]\d+)?)\s*$/u);
+  if (oneSided) {
+    const value = parseNumber(oneSided[2]);
+    const isUpperBound = /[<≤]/u.test(oneSided[1]);
+    return {
+      reference_low: isUpperBound ? null : value,
+      reference_high: isUpperBound ? value : null,
+      reference_text: oneSided[0].trim(),
     };
   }
 
@@ -157,11 +191,24 @@ function findKnownMetric(line, dictionary) {
     for (const alias of metricAliases(metric)) {
       const normalizedAlias = normalizeText(alias);
       if (!normalizedAlias || !lineHasAlias(normalizedLine, normalizedAlias)) continue;
+      if (metric.id === "hemoglobin" && /гликированн|glycated|hba1c|hb\s*a1c/.test(normalizedLine)) continue;
       matches.push({ metric, alias, score: normalizedAlias.length });
     }
   }
 
-  return matches.sort((a, b) => b.score - a.score)[0] || null;
+  const sorted = matches.sort((a, b) => b.score - a.score);
+  const top = sorted[0] || null;
+  if (!top) return null;
+  const tied = sorted.filter((match) => match.score === top.score && match.metric.id !== top.metric.id);
+  if (tied.length) {
+    return {
+      ambiguous: true,
+      alias: top.alias,
+      matches: [top, ...tied],
+      score: top.score,
+    };
+  }
+  return top;
 }
 
 function lineHasAlias(normalizedLine, normalizedAlias) {
@@ -182,11 +229,19 @@ function valueAfterAlias(line, alias) {
   return numeric ? numeric[0].replace(/^[:\s\-–—]+/u, "") : "";
 }
 
-function splitMetricLines(text) {
+function splitMetricLineRecords(text) {
   return String(text || "")
     .split(/\r?\n|[;•]/)
-    .map((line) => stripMarkdown(line).trim())
-    .filter((line) => line.length >= 4);
+    .map((line, index) => ({ text: stripMarkdown(line).trim(), line_index: index }))
+    .filter((record) => record.text.length >= 4);
+}
+
+function sourceWindowFromRecords(records, index, radius = 1) {
+  return records
+    .slice(Math.max(0, index - radius), Math.min(records.length, index + radius + 1))
+    .map((record) => record.text)
+    .filter(Boolean)
+    .join(" / ");
 }
 
 function leukocyteMetricForLine(line, context = "") {
@@ -273,6 +328,23 @@ function parseKnownMetricLine(line, dictionary, context = "") {
   const rawValue = valueAfterAlias(line, known.alias);
   if (!rawValue) return null;
 
+  if (known.ambiguous) {
+    const labels = known.matches.map((match) => match.metric.label).filter(Boolean);
+    return {
+      metric_id: `ambiguous_${slugify(labels.join("_"), "metric").slice(0, 40)}`,
+      metric_label: `Неоднозначный показатель: ${labels.join(" / ")}`,
+      metric_category: "ambiguous",
+      metric_value_type: "unknown",
+      unit: guessUnit(line, rawValue, ""),
+      ...parseValue(rawValue),
+      ...parseReference(line),
+      is_abnormal: detectAbnormal(line),
+      extraction_confidence: "low",
+      source_text: line,
+      review_warning: `Неоднозначное совпадение: ${labels.join(" / ")}`,
+    };
+  }
+
   return {
     metric_id: known.metric.id,
     metric_label: known.metric.label,
@@ -313,6 +385,38 @@ function customMetricCandidate(line) {
     is_abnormal: detectAbnormal(line),
     extraction_confidence: "low",
     source_text: line,
+  };
+}
+
+function referenceConfidence(partial) {
+  if (partial.reference_text && partial.reference_low !== null && partial.reference_high !== null) return "high";
+  if (partial.reference_text || partial.reference_low !== null || partial.reference_high !== null) return "medium";
+  return "none";
+}
+
+function valueConfidence(partial) {
+  if (!partial.value_text) return "low";
+  if (partial.extraction_confidence === "high" && partial.metric_category !== "custom") return "high";
+  if (partial.metric_category === "custom") return "low";
+  return "medium";
+}
+
+function withProvenance(partial, provenance) {
+  return {
+    ...partial,
+    source_section: provenance.source_section || "",
+    source_line_index: Number.isInteger(provenance.source_line_index) ? provenance.source_line_index : null,
+    source_page: provenance.source_page ?? null,
+    source_window: provenance.source_window || partial.source_text || "",
+    source_evidence: {
+      text: partial.source_text || "",
+      window: provenance.source_window || partial.source_text || "",
+      section: provenance.source_section || "",
+      line_index: Number.isInteger(provenance.source_line_index) ? provenance.source_line_index : null,
+      page: provenance.source_page ?? null,
+    },
+    value_confidence: partial.value_confidence || valueConfidence(partial),
+    reference_confidence: partial.reference_confidence || referenceConfidence(partial),
   };
 }
 
@@ -391,6 +495,20 @@ function completeCandidate(partial, base) {
     is_abnormal: partial.is_abnormal,
     source_text: partial.source_text,
     extraction_confidence: partial.extraction_confidence,
+    source_section: partial.source_section || "",
+    source_line_index: partial.source_line_index ?? null,
+    source_page: partial.source_page ?? null,
+    source_window: partial.source_window || partial.source_text || "",
+    source_evidence: partial.source_evidence || {
+      text: partial.source_text || "",
+      window: partial.source_window || partial.source_text || "",
+      section: partial.source_section || "",
+      line_index: partial.source_line_index ?? null,
+      page: partial.source_page ?? null,
+    },
+    review_warning: partial.review_warning || "",
+    value_confidence: partial.value_confidence || valueConfidence(partial),
+    reference_confidence: partial.reference_confidence || referenceConfidence(partial),
     reviewed_at: "",
     created_at: new Date().toISOString(),
   };
@@ -410,6 +528,117 @@ function metricFingerprint(record) {
     record.value_text,
     record.unit,
   ].join("::");
+}
+
+function metricReferenceComplete(record) {
+  return Boolean(record.reference_text) || record.reference_low !== null || record.reference_high !== null;
+}
+
+function metricLooseKey(record) {
+  return [
+    record.source_event_id,
+    record.source_event_path,
+    record.person_id,
+    record.date,
+    record.metric_id,
+    String(record.numeric_value ?? record.value_text ?? record.value ?? "").replace(",", "."),
+    record.unit || "",
+  ].join("::");
+}
+
+function metricDefinitionForRecord(record, dictionary) {
+  return dictionary.find((metric) => metric.id === record.metric_id) || null;
+}
+
+function metricAliasesForRecord(record, dictionary) {
+  const definition = metricDefinitionForRecord(record, dictionary);
+  return [record.metric_label, definition?.label, ...(definition?.aliases || [])].filter(Boolean);
+}
+
+function comparableNumber(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const number = Number(String(value).replace(/\s+/g, "").replace(",", "."));
+  return Number.isFinite(number) ? number : null;
+}
+
+function sameNumericValue(left, right) {
+  const a = comparableNumber(left);
+  const b = comparableNumber(right);
+  if (a === null || b === null) return false;
+  return Math.abs(a - b) < 0.00001;
+}
+
+function lineLooksLikeMetricAlias(text, aliases) {
+  const normalized = normalizeText(text);
+  return aliases.some((alias) => {
+    const normalizedAlias = normalizeText(alias);
+    return normalizedAlias && lineHasAlias(normalized, normalizedAlias);
+  });
+}
+
+function referenceFromDocumentText(record, dictionary, text) {
+  if (record.numeric_value === null || record.numeric_value === undefined) return null;
+  const aliases = metricAliasesForRecord(record, dictionary);
+  const lines = String(text || "")
+    .split(/\r?\n/)
+    .map((line) => stripMarkdown(line).trim())
+    .filter(Boolean);
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const aliasWindow = [lines[i], lines[i + 1] || "", lines[i + 2] || ""].join(" ");
+    if (!lineLooksLikeMetricAlias(aliasWindow, aliases)) continue;
+
+    let valueIndex = -1;
+    for (let j = i; j < Math.min(lines.length, i + 12); j += 1) {
+      const numberMatch = lines[j].match(/^[<>≤≥]?\s*(-?\d+(?:[,.]\d+)?)\s*$/u);
+      if (numberMatch && sameNumericValue(numberMatch[1], record.numeric_value)) {
+        valueIndex = j;
+        break;
+      }
+    }
+    if (valueIndex < 0) continue;
+
+    for (let j = valueIndex + 1; j < Math.min(lines.length, valueIndex + 8); j += 1) {
+      const reference = parseBareReference(lines[j]);
+      if (reference.reference_text) return { ...reference, source_text: aliasWindow };
+    }
+  }
+
+  return null;
+}
+
+function sourceFilePathsForRecord(record) {
+  if (!record.source_event_path || !Array.isArray(record.source_files)) return [];
+  const eventDir = path.dirname(path.join(repoRoot, record.source_event_path));
+  return record.source_files
+    .map((fileName) => path.resolve(eventDir, fileName))
+    .filter((filePath) => path.extname(filePath).toLowerCase() === ".pdf" && fs.existsSync(filePath));
+}
+
+function readPdfText(filePath) {
+  if (pdfTextCache.has(filePath)) return pdfTextCache.get(filePath);
+  const result = spawnSync("python", [pdfTextExtractorPath, filePath], {
+    encoding: "utf8",
+    env: { ...process.env, PYTHONIOENCODING: "utf-8" },
+    maxBuffer: 10 * 1024 * 1024,
+  });
+  const text = result.status === 0 ? result.stdout || "" : "";
+  pdfTextCache.set(filePath, text);
+  return text;
+}
+
+function referenceFromSourceFiles(record, dictionary) {
+  for (const filePath of sourceFilePathsForRecord(record)) {
+    const text = readPdfText(filePath);
+    const reference = referenceFromDocumentText(record, dictionary, text);
+    if (reference) {
+      return {
+        ...reference,
+        fileName: path.basename(filePath),
+      };
+    }
+  }
+  return null;
 }
 
 function extractFromEvent(event, dictionary, people) {
@@ -433,15 +662,23 @@ function extractFromEvent(event, dictionary, people) {
     ].join(" "),
   );
   const isLabLike = /анализ|лаборатор|lab|скрининг|впч|цитолог|мазок|посев|пцр|pcr/.test(eventText);
-  const lines = interestingSections.flatMap((name) => sectionList(sections, name));
+  const lineRecords = interestingSections.flatMap((name) =>
+    splitMetricLineRecords(sectionList(sections, name).join("\n")).map((record) => ({ ...record, section: name })),
+  );
   const base = eventCandidateBase(event, people);
   const output = [];
 
-  for (const line of lines.flatMap(splitMetricLines)) {
-    const known = parseKnownMetricLine(line, dictionary, eventText);
-    if (known) output.push(completeCandidate(known, base));
-    const custom = customMetricCandidate(line);
-    if (custom && !known && isLabLike) output.push(completeCandidate(custom, base));
+  for (let index = 0; index < lineRecords.length; index += 1) {
+    const record = lineRecords[index];
+    const provenance = {
+      source_section: record.section,
+      source_line_index: record.line_index,
+      source_window: sourceWindowFromRecords(lineRecords, index),
+    };
+    const known = parseKnownMetricLine(record.text, dictionary, eventText);
+    if (known) output.push(completeCandidate(withProvenance(known, provenance), base));
+    const custom = customMetricCandidate(record.text);
+    if (custom && !known && isLabLike) output.push(completeCandidate(withProvenance(custom, provenance), base));
   }
 
   return output;
@@ -473,6 +710,7 @@ function parseDraftMetricTable(content) {
       reference: cells[3] || "",
       comment: cells[4] || "",
       raw: line,
+      line_index: output.length,
     });
   }
 
@@ -502,7 +740,18 @@ function extractFromDraft(draft, dictionary, people) {
       extraction_confidence: metric ? "high" : "medium",
       source_text: [row.label, row.value, row.unit, row.reference, row.comment].filter(Boolean).join(" | "),
     };
-    if (partial.value_text) output.push(completeCandidate(partial, base));
+    if (partial.value_text) {
+      output.push(
+        completeCandidate(
+          withProvenance(partial, {
+            source_section: "Возможные показатели",
+            source_line_index: row.line_index,
+            source_window: [row.label, row.value, row.unit, row.reference, row.comment].filter(Boolean).join(" | "),
+          }),
+          base,
+        ),
+      );
+    }
   }
 
   return output;
@@ -606,7 +855,13 @@ function renderReviewMarkdown(payload) {
       const abnormal = candidate.is_abnormal === true ? "; отмечено как отклонение" : "";
       lines.push(`- [${checked}] ${candidate.date} — ${candidate.metric_label}: **${candidate.value_text}${candidate.unit ? ` ${candidate.unit}` : ""}**${ref}${abnormal} <!-- ${candidate.id} -->`);
       lines.push(`  - Источник: ${candidate.source_event_path || candidate.source_draft_path || candidate.source_files.join(", ")}`);
+      if (candidate.review_warning) lines.push(`  - Внимание: ${candidate.review_warning}`);
+      lines.push(`  - Уверенность: значение ${candidate.value_confidence || candidate.extraction_confidence || "unknown"}, референс ${candidate.reference_confidence || "none"}`);
+      if (candidate.source_section || candidate.source_line_index !== null) {
+        lines.push(`  - Место: ${[candidate.source_section, candidate.source_line_index !== null ? `строка ${candidate.source_line_index}` : ""].filter(Boolean).join(", ")}`);
+      }
       lines.push(`  - Текст: ${candidate.source_text}`);
+      if (candidate.source_window && candidate.source_window !== candidate.source_text) lines.push(`  - Окно: ${candidate.source_window}`);
     }
     lines.push("");
   }
@@ -677,8 +932,9 @@ async function scanMetrics() {
 
   await writeJson(candidatesPath, payload);
   await writeText(reviewPath, renderReviewMarkdown(payload));
-  console.log(`Metrics scan complete: ${candidates.length} candidate(s) written to ${repoRelative(candidatesPath)}.`);
-  console.log(`Review note written to ${repoRelative(reviewPath)}.`);
+  const scanVerb = dryRun ? "would be written" : "written";
+  console.log(`Metrics scan complete: ${candidates.length} candidate(s) ${scanVerb} to ${repoRelative(candidatesPath)}.`);
+  console.log(`Review note ${dryRun ? "would be written" : "written"} to ${repoRelative(reviewPath)}.`);
   if (dryRun) console.log("Dry run: no files were written.");
 }
 
@@ -733,7 +989,61 @@ async function applyMetrics() {
   await writeJson(metricsPath, nextMetrics);
   await writeJson(candidatesPath, nextCandidates);
   await writeText(reviewPath, renderReviewMarkdown(nextCandidates));
-  console.log(`Metrics apply complete: ${additions.length} approved record(s) appended to ${repoRelative(metricsPath)}.`);
+  console.log(
+    `Metrics apply complete: ${additions.length} approved record(s) ${dryRun ? "would be appended" : "appended"} to ${repoRelative(metricsPath)}.`,
+  );
+  if (dryRun) console.log("Dry run: no files were written.");
+}
+
+async function enrichMetrics() {
+  const [dictionary, people, events, metricsJson] = await Promise.all([
+    loadDictionary(),
+    loadPeople(),
+    loadEvents(),
+    readJson(metricsPath, { schema_version: 1, records: [] }),
+  ]);
+
+  const eventCandidates = events
+    .flatMap((event) => extractFromEvent(event, dictionary, people))
+    .filter(metricReferenceComplete);
+  const byFingerprint = new Map(eventCandidates.map((candidate) => [metricFingerprint(candidate), candidate]));
+  const byLooseKey = new Map(eventCandidates.map((candidate) => [metricLooseKey(candidate), candidate]));
+  const enriched = [];
+  const records = (metricsJson.records || []).map((record) => {
+    if (metricReferenceComplete(record)) return record;
+    const candidate = byFingerprint.get(metricFingerprint(record)) || byLooseKey.get(metricLooseKey(record));
+    const sourceFileReference = candidate ? null : referenceFromSourceFiles(record, dictionary);
+    if (!candidate && !sourceFileReference) return record;
+    const reference = candidate || sourceFileReference;
+    const referenceSource = candidate ? "event_note" : "source_file";
+    enriched.push({ record, reference, referenceSource });
+    return {
+      ...record,
+      reference_low: reference.reference_low,
+      reference_high: reference.reference_high,
+      reference_text: reference.reference_text,
+      is_abnormal: record.is_abnormal ?? reference.is_abnormal ?? null,
+      source_text: record.source_text || reference.source_text,
+      reference_source: referenceSource,
+      reference_source_file: reference.fileName || "",
+      reference_source_text: reference.source_text,
+    };
+  });
+
+  const nextMetrics = {
+    ...metricsJson,
+    updated_at: new Date().toISOString(),
+    records,
+  };
+
+  await writeJson(metricsPath, nextMetrics);
+  console.log(
+    `Metrics enrich complete: ${enriched.length} existing record(s) ${dryRun ? "would receive" : "received"} reference ranges from event notes or source PDFs.`,
+  );
+  for (const { record, reference, referenceSource } of enriched.slice(0, 20)) {
+    console.log(`- ${record.date} ${record.person} ${record.metric_label}: ${reference.reference_text} (${referenceSource})`);
+  }
+  if (enriched.length > 20) console.log(`...and ${enriched.length - 20} more.`);
   if (dryRun) console.log("Dry run: no files were written.");
 }
 
@@ -743,6 +1053,8 @@ if (flags.has("--help") || flags.has("-h")) {
   await scanMetrics();
 } else if (command === "apply") {
   await applyMetrics();
+} else if (command === "enrich") {
+  await enrichMetrics();
 } else {
   usage();
   process.exitCode = 1;

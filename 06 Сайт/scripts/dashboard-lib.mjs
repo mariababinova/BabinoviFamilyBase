@@ -8,6 +8,7 @@ import { atomicWriteJson, readJsonOrDefault, readJsonStrict } from "./agent-util
 
 export const siteDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const repoRoot = path.resolve(siteDir, "..");
+export const referencesDir = path.join(repoRoot, "02 Справочники");
 export const membersDir = path.join(repoRoot, "01 Члены семьи");
 export const inboxDir = path.join(repoRoot, "04 Входящие");
 export const metricsFilePath = path.join(repoRoot, "07 Показатели", "metrics.json");
@@ -19,7 +20,8 @@ export const generatedDir = path.join(siteDir, "src", "generated");
 export const publicDocumentsDir = path.join(siteDir, "public", "files", "documents");
 export const distDocumentsDir = path.join(siteDir, "dist", "files", "documents");
 export const distEncryptedDocumentsDir = path.join(siteDir, "dist", "files", "encrypted-documents");
-export const basePath = process.env.PUBLIC_BASE_PATH ?? (process.env.VERCEL ? "" : "/MedsDataBase");
+const configuredBasePath = process.env.PUBLIC_BASE_PATH ?? (process.env.VERCEL ? "" : "/MedsDataBase");
+export const basePath = configuredBasePath === "/" ? "" : configuredBasePath.replace(/\/$/, "");
 
 const assetExtensions = new Set([".pdf", ".jpg", ".jpeg", ".png"]);
 const documentPublishEnabled =
@@ -155,7 +157,7 @@ function validIsoDate(year, month, day) {
 }
 
 function addBase(routePath) {
-  if (!routePath) return basePath;
+  if (!routePath) return basePath || "/";
   if (/^https?:\/\//.test(routePath)) return routePath;
   const clean = routePath.startsWith("/") ? routePath : `/${routePath}`;
   return `${basePath}${clean}`;
@@ -763,6 +765,11 @@ async function readMetricsFile() {
   return Array.isArray(parsed.records) ? parsed.records : [];
 }
 
+async function readMetricDictionary() {
+  const parsed = await readJsonOrDefault(path.join(referencesDir, "metric_dictionary.json"), { metrics: [] });
+  return Array.isArray(parsed.metrics) ? parsed.metrics : [];
+}
+
 async function readTasksFile() {
   const parsed = await readJsonOrDefault(tasksFilePath, { records: [] });
   return Array.isArray(parsed.records) ? parsed.records : [];
@@ -860,13 +867,109 @@ function displayMetricValue(record) {
   return [record.comparator, value, record.unit].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 }
 
-function normalizeMetricRecord(record, eventsById) {
+function cleanReferenceText(value, unit = "") {
+  let text = stripMarkdown(value)
+    .replace(/^(?:при\s+)?(?:референс(?:е|а|ный|ные|ном)?|ref\.?|reference|норм[аы]?)[:\s]*/iu, "")
+    .replace(/^\s*[:;,\-–—]\s*/u, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!text) return "";
+  const unitText = String(unit || "").trim();
+  if (unitText && /\d/.test(text) && !text.toLowerCase().includes(unitText.toLowerCase())) {
+    text = `${text} ${unitText}`;
+  }
+  return text;
+}
+
+function displayReference(record) {
+  const text = cleanReferenceText(record.reference_text, record.unit);
+  if (text) return text;
+
+  const low = typeof record.reference_low === "number" ? record.reference_low : null;
+  const high = typeof record.reference_high === "number" ? record.reference_high : null;
+  const unit = record.unit ? ` ${record.unit}` : "";
+  if (low !== null && high !== null) return `${low}-${high}${unit}`;
+  if (low !== null) return `от ${low}${unit}`;
+  if (high !== null) return `до ${high}${unit}`;
+  return "Референс не указан";
+}
+
+function parseReferenceNumber(value) {
+  const normalized = String(value || "").replace(",", ".").replace(/[^\d.-]/g, "");
+  if (!normalized) return null;
+  const number = Number(normalized);
+  return Number.isFinite(number) ? number : null;
+}
+
+function referenceBounds(record) {
+  let low = typeof record.reference_low === "number" ? record.reference_low : null;
+  let high = typeof record.reference_high === "number" ? record.reference_high : null;
+  const text = String(record.reference_text || "");
+
+  if (low === null && high === null && text) {
+    const range = text.match(/([<>≤≥]?\s*\d+(?:[,.]\d+)?)\s*[-–—]\s*([<>≤≥]?\s*\d+(?:[,.]\d+)?)/u);
+    if (range) {
+      low = parseReferenceNumber(range[1]);
+      high = parseReferenceNumber(range[2]);
+    } else {
+      const oneSided = text.match(/([<>≤≥])\s*(\d+(?:[,.]\d+)?)/u);
+      if (oneSided) {
+        const number = parseReferenceNumber(oneSided[2]);
+        if (number !== null && /[<≤]/u.test(oneSided[1])) high = number;
+        if (number !== null && /[>≥]/u.test(oneSided[1])) low = number;
+      }
+    }
+  }
+
+  return { low, high };
+}
+
+function abnormalDirectionFromText(record) {
+  const text = `${record.reference_text || ""} ${record.source_text || ""}`.toLowerCase();
+  if (/(ниже|понижен|low|\bl\b|↓)/u.test(text)) return "low";
+  if (/(выше|повышен|high|\bh\b|↑)/u.test(text)) return "high";
+  return "";
+}
+
+function metricStatus(record) {
+  const { low, high } = referenceBounds(record);
+  const hasReference = low !== null || high !== null || Boolean(record.reference_text);
+  const value = typeof record.numeric_value === "number" ? record.numeric_value : null;
+
+  if (value !== null && (low !== null || high !== null)) {
+    if (low !== null && value < low) return { assessmentStatus: "low", assessmentLabel: "Ниже референса" };
+    if (high !== null && value > high) return { assessmentStatus: "high", assessmentLabel: "Выше референса" };
+    return { assessmentStatus: "normal", assessmentLabel: "В референсе" };
+  }
+
+  if (record.is_abnormal === false) return { assessmentStatus: "normal", assessmentLabel: "В референсе по флагу лаборатории" };
+  if (record.is_abnormal === true) {
+    const direction = abnormalDirectionFromText(record);
+    if (direction === "low") return { assessmentStatus: "low", assessmentLabel: "Ниже референса" };
+    if (direction === "high") return { assessmentStatus: "high", assessmentLabel: "Выше референса" };
+    return { assessmentStatus: "unknown", assessmentLabel: "Отклонение отмечено, направление не указано" };
+  }
+
+  if (!hasReference) return { assessmentStatus: "unknown", assessmentLabel: "Нет референса" };
+  return { assessmentStatus: "unknown", assessmentLabel: "Недостаточно данных для оценки" };
+}
+
+function normalizeMetricRecord(record, eventsById, metricDefinitionsById) {
   const event = record.source_event_id ? eventsById.get(record.source_event_id) : undefined;
+  const definition = metricDefinitionsById.get(record.metric_id) || {};
+  const status = metricStatus(record);
   return {
     ...record,
     displayValue: displayMetricValue(record),
     numeric_value: typeof record.numeric_value === "number" ? record.numeric_value : null,
-    is_abnormal: record.is_abnormal === true,
+    is_abnormal: record.is_abnormal === true ? true : record.is_abnormal === false ? false : null,
+    referenceDisplay: displayReference(record),
+    assessmentStatus: status.assessmentStatus,
+    assessmentLabel: status.assessmentLabel,
+    metricDescription: definition.description || "",
+    metricMeaning: definition.meaning || "",
+    metricDefaultUnit: definition.default_unit || "",
+    labName: record.laboratory || record.lab || event?.clinic || "",
     eventHref: event?.href,
     eventTitle: event?.title,
     eventSlug: event?.slug,
@@ -885,7 +988,7 @@ function metricTrend(delta) {
 
 function doctorQuestionsForMetric(group, latest, previous) {
   const questions = [];
-  if (latest?.is_abnormal) {
+  if (latest?.assessmentStatus === "low" || latest?.assessmentStatus === "high") {
     questions.push("Обсудить, насколько это отклонение важно именно в текущем контексте и нужен ли контроль.");
   }
   if (previous && group.hasTrend) {
@@ -927,6 +1030,9 @@ function buildMetricGroups(records) {
         metricLabel: record.metric_label,
         metricCategory: record.metric_category,
         metricValueType: record.metric_value_type,
+        metricDescription: record.metricDescription || "",
+        metricMeaning: record.metricMeaning || "",
+        metricDefaultUnit: record.metricDefaultUnit || "",
         records: [],
       });
     }
@@ -1028,6 +1134,7 @@ async function loadOperationsData() {
       generatedAt: metricCandidates.generated_at || metricCandidates.generatedAt || "",
       total: Array.isArray(metricCandidates.candidates) ? metricCandidates.candidates.length : 0,
       byStatus: candidateCounts,
+      records: Array.isArray(metricCandidates.candidates) ? metricCandidates.candidates : [],
     },
     taskCandidates: {
       updatedAt: taskCandidates.updatedAt || "",
@@ -1183,8 +1290,9 @@ export async function loadDashboardData({ includeInbox = false, publicDocuments 
   const sortedDocuments = documents.sort((a, b) =>
     (b.date || "").localeCompare(a.date || "") || a.fileName.localeCompare(b.fileName, "ru"),
   );
+  const metricDefinitionsById = new Map((await readMetricDictionary()).map((metric) => [metric.id, metric]));
   const metrics = (await readMetricsFile())
-    .map((record) => normalizeMetricRecord(record, eventsById))
+    .map((record) => normalizeMetricRecord(record, eventsById, metricDefinitionsById))
     .sort((a, b) =>
       String(a.person).localeCompare(String(b.person), "ru") ||
       String(a.metric_label).localeCompare(String(b.metric_label), "ru") ||
