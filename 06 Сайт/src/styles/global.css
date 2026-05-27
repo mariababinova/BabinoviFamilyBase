@@ -277,23 +277,10 @@ select {
   box-shadow: var(--shadow);
 }
 
-.hero-panel::before,
 .hero-panel::after {
   content: "";
   position: absolute;
   pointer-events: none;
-}
-
-.hero-panel::before {
-  right: 28px;
-  bottom: 26px;
-  width: 118px;
-  height: 118px;
-  background:
-    radial-gradient(circle, var(--blue) 0 5px, transparent 6px) 0 0 / 18px 18px,
-    rgba(255, 255, 255, 0.42);
-  border-radius: 24px;
-  transform: rotate(9deg);
 }
 
 .hero-panel::after {
@@ -304,6 +291,43 @@ select {
   background: var(--coral);
   clip-path: polygon(50% 0, 60% 32%, 94% 18%, 72% 48%, 100% 60%, 66% 64%, 78% 100%, 50% 74%, 22% 100%, 34% 64%, 0 60%, 29% 47%, 7% 18%, 40% 32%);
   opacity: 0.84;
+}
+
+.home-hero {
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 0.75fr);
+  align-items: center;
+}
+
+.home-hero-copy {
+  max-width: 760px;
+}
+
+.home-hero-copy p:not(.eyebrow) {
+  max-width: 720px;
+  font-size: 1.05rem;
+}
+
+.home-principles {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.home-principles div {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.9rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.84);
+  box-shadow: 5px 5px 0 rgba(23, 27, 29, 0.1);
+}
+
+.home-principles strong {
+  color: var(--accent-dark);
+}
+
+.home-principles span {
+  color: var(--muted);
 }
 
 .page-header {

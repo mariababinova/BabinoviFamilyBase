@@ -1,33 +1,35 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
 import PersonCard from "../components/PersonCard.astro";
-import EventCard from "../components/EventCard.astro";
-import TaskBoard from "../components/TaskBoard.astro";
-import StatStrip from "../components/StatStrip.astro";
-import { dashboard, pageHref } from "../lib/ui";
-
-const recentEvents = dashboard.events.slice(0, 6);
-const visibleTasks = [...dashboard.tasks]
-  .sort((a, b) => (a.dueDate || "9999-99-99").localeCompare(b.dueDate || "9999-99-99"))
-  .slice(0, 8);
-const unlinkedCount = dashboard.documents.filter((document) => !document.isLinkedToEvent).length;
+import { dashboard } from "../lib/ui";
 ---
 
 <AppLayout title="Медицинская база семьи">
-  <section class="hero-panel">
-    <div>
-      <p class="eyebrow">Семейный медицинский дашборд</p>
+  <section class="hero-panel home-hero">
+    <div class="home-hero-copy">
+      <p class="eyebrow">Семейная медицинская база</p>
       <h1>Медицинская база семьи</h1>
-      <p>Профили, визиты, исследования, документы и контрольные задачи в одном спокойном интерфейсе.</p>
+      <p>
+        Это общий вход в медицинскую историю семьи. Здесь не нужно помнить, в какой папке лежал анализ
+        или когда был приём: сначала выбираем человека, а внутри уже видим документы, события, показатели
+        и задачи в контексте его истории.
+      </p>
     </div>
-    <StatStrip stats={dashboard.stats} />
+    <div class="home-principles" aria-label="Как устроена база">
+      <div>
+        <strong>Всё начинается с человека</strong>
+        <span>У каждого члена семьи свой профиль, своя хронология и свои медицинские документы.</span>
+      </div>
+      <div>
+        <strong>Документы становятся историей</strong>
+        <span>Файлы привязываются к датам и событиям, чтобы было понятно, что, когда и почему произошло.</span>
+      </div>
+      <div>
+        <strong>Показатели и задачи помогают не потерять важное</strong>
+        <span>Анализы собираются в динамику, а спорные находки сначала уходят на проверку.</span>
+      </div>
+    </div>
   </section>
-
-  {unlinkedCount > 0 && (
-    <a class="notice" href={pageHref("/documents/unlinked")}>
-      Есть документы без описания события: {unlinkedCount}
-    </a>
-  )}
 
   <section>
     <div class="section-title">
@@ -35,24 +37,6 @@ const unlinkedCount = dashboard.documents.filter((document) => !document.isLinke
     </div>
     <div class="card-grid home-people-grid">
       {dashboard.people.map((person) => <PersonCard person={person} />)}
-    </div>
-  </section>
-
-  <section class="home-tasks-section">
-    <div class="section-title">
-      <h2>Ближайшие задачи</h2>
-      <a href={pageHref("/tasks")}>Все задачи</a>
-    </div>
-    <TaskBoard tasks={visibleTasks} />
-  </section>
-
-  <section>
-    <div class="section-title">
-      <h2>Последние события</h2>
-      <a href={pageHref("/events")}>Открыть журнал</a>
-    </div>
-    <div class="event-list">
-      {recentEvents.map((event) => <EventCard event={event} compact />)}
     </div>
   </section>
 </AppLayout>

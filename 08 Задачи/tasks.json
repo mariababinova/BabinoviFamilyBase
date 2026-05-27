@@ -1,87 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-05-17T08:07:30.503Z",
+  "updated_at": "2026-05-27T19:25:39.187Z",
   "records": [
-    {
-      "id": "task-aleksandr-review-pre-treatment-consults",
-      "type": "grouped_task",
-      "status": "open",
-      "person": "Александр",
-      "person_id": "aleksandr",
-      "due_date": "2026-05-20",
-      "priority": "medium",
-      "specialty": "Онкология",
-      "specialty_id": "onkologiya",
-      "title": "Проверить документы по консультациям перед онкотерапией",
-      "action_text": "Проверить, есть ли документы кардиолога и сосудистого хирурга перед лечением, и добавить находки в базу",
-      "reason": "В решении онкологического консилиума были указаны консультации кардиолога и сосудистого хирурга перед началом лечения; в базе их пока нет.",
-      "source_type": "event",
-      "source_event_id": "2025-07-16-aleksandr-onkologicheskiy-konsilium",
-      "source_event_path": "01 Члены семьи/Александр/03 Онколог/03 Онколог 2025/Одинцовская областная больница/2025-07-16 Александр — онкологический консилиум.md",
-      "source_document_id": "manual-aleksandr-pre-treatment-consults",
-      "source_files": [
-        "2025-07-16 Александр — онкологический консилиум 1.jpg",
-        "2025-07-16 Александр — онкологический консилиум 2.jpg"
-      ],
-      "watchlist_topic_id": "",
-      "source_text": "Перед лечением: консультация кардиолога, сосудистого хирурга.",
-      "extraction_confidence": "high",
-      "dedupe_key": "aleksandr-review-pre-treatment-consults",
-      "source_agent": "codex-manual",
-      "generated_at": "2026-05-13T00:00:00.000Z",
-      "kind": "grouped_task",
-      "task_page": true,
-      "grouped_source_event_ids": [
-        "2025-07-16-aleksandr-onkologicheskiy-konsilium"
-      ],
-      "source_event_ids": [
-        "2025-07-16-aleksandr-onkologicheskiy-konsilium"
-      ],
-      "items": [
-        {
-          "title": "Проверить консультацию кардиолога",
-          "type": "doctor_visit",
-          "specialty": "Кардиология",
-          "specialty_id": "kardiologiya"
-        },
-        {
-          "title": "Проверить консультацию сосудистого хирурга",
-          "type": "doctor_visit",
-          "specialty": "Хирургия",
-          "specialty_id": "hirurgiya"
-        }
-      ]
-    },
-    {
-      "id": "task-aleksandr-review-2025-urology-followup",
-      "type": "control_task",
-      "status": "open",
-      "person": "Александр",
-      "person_id": "aleksandr",
-      "due_date": "2026-05-20",
-      "priority": "medium",
-      "specialty": "Урология",
-      "specialty_id": "urologiya",
-      "title": "Проверить, был ли контроль УЗИ почек после урологической выписки",
-      "action_text": "Найти или запросить результат контрольного УЗИ почек после выписки от 24.06.2025",
-      "reason": "В урологической выписке рекомендован контроль УЗИ почек через 2 недели; в базе пока не найден результат УЗИ.",
-      "source_type": "event",
-      "source_event_id": "2025-06-24-aleksandr-vypisnoy-epikriz-urologiya",
-      "source_event_path": "01 Члены семьи/Александр/02 Уролог/02 Уролог 2025/Одинцовская областная больница/2025-06-24 Александр — выписной эпикриз урология.md",
-      "source_document_id": "manual-aleksandr-urology-followup",
-      "source_files": [
-        "2025-06-24 Александр — выписной эпикриз урология 1.jpg",
-        "2025-06-24 Александр — выписной эпикриз урология 2.jpg",
-        "2025-06-24 Александр — выписной эпикриз урология 3.jpg",
-        "2025-06-24 Александр — выписной эпикриз урология 4.jpg"
-      ],
-      "watchlist_topic_id": "",
-      "source_text": "Контроль УЗИ почек через 2 недели.",
-      "extraction_confidence": "high",
-      "dedupe_key": "aleksandr-review-2025-urology-followup",
-      "source_agent": "codex-manual",
-      "generated_at": "2026-05-13T00:00:00.000Z"
-    },
     {
       "id": "task-aleksandr-2026-07-oncology-control",
       "type": "grouped_task",
@@ -145,6 +65,226 @@
           "type": "doctor_visit",
           "specialty": "Онкология",
           "specialty_id": "onkologiya"
+        }
+      ]
+    },
+    {
+      "status": "open",
+      "person": "Маша",
+      "person_id": "masha",
+      "priority": "medium",
+      "specialty": "Эндокринология",
+      "specialty_id": "endokrinologiya",
+      "source_type": "event",
+      "source_event_id": "2026-05-23-masha-endokrinolog",
+      "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+      "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+      "source_files": [],
+      "watchlist_topic_id": "",
+      "extraction_confidence": "high",
+      "source_agent": "codex-manual",
+      "generated_at": "2026-05-27T00:00:00.000Z",
+      "kind": "grouped_task",
+      "task_page": true,
+      "grouped_source_event_ids": [
+        "2026-05-23-masha-endokrinolog"
+      ],
+      "source_event_ids": [
+        "2026-05-23-masha-endokrinolog"
+      ],
+      "id": "task-masha-2026-endocrinology-supplements-lactation",
+      "type": "control_task",
+      "due_date": "",
+      "title": "Следовать схеме добавок и питания после приёма эндокринолога",
+      "action_text": "Пить витамины и добавки по схеме эндокринолога",
+      "reason": "Из назначений приёма эндокринолога Маши от 23.05.2026.",
+      "source_text": "Йодомарин, витамин D, омега-3, белок, магний хелат, Hema-Plex, аминокислоты Solgar, утренний режим для стула и рацион 1600-1800 ккал.",
+      "dedupe_key": "masha-2026-endocrinology-supplements-lactation",
+      "items": [
+        {
+          "title": "Йодомарин 200 мкг — 1 раз в день до конца лактации",
+          "type": "medication_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Витамин D 5000 МЕ утром Маше; ребёнку — 1 капля, примерно 400-500 МЕ",
+          "type": "medication_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Омега-3 1000 мг — 2 капсулы; Solgar или Эвалар тройная омега-3",
+          "type": "medication_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Белок — 1,5 г на 1 кг веса; рацион 1600-1800 ккал и не менее 80 г белка",
+          "type": "nutrition_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Магний хелат 200 мг — на ночь",
+          "type": "medication_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Hema-Plex — 1 таблетка 1 раз в день во время еды",
+          "type": "medication_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Solgar аминокислоты — 1 порция 1-2 раза в день",
+          "type": "medication_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Утром натощак: тёплая вода, 1 ч.л. масла Trawa, 1 ч.л. клетчатки и 5-10 минут зарядки",
+          "type": "lifestyle_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        }
+      ]
+    },
+    {
+      "status": "open",
+      "person": "Маша",
+      "person_id": "masha",
+      "priority": "medium",
+      "specialty": "Эндокринология",
+      "specialty_id": "endokrinologiya",
+      "source_type": "event",
+      "source_event_id": "2026-05-23-masha-endokrinolog",
+      "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+      "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+      "source_files": [],
+      "watchlist_topic_id": "",
+      "extraction_confidence": "high",
+      "source_agent": "codex-manual",
+      "generated_at": "2026-05-27T00:00:00.000Z",
+      "kind": "grouped_task",
+      "task_page": true,
+      "grouped_source_event_ids": [
+        "2026-05-23-masha-endokrinolog"
+      ],
+      "source_event_ids": [
+        "2026-05-23-masha-endokrinolog"
+      ],
+      "id": "task-masha-2026-08-endocrinology-control",
+      "type": "lab_control",
+      "due_date": "2026-08-01",
+      "title": "Сдать контрольные анализы и пройти УЗИ по эндокринологии в августе",
+      "action_text": "Сдать анализы и пройти УЗИ в августе",
+      "reason": "Из раздела «Контроль в августе» приёма эндокринолога Маши от 23.05.2026.",
+      "source_text": "Общий белок, ферритин, копрограмма, УЗИ органов брюшной полости, УЗИ почек, УЗИ щитовидной железы; факультативно — Хромолаб анализ мочи 63 Органические кислоты.",
+      "dedupe_key": "masha-2026-08-endocrinology-control",
+      "items": [
+        {
+          "title": "Общий белок",
+          "type": "lab_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Ферритин",
+          "type": "lab_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Копрограмма",
+          "type": "lab_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "УЗИ органов брюшной полости",
+          "type": "diagnostic_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "УЗИ почек",
+          "type": "diagnostic_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "УЗИ щитовидной железы",
+          "type": "diagnostic_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
+        },
+        {
+          "title": "Факультативно: Хромолаб, анализ мочи 63 «Органические кислоты»",
+          "type": "lab_control",
+          "specialty": "Эндокринология",
+          "specialty_id": "endokrinologiya",
+          "source_event_id": "2026-05-23-masha-endokrinolog",
+          "source_event_path": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md",
+          "source_document_id": "manual-masha-2026-05-23-endocrinology-note",
+          "source_files": []
         }
       ]
     },

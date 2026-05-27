@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-05-17T17:04:25.817Z",
+  "generated_at": "2026-05-27T19:25:39.793Z",
   "agent": {
     "id": "doctor-summary-agent",
     "name": "Doctor Summary Agent / агент сводок врачу",
@@ -8039,6 +8039,223 @@
           "eventTitle": "Маша — хирург — венозная недостаточность — 02.10.2024"
         }
       ]
+    },
+    {
+      "id": "doctor-summary-5acd98536a39",
+      "slug": "masha-endokrinologiya",
+      "title": "Маша — Эндокринология",
+      "person": "Маша",
+      "personSlug": "masha",
+      "specialty": "Эндокринология",
+      "routePath": "/doctor-summaries/masha-endokrinologiya",
+      "href": "/MedsDataBase/doctor-summaries/masha-endokrinologiya",
+      "markdownPath": "05 Индексы/Сводки врачу/Маша — Эндокринология.md",
+      "sourceEventCount": 1,
+      "sourceDocumentCount": 0,
+      "latestEventDate": "2026-05-23",
+      "profileContext": [
+        "Дата рождения: 01.12.1996",
+        "Группа крови: B (III)",
+        "Резус-фактор: положительный",
+        "Важный статус: 1 месяц после первых родов"
+      ],
+      "summary": [
+        "2026-05-23: На период лактации рекомендованы йодомарин, витамин D, омега-3, магний хелат, Hema-Plex и аминокислоты Solgar.",
+        "2026-05-23: Для ребёнка указана 1 капля витамина D, примерно 400-500 МЕ.",
+        "2026-05-23: По питанию: рацион 1600-1800 ккал, не менее 80 г белка; ориентир по белку — 1,5 г на 1 кг веса.",
+        "2026-05-23: Для регуляции стула рекомендован утренний ритуал натощак: тёплая вода, масло прямого отжима Trawa, клетчатка и короткая зарядка.",
+        "2026-05-23: В августе рекомендованы контрольные анализы и УЗИ.",
+        "2026-05-23: Факультативно указан анализ мочи в лаборатории Хромолаб: анализ 63 «Органические кислоты»."
+      ],
+      "summaryEvidence": [
+        {
+          "text": "На период лактации рекомендованы йодомарин, витамин D, омега-3, магний хелат, Hema-Plex и аминокислоты Solgar.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Для ребёнка указана 1 капля витамина D, примерно 400-500 МЕ.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "По питанию: рацион 1600-1800 ккал, не менее 80 г белка; ориентир по белку — 1,5 г на 1 кг веса.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Для регуляции стула рекомендован утренний ритуал натощак: тёплая вода, масло прямого отжима Trawa, клетчатка и короткая зарядка.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "В августе рекомендованы контрольные анализы и УЗИ.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Факультативно указан анализ мочи в лаборатории Хромолаб: анализ 63 «Органические кислоты».",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        }
+      ],
+      "track": [
+        "2026-05-23: Переносимость схемы добавок и регулярность приёма.",
+        "2026-05-23: Достаточность белка в рационе.",
+        "2026-05-23: Выполнение контрольных анализов и УЗИ в августе."
+      ],
+      "trackEvidence": [
+        {
+          "text": "Переносимость схемы добавок и регулярность приёма.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Достаточность белка в рационе.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Выполнение контрольных анализов и УЗИ в августе.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        }
+      ],
+      "nextActions": [
+        "2026-05-23: Следовать схеме добавок и питания после приёма эндокринолога.",
+        "2026-05-23: В августе сдать контрольные анализы и пройти УЗИ.",
+        "2026-05-23: После получения результатов добавить их в базу и обсудить с врачом.",
+        "2026-05-23: Йодомарин 200 мкг — 1 раз в день до конца лактации.",
+        "2026-05-23: Витамин D 5000 МЕ утром для Маши и 1 капля, примерно 400-500 МЕ, ребёнку.",
+        "2026-05-23: Омега-3 1000 мг — 2 капсулы. Варианты: Solgar или Эвалар тройная омега-3.",
+        "2026-05-23: Белок — 1,5 г на 1 кг веса.",
+        "2026-05-23: Магний хелат 200 мг — на ночь.",
+        "2026-05-23: Hema-Plex — по 1 таблетке 1 раз в день во время еды.",
+        "2026-05-23: Solgar аминокислоты — по 1 порции 1-2 раза в день."
+      ],
+      "nextActionEvidence": [
+        {
+          "text": "Следовать схеме добавок и питания после приёма эндокринолога.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "В августе сдать контрольные анализы и пройти УЗИ.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "После получения результатов добавить их в базу и обсудить с врачом.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Йодомарин 200 мкг — 1 раз в день до конца лактации.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Витамин D 5000 МЕ утром для Маши и 1 капля, примерно 400-500 МЕ, ребёнку.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Омега-3 1000 мг — 2 капсулы. Варианты: Solgar или Эвалар тройная омега-3.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Белок — 1,5 г на 1 кг веса.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Магний хелат 200 мг — на ночь.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Hema-Plex — по 1 таблетке 1 раз в день во время еды.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        },
+        {
+          "text": "Solgar аминокислоты — по 1 порции 1-2 раза в день.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-masha-endokrinolog",
+          "eventTitle": "Маша — эндокринолог — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "documentIds": []
+        }
+      ],
+      "events": [
+        {
+          "id": "2026-05-23-masha-endokrinolog",
+          "title": "Маша — эндокринолог — 23.05.2026",
+          "href": "/MedsDataBase/events/2026-05-23-masha-endokrinolog",
+          "date": "2026-05-23",
+          "eventType": "Приём",
+          "specialty": "Эндокринология",
+          "doctor": "",
+          "clinic": "",
+          "markdownPath": "01 Члены семьи/Маша/16 Эндокринолог/16 Эндокринолог 2026/2026-05-23 Маша — эндокринолог.md"
+        }
+      ],
+      "documents": []
     },
     {
       "id": "doctor-summary-97022968ec1a",
