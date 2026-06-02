@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-02T12:32:38.260Z",
+  "generated_at": "2026-06-02T13:00:50.634Z",
   "agent": {
     "id": "doctor-summary-agent",
     "name": "Doctor Summary Agent / агент сводок врачу",
@@ -1136,6 +1136,368 @@
           "displayName": "2026-03-20 Артём — Аллерголог.pdf",
           "href": "/MedsDataBase/documents/2026-03-20-artem-allergolog-57d3f60c",
           "eventTitle": "2026-03-20 Артём — аллерголог"
+        }
+      ]
+    },
+    {
+      "id": "doctor-summary-73ba36fc9f4a",
+      "slug": "artem-gastroenterologiya",
+      "title": "Артём — Гастроэнтерология",
+      "person": "Артём",
+      "personSlug": "artem",
+      "specialty": "Гастроэнтерология",
+      "routePath": "/doctor-summaries/artem-gastroenterologiya",
+      "href": "/MedsDataBase/doctor-summaries/artem-gastroenterologiya",
+      "markdownPath": "05 Индексы/Сводки врачу/Артём — Гастроэнтерология.md",
+      "sourceEventCount": 3,
+      "sourceDocumentCount": 3,
+      "latestEventDate": "2026-05-28",
+      "profileContext": [
+        "Дата рождения: 20.02.1989"
+      ],
+      "summary": [
+        "2026-05-28: Пациент: Бабинов Артём Михайлович, дата рождения 20.02.1989.",
+        "2026-05-28: Врач: Султанова Полина Сергеевна.",
+        "2026-05-28: В документе указано, что по приложенным результатам колоноскопии и гастроскопии вопрос медикаментозной терапии не ставится.",
+        "2026-05-28: По предоставленной информации не исключаются язвенная болезнь двенадцатиперстной кишки и постъязвенная рубцовая деформация луковицы ДПК в стадии ремиссии.",
+        "2026-05-28: Статус Helicobacter pylori обозначен как требующий уточнения.",
+        "2026-05-23: Пациент: Бабинов Артём Михайлович, дата рождения 20.02.1989.",
+        "2026-05-23: Врач: Арутюнян Ани Гегамовна.",
+        "2026-05-23: Аппарат проведён до купола слепой кишки и на 10 см в подвздошную кишку.",
+        "2026-05-23: Терминальный отдел подвздошной кишки без изменений.",
+        "2026-05-23: Илеоцекальный клапан не изменён.",
+        "2026-05-23: Просвет, складки, тонус и перистальтика толстой кишки описаны как нормальные.",
+        "2026-05-23: Слизистая розовая, сосудистый рисунок чёткий.",
+        "2026-05-23: Подготовка кишечника: 6 баллов по Бостонской шкале.",
+        "2026-05-23: Заключение: в осмотренных отделах тонкой и толстой кишки патологических изменений не выявлено.",
+        "2026-05-23: Пациент: Бабинов Артём Михайлович, дата рождения 20.02.1989.",
+        "2026-05-23: Врач: Арутюнян Ани Гегамовна."
+      ],
+      "summaryEvidence": [
+        {
+          "text": "Пациент: Бабинов Артём Михайлович, дата рождения 20.02.1989.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "Врач: Султанова Полина Сергеевна.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "В документе указано, что по приложенным результатам колоноскопии и гастроскопии вопрос медикаментозной терапии не ставится.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "По предоставленной информации не исключаются язвенная болезнь двенадцатиперстной кишки и постъязвенная рубцовая деформация луковицы ДПК в стадии ремиссии.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "Статус Helicobacter pylori обозначен как требующий уточнения.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "Пациент: Бабинов Артём Михайлович, дата рождения 20.02.1989.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Врач: Арутюнян Ани Гегамовна.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Аппарат проведён до купола слепой кишки и на 10 см в подвздошную кишку.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Терминальный отдел подвздошной кишки без изменений.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Илеоцекальный клапан не изменён.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Просвет, складки, тонус и перистальтика толстой кишки описаны как нормальные.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Слизистая розовая, сосудистый рисунок чёткий.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Подготовка кишечника: 6 баллов по Бостонской шкале.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Заключение: в осмотренных отделах тонкой и толстой кишки патологических изменений не выявлено.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "Пациент: Бабинов Артём Михайлович, дата рождения 20.02.1989.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-egds",
+          "eventTitle": "Артём — ЭГДС — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-egds",
+          "documentIds": [
+            "9d4bb49fd5f3eb1b"
+          ]
+        },
+        {
+          "text": "Врач: Арутюнян Ани Гегамовна.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-egds",
+          "eventTitle": "Артём — ЭГДС — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-egds",
+          "documentIds": [
+            "9d4bb49fd5f3eb1b"
+          ]
+        }
+      ],
+      "track": [
+        "2026-05-28: Найти или добавить в базу результат анализа на Helicobacter pylori, если он есть.",
+        "2026-05-28: Сопоставлять с ЭГДС от 23.05.2026, где описана рубцовая деформация луковицы ДПК.",
+        "2026-05-23: Сопоставить рубцовую деформацию луковицы ДПК с жалобами на дискомфорт в эпигастрии и заключением гастроэнтеролога.",
+        "2026-05-23: Статус Helicobacter pylori в этих документах не подтверждён и требует сверки с отдельным анализом, если он есть."
+      ],
+      "trackEvidence": [
+        {
+          "text": "Найти или добавить в базу результат анализа на Helicobacter pylori, если он есть.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "Сопоставлять с ЭГДС от 23.05.2026, где описана рубцовая деформация луковицы ДПК.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "Сопоставить рубцовую деформацию луковицы ДПК с жалобами на дискомфорт в эпигастрии и заключением гастроэнтеролога.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-egds",
+          "eventTitle": "Артём — ЭГДС — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-egds",
+          "documentIds": [
+            "9d4bb49fd5f3eb1b"
+          ]
+        },
+        {
+          "text": "Статус Helicobacter pylori в этих документах не подтверждён и требует сверки с отдельным анализом, если он есть.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-egds",
+          "eventTitle": "Артём — ЭГДС — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-egds",
+          "documentIds": [
+            "9d4bb49fd5f3eb1b"
+          ]
+        }
+      ],
+      "nextActions": [
+        "2026-05-28: Прикрепить к медицинской карте результаты обследования на H. pylori.",
+        "2026-05-28: Повторная онлайн-консультация гастроэнтеролога — по необходимости.",
+        "2026-05-23: Интерпретировать результат с гастроэнтерологом при очной или онлайн-консультации.",
+        "2026-05-23: В протоколе рекомендовано наблюдение гастроэнтеролога.",
+        "2026-05-23: Интерпретировать результат с лечащим врачом."
+      ],
+      "nextActionEvidence": [
+        {
+          "text": "Прикрепить к медицинской карте результаты обследования на H. pylori.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "Повторная онлайн-консультация гастроэнтеролога — по необходимости.",
+          "date": "2026-05-28",
+          "eventId": "2026-05-28-artem-gastroenterolog-onlayn",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "documentIds": [
+            "84fada536221fbe5"
+          ]
+        },
+        {
+          "text": "Интерпретировать результат с гастроэнтерологом при очной или онлайн-консультации.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-kolonoskopiya",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "documentIds": [
+            "1998a46fae6d1600"
+          ]
+        },
+        {
+          "text": "В протоколе рекомендовано наблюдение гастроэнтеролога.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-egds",
+          "eventTitle": "Артём — ЭГДС — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-egds",
+          "documentIds": [
+            "9d4bb49fd5f3eb1b"
+          ]
+        },
+        {
+          "text": "Интерпретировать результат с лечащим врачом.",
+          "date": "2026-05-23",
+          "eventId": "2026-05-23-artem-egds",
+          "eventTitle": "Артём — ЭГДС — 23.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-23-artem-egds",
+          "documentIds": [
+            "9d4bb49fd5f3eb1b"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "id": "2026-05-23-artem-kolonoskopiya",
+          "title": "Артём — колоноскопия — 23.05.2026",
+          "href": "/MedsDataBase/events/2026-05-23-artem-kolonoskopiya",
+          "date": "2026-05-23",
+          "eventType": "Обследование",
+          "specialty": "Гастроэнтерология",
+          "doctor": "Арутюнян Ани Гегамовна",
+          "clinic": "Альфа-Центр Здоровья",
+          "markdownPath": "01 Члены семьи/Артём/15 Гастроэнтеролог/15 Гастроэнтеролог 2026/Альфа-Центр Здоровья/2026-05-23 Артём — колоноскопия.md"
+        },
+        {
+          "id": "2026-05-23-artem-egds",
+          "title": "Артём — ЭГДС — 23.05.2026",
+          "href": "/MedsDataBase/events/2026-05-23-artem-egds",
+          "date": "2026-05-23",
+          "eventType": "Обследование",
+          "specialty": "Гастроэнтерология",
+          "doctor": "Арутюнян Ани Гегамовна",
+          "clinic": "Альфа-Центр Здоровья",
+          "markdownPath": "01 Члены семьи/Артём/15 Гастроэнтеролог/15 Гастроэнтеролог 2026/Альфа-Центр Здоровья/2026-05-23 Артём — ЭГДС.md"
+        },
+        {
+          "id": "2026-05-28-artem-gastroenterolog-onlayn",
+          "title": "Артём — гастроэнтеролог онлайн — 28.05.2026",
+          "href": "/MedsDataBase/events/2026-05-28-artem-gastroenterolog-onlayn",
+          "date": "2026-05-28",
+          "eventType": "Консультация",
+          "specialty": "Гастроэнтерология",
+          "doctor": "Султанова Полина Сергеевна",
+          "clinic": "Лучи",
+          "markdownPath": "01 Члены семьи/Артём/15 Гастроэнтеролог/15 Гастроэнтеролог 2026/Лучи/2026-05-28 Артём — гастроэнтеролог онлайн.md"
+        }
+      ],
+      "documents": [
+        {
+          "date": "2026-05-23",
+          "fileName": "2026-05-23 Артём — колоноскопия.pdf",
+          "displayName": "2026-05-23 Артём — колоноскопия.pdf",
+          "href": "/MedsDataBase/documents/2026-05-23-artem-kolonoskopiya-1998a46f",
+          "eventTitle": "Артём — колоноскопия — 23.05.2026"
+        },
+        {
+          "date": "2026-05-23",
+          "fileName": "2026-05-23 Артём — ЭГДС.pdf",
+          "displayName": "2026-05-23 Артём — ЭГДС.pdf",
+          "href": "/MedsDataBase/documents/2026-05-23-artem-egds-9d4bb49f",
+          "eventTitle": "Артём — ЭГДС — 23.05.2026"
+        },
+        {
+          "date": "2026-05-28",
+          "fileName": "2026-05-28 Артём — гастроэнтеролог онлайн.pdf",
+          "displayName": "2026-05-28 Артём — гастроэнтеролог онлайн.pdf",
+          "href": "/MedsDataBase/documents/2026-05-28-artem-gastroenterolog-onlayn-84fada53",
+          "eventTitle": "Артём — гастроэнтеролог онлайн — 28.05.2026"
         }
       ]
     },
@@ -4160,9 +4522,9 @@
       "routePath": "/doctor-summaries/masha-ginekologiya",
       "href": "/MedsDataBase/doctor-summaries/masha-ginekologiya",
       "markdownPath": "05 Индексы/Сводки врачу/Маша — Гинекология.md",
-      "sourceEventCount": 19,
-      "sourceDocumentCount": 21,
-      "latestEventDate": "2026-05-14",
+      "sourceEventCount": 20,
+      "sourceDocumentCount": 22,
+      "latestEventDate": "2026-05-19",
       "profileContext": [
         "Дата рождения: 01.12.1996",
         "Группа крови: B (III)",
@@ -4170,6 +4532,14 @@
         "Важный статус: 1 месяц после первых родов"
       ],
       "summary": [
+        "2026-05-19: Пациент: Мишина Мария Александровна, дата рождения 01.12.1996.",
+        "2026-05-19: Врач: Воронкова Ольга Ивановна.",
+        "2026-05-19: Дата и время приёма: 19.05.2026 15:30.",
+        "2026-05-19: Жалоб нет.",
+        "2026-05-19: Врачом просмотрены результаты от 14.05.2026: цитология без атипии, с атрофическими изменениями; ВПЧ не обнаружен.",
+        "2026-05-19: В анализах указаны: гемоглобин 124; общий белок 69.7; глюкоза 4.39; ТТГ 1.75; коагулограмма без особенностей.",
+        "2026-05-19: Ферритин 12.8 отмечен как сниженный.",
+        "2026-05-19: Клинические диагнозы в документе: вторичная лактационная аменорея; латентный дефицит железа.",
         "2026-05-14: Врач: Воронкова Ольга Ивановна.",
         "2026-05-14: Дата и время приёма: 14.05.2026 11:40.",
         "2026-05-14: Жалоб нет.",
@@ -4177,17 +4547,89 @@
         "2026-05-14: Ребёнку 1,5 месяца; грудное вскармливание, молока достаточно.",
         "2026-05-14: Указан приём: йодомарин 200 мкг, витамин D3 2000, омега-3, магния хелат.",
         "2026-05-14: В гинекологическом анамнезе указаны ВПЧ 33 и 45 типа в 2022 году, лёгкая дисплазия, биопсия шейки матки без патологии; последняя онкоцитология в мае 2024 без атипии; ВПЧ не обнаружен в феврале 2024.",
-        "2026-05-14: Рост 164 см, вес 52 кг, ИМТ 19,33; пульс 81/мин, АД 90/60 мм рт. ст.",
-        "2026-05-14: Диагноз: Z39.2 «Рутинное послеродовое наблюдение», послеродовый период.",
-        "2026-05-14: Врач: Воронкова Ольга Ивановна.",
-        "2026-05-14: Дата и время приёма: 14.05.2026 11:40.",
-        "2026-05-14: Жалоб нет.",
-        "2026-05-14: В анамнезе указаны роды 26.03.2026.",
-        "2026-05-14: Мышечная сила 14.05.2026: максимальное напряжение 23.5, среднее 5.5.",
-        "2026-05-14: Врач: Воронкова Ольга Ивановна.",
-        "2026-05-14: Дата и время приёма: 14.05.2026 11:40."
+        "2026-05-14: Рост 164 см, вес 52 кг, ИМТ 19,33; пульс 81/мин, АД 90/60 мм рт. ст."
       ],
       "summaryEvidence": [
+        {
+          "text": "Пациент: Мишина Мария Александровна, дата рождения 01.12.1996.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Врач: Воронкова Ольга Ивановна.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Дата и время приёма: 19.05.2026 15:30.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Жалоб нет.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Врачом просмотрены результаты от 14.05.2026: цитология без атипии, с атрофическими изменениями; ВПЧ не обнаружен.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "В анализах указаны: гемоглобин 124; общий белок 69.7; глюкоза 4.39; ТТГ 1.75; коагулограмма без особенностей.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Ферритин 12.8 отмечен как сниженный.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Клинические диагнозы в документе: вторичная лактационная аменорея; латентный дефицит железа.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
         {
           "text": "Врач: Воронкова Ольга Ивановна.",
           "date": "2026-05-14",
@@ -4267,89 +4709,12 @@
           "documentIds": [
             "d824df9a3f6cfbcd"
           ]
-        },
-        {
-          "text": "Диагноз: Z39.2 «Рутинное послеродовое наблюдение», послеродовый период.",
-          "date": "2026-05-14",
-          "eventId": "2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
-          "eventTitle": "Маша — акушер-гинеколог, послеродовой приём — 14.05.2026",
-          "eventHref": "/MedsDataBase/events/2026-05-14-masha-akusher-ginekolog-poslerodovoy-priem",
-          "documentIds": [
-            "d824df9a3f6cfbcd"
-          ]
-        },
-        {
-          "text": "Врач: Воронкова Ольга Ивановна.",
-          "date": "2026-05-14",
-          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
-          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "documentIds": [
-            "f7cfdafceb55ead9"
-          ]
-        },
-        {
-          "text": "Дата и время приёма: 14.05.2026 11:40.",
-          "date": "2026-05-14",
-          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
-          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "documentIds": [
-            "f7cfdafceb55ead9"
-          ]
-        },
-        {
-          "text": "Жалоб нет.",
-          "date": "2026-05-14",
-          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
-          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "documentIds": [
-            "f7cfdafceb55ead9"
-          ]
-        },
-        {
-          "text": "В анамнезе указаны роды 26.03.2026.",
-          "date": "2026-05-14",
-          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
-          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "documentIds": [
-            "f7cfdafceb55ead9"
-          ]
-        },
-        {
-          "text": "Мышечная сила 14.05.2026: максимальное напряжение 23.5, среднее 5.5.",
-          "date": "2026-05-14",
-          "eventId": "2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "eventTitle": "Маша — БОС-терапия мышц тазового дна — 14.05.2026",
-          "eventHref": "/MedsDataBase/events/2026-05-14-masha-bos-terapiya-tazovogo-dna",
-          "documentIds": [
-            "f7cfdafceb55ead9"
-          ]
-        },
-        {
-          "text": "Врач: Воронкова Ольга Ивановна.",
-          "date": "2026-05-14",
-          "eventId": "2026-05-14-masha-uzi-malogo-taza",
-          "eventTitle": "Маша — УЗИ малого таза — 14.05.2026",
-          "eventHref": "/MedsDataBase/events/2026-05-14-masha-uzi-malogo-taza",
-          "documentIds": [
-            "825d960340175ba2"
-          ]
-        },
-        {
-          "text": "Дата и время приёма: 14.05.2026 11:40.",
-          "date": "2026-05-14",
-          "eventId": "2026-05-14-masha-uzi-malogo-taza",
-          "eventTitle": "Маша — УЗИ малого таза — 14.05.2026",
-          "eventHref": "/MedsDataBase/events/2026-05-14-masha-uzi-malogo-taza",
-          "documentIds": [
-            "825d960340175ba2"
-          ]
         }
       ],
       "track": [
+        "2026-05-19: Низкий ферритин и динамику самочувствия на фоне назначенного курса железа.",
+        "2026-05-19: Дальнейшие гинекологические рекомендации по восстановлению тазового дна.",
+        "2026-05-19: Вакцинацию Гардасил по новой схеме, если врач подтвердит план.",
         "2026-05-14: В осмотре указано незначительное зияние половой щели и опущение больше задней стенки влагалища.",
         "2026-05-14: Запланирована консультация акушера-гинеколога по результатам обследования на 19.05.2026 16:30.",
         "2026-05-14: Документ относится к послеродовому восстановлению мышц тазового дна.",
@@ -4360,12 +4725,39 @@
         "2026-04-13: Контрольный чек-ап в середине мая.",
         "2026-04-10: Послеродовое самочувствие и жалобы в динамике.",
         "2026-04-10: Дальнейшее наблюдение у акушера-гинеколога после родов.",
-        "2026-03-26: Использовать результат как часть динамики наблюдения беременности.",
-        "2026-03-26: Сопоставлять с последующими акушерскими осмотрами.",
-        "2026-03-26: Использовать как электронную версию результата КТГ от 26.03.2026.",
-        "2026-03-25: Динамику самочувствия в последние недели беременности."
+        "2026-03-26: Использовать результат как часть динамики наблюдения беременности."
       ],
       "trackEvidence": [
+        {
+          "text": "Низкий ферритин и динамику самочувствия на фоне назначенного курса железа.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Дальнейшие гинекологические рекомендации по восстановлению тазового дна.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Вакцинацию Гардасил по новой схеме, если врач подтвердит план.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
         {
           "text": "В осмотре указано незначительное зияние половой щели и опущение больше задней стенки влагалища.",
           "date": "2026-05-14",
@@ -4476,40 +4868,13 @@
             "dba70f2d9d4b1b0b",
             "fe40e9854e288f71"
           ]
-        },
-        {
-          "text": "Сопоставлять с последующими акушерскими осмотрами.",
-          "date": "2026-03-26",
-          "eventId": "2026-03-26-masha-kardiotokografiya",
-          "eventTitle": "2026-03-26 Маша — кардиотокография",
-          "eventHref": "/MedsDataBase/events/2026-03-26-masha-kardiotokografiya",
-          "documentIds": [
-            "dba70f2d9d4b1b0b",
-            "fe40e9854e288f71"
-          ]
-        },
-        {
-          "text": "Использовать как электронную версию результата КТГ от 26.03.2026.",
-          "date": "2026-03-26",
-          "eventId": "2026-03-26-masha-kardiotokografiya-elektronnyy-rezultat",
-          "eventTitle": "Маша — кардиотокография, электронный результат — 26.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-26-masha-kardiotokografiya-elektronnyy-rezultat",
-          "documentIds": [
-            "fe9c60f15ac75a08"
-          ]
-        },
-        {
-          "text": "Динамику самочувствия в последние недели беременности.",
-          "date": "2026-03-25",
-          "eventId": "2026-03-25-masha-akusher-ginekolog",
-          "eventTitle": "2026-03-25 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-03-25-masha-akusher-ginekolog",
-          "documentIds": [
-            "3c5a1e1d59e7ddba"
-          ]
         }
       ],
       "nextActions": [
+        "2026-05-19: Рекомендованы гимнастика Кегеля, БОС-терапия и RF-терапия ЕВА.",
+        "2026-05-19: Продолжать йодомарин 200 и витамин D 2000 МЕ по назначению в документе.",
+        "2026-05-19: По документу возможна вакцинация Гардасил по схеме 0–6 месяцев с учётом одной вакцины в 2022 году.",
+        "2026-05-19: Для железа указаны варианты: Гино-Тардиферон на ночь через день 1,5 месяца или Боноферлат по 1 таблетке ежедневно 1,5 месяца.",
         "2026-05-14: Рекомендованы гимнастика Кегеля, БОС-терапия, RF-терапия ЕВА.",
         "2026-05-14: Продолжать йодомарин 200 и витамин D 2000 МЕ по назначению в документе.",
         "2026-05-14: Рекомендована гимнастика Кегеля.",
@@ -4519,13 +4884,49 @@
         "2026-04-13: Продолжить приём витаминов.",
         "2026-04-13: Пройти контрольный чек-ап в середине мая.",
         "2026-04-10: В документе указано приглашение на очный приём.",
-        "2026-03-26: Дополнительных действий в заметке не выделено; подробности смотреть в исходных документах.",
-        "2026-03-26: Сопоставить с акушерскими осмотрами и выпиской по беременности.",
-        "2026-03-25: Подробные рекомендации и назначения сверять с исходным заключением.",
-        "2026-03-11: Подробные рекомендации и назначения сверять с исходным заключением.",
-        "2026-02-25: Подробные рекомендации и назначения сверять с исходным заключением."
+        "2026-03-26: Дополнительных действий в заметке не выделено; подробности смотреть в исходных документах."
       ],
       "nextActionEvidence": [
+        {
+          "text": "Рекомендованы гимнастика Кегеля, БОС-терапия и RF-терапия ЕВА.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Продолжать йодомарин 200 и витамин D 2000 МЕ по назначению в документе.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "По документу возможна вакцинация Гардасил по схеме 0–6 месяцев с учётом одной вакцины в 2022 году.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
+        {
+          "text": "Для железа указаны варианты: Гино-Тардиферон на ночь через день 1,5 месяца или Боноферлат по 1 таблетке ежедневно 1,5 месяца.",
+          "date": "2026-05-19",
+          "eventId": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "eventHref": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "documentIds": [
+            "173f47c7b5a71101"
+          ]
+        },
         {
           "text": "Рекомендованы гимнастика Кегеля, БОС-терапия, RF-терапия ЕВА.",
           "date": "2026-05-14",
@@ -4625,46 +5026,6 @@
           "documentIds": [
             "dba70f2d9d4b1b0b",
             "fe40e9854e288f71"
-          ]
-        },
-        {
-          "text": "Сопоставить с акушерскими осмотрами и выпиской по беременности.",
-          "date": "2026-03-26",
-          "eventId": "2026-03-26-masha-kardiotokografiya-elektronnyy-rezultat",
-          "eventTitle": "Маша — кардиотокография, электронный результат — 26.03.2026",
-          "eventHref": "/MedsDataBase/events/2026-03-26-masha-kardiotokografiya-elektronnyy-rezultat",
-          "documentIds": [
-            "fe9c60f15ac75a08"
-          ]
-        },
-        {
-          "text": "Подробные рекомендации и назначения сверять с исходным заключением.",
-          "date": "2026-03-25",
-          "eventId": "2026-03-25-masha-akusher-ginekolog",
-          "eventTitle": "2026-03-25 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-03-25-masha-akusher-ginekolog",
-          "documentIds": [
-            "3c5a1e1d59e7ddba"
-          ]
-        },
-        {
-          "text": "Подробные рекомендации и назначения сверять с исходным заключением.",
-          "date": "2026-03-11",
-          "eventId": "2026-03-11-masha-akusher-ginekolog",
-          "eventTitle": "2026-03-11 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-03-11-masha-akusher-ginekolog",
-          "documentIds": [
-            "bdb058682f70a188"
-          ]
-        },
-        {
-          "text": "Подробные рекомендации и назначения сверять с исходным заключением.",
-          "date": "2026-02-25",
-          "eventId": "2026-02-25-masha-akusher-ginekolog",
-          "eventTitle": "2026-02-25 Маша — акушер-гинеколог",
-          "eventHref": "/MedsDataBase/events/2026-02-25-masha-akusher-ginekolog",
-          "documentIds": [
-            "0f753e4305ec198c"
           ]
         }
       ],
@@ -4877,6 +5238,17 @@
           "doctor": "Воронкова Ольга Ивановна",
           "clinic": "АМедКлиник",
           "markdownPath": "01 Члены семьи/Маша/10 Исследования/10 Исследования 2026/АМедКлиник/2026-05-14 Маша — УЗИ малого таза.md"
+        },
+        {
+          "id": "2026-05-19-masha-akusher-ginekolog-onlayn",
+          "title": "Маша — акушер-гинеколог онлайн — 19.05.2026",
+          "href": "/MedsDataBase/events/2026-05-19-masha-akusher-ginekolog-onlayn",
+          "date": "2026-05-19",
+          "eventType": "Приём",
+          "specialty": "Гинекология",
+          "doctor": "Воронкова Ольга Ивановна",
+          "clinic": "АМедКлиник",
+          "markdownPath": "01 Члены семьи/Маша/02 Гинеколог/02 Гинеколог 2026/АМедКлиник/2026-05-19 Маша — акушер-гинеколог онлайн.md"
         }
       ],
       "documents": [
@@ -5026,6 +5398,13 @@
           "displayName": "2026-05-14 Маша — УЗИ малого таза.pdf",
           "href": "/MedsDataBase/documents/2026-05-14-masha-uzi-malogo-taza-825d9603",
           "eventTitle": "Маша — УЗИ малого таза — 14.05.2026"
+        },
+        {
+          "date": "2026-05-19",
+          "fileName": "2026-05-19 Маша — акушер-гинеколог онлайн.pdf",
+          "displayName": "2026-05-19 Маша — акушер-гинеколог онлайн.pdf",
+          "href": "/MedsDataBase/documents/2026-05-19-masha-akusher-ginekolog-onlayn-173f47c7",
+          "eventTitle": "Маша — акушер-гинеколог онлайн — 19.05.2026"
         }
       ]
     },
@@ -5040,7 +5419,7 @@
       "href": "/MedsDataBase/doctor-summaries/masha-laboratoriya",
       "markdownPath": "05 Индексы/Сводки врачу/Маша — Лаборатория.md",
       "sourceEventCount": 22,
-      "sourceDocumentCount": 55,
+      "sourceDocumentCount": 57,
       "latestEventDate": "2026-05-15",
       "profileContext": [
         "Дата рождения: 01.12.1996",
@@ -5272,7 +5651,9 @@
           "eventTitle": "Маша — жидкостная цитология и ВПЧ 21 тип — 14.05.2026",
           "eventHref": "/MedsDataBase/events/2026-05-14-masha-zhidkostnaya-tsitologiya-vpch-21",
           "documentIds": [
-            "97f1d8e58783699f"
+            "97f1d8e58783699f",
+            "cae755961650c3b0",
+            "b67ac2fbf7f9ce98"
           ]
         },
         {
@@ -5282,7 +5663,9 @@
           "eventTitle": "Маша — жидкостная цитология и ВПЧ 21 тип — 14.05.2026",
           "eventHref": "/MedsDataBase/events/2026-05-14-masha-zhidkostnaya-tsitologiya-vpch-21",
           "documentIds": [
-            "97f1d8e58783699f"
+            "97f1d8e58783699f",
+            "cae755961650c3b0",
+            "b67ac2fbf7f9ce98"
           ]
         },
         {
@@ -5444,7 +5827,9 @@
           "eventTitle": "Маша — жидкостная цитология и ВПЧ 21 тип — 14.05.2026",
           "eventHref": "/MedsDataBase/events/2026-05-14-masha-zhidkostnaya-tsitologiya-vpch-21",
           "documentIds": [
-            "97f1d8e58783699f"
+            "97f1d8e58783699f",
+            "cae755961650c3b0",
+            "b67ac2fbf7f9ce98"
           ]
         },
         {
@@ -6183,6 +6568,20 @@
           "fileName": "2026-05-14 Маша — жидкостная цитология и ВПЧ 21 тип.pdf",
           "displayName": "2026-05-14 Маша — жидкостная цитология и ВПЧ 21 тип.pdf",
           "href": "/MedsDataBase/documents/2026-05-14-masha-zhidkostnaya-tsitologiya-i-vpch-21-tip-97f1d8e5",
+          "eventTitle": "Маша — жидкостная цитология и ВПЧ 21 тип — 14.05.2026"
+        },
+        {
+          "date": "2026-05-14",
+          "fileName": "2026-05-14 Маша — жидкостная цитология и ВПЧ 21 тип полный результат.pdf",
+          "displayName": "2026-05-14 Маша — жидкостная цитология и ВПЧ 21 тип полный результат.pdf",
+          "href": "/MedsDataBase/documents/2026-05-14-masha-zhidkostnaya-tsitologiya-i-vpch-21-tip-polnyy-rezultat-cae75596",
+          "eventTitle": "Маша — жидкостная цитология и ВПЧ 21 тип — 14.05.2026"
+        },
+        {
+          "date": "2026-05-14",
+          "fileName": "2026-05-14 Маша — ВПЧ 21 тип приложение.pdf",
+          "displayName": "2026-05-14 Маша — ВПЧ 21 тип приложение.pdf",
+          "href": "/MedsDataBase/documents/2026-05-14-masha-vpch-21-tip-prilozhenie-b67ac2fb",
           "eventTitle": "Маша — жидкостная цитология и ВПЧ 21 тип — 14.05.2026"
         },
         {
