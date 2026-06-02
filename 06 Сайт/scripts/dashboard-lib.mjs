@@ -954,6 +954,33 @@ function metricStatus(record) {
   return { assessmentStatus: "unknown", assessmentLabel: "Недостаточно данных для оценки" };
 }
 
+function omega3RiskLabel(record) {
+  const value = typeof record.numeric_value === "number" ? record.numeric_value : null;
+  if (value === null) return "";
+
+  if (record.metric_id === "omega3_index_rbc") {
+    if (value < 4) return "высокий риск";
+    if (value <= 8) return "умеренный риск";
+    return "низкий риск";
+  }
+
+  if (record.metric_id === "omega3_index_whole_blood") {
+    if (value < 4.3) return "очень высокий риск";
+    if (value < 5.2) return "высокий риск";
+    if (value < 6.1) return "умеренный риск";
+    if (value <= 10.2) return "низкий риск";
+  }
+
+  return "";
+}
+
+function compactAssessmentLabel(record, status) {
+  const riskLabel = omega3RiskLabel(record);
+  if (riskLabel) return `${status.assessmentLabel} · ${riskLabel}`;
+  if (record.reference_source === "general_reference") return `${status.assessmentLabel} · справочный ориентир`;
+  return status.assessmentLabel;
+}
+
 function normalizeMetricRecord(record, eventsById, metricDefinitionsById) {
   const event = record.source_event_id ? eventsById.get(record.source_event_id) : undefined;
   const definition = metricDefinitionsById.get(record.metric_id) || {};
@@ -966,6 +993,7 @@ function normalizeMetricRecord(record, eventsById, metricDefinitionsById) {
     referenceDisplay: displayReference(record),
     assessmentStatus: status.assessmentStatus,
     assessmentLabel: status.assessmentLabel,
+    compactAssessmentLabel: compactAssessmentLabel(record, status),
     metricDescription: definition.description || "",
     metricMeaning: definition.meaning || "",
     metricDefaultUnit: definition.default_unit || "",
@@ -1064,7 +1092,13 @@ function buildMetricGroups(records) {
         doctorQuestions: doctorQuestionsForMetric(group, latest, previous),
       };
     })
-    .sort((a, b) => String(a.person).localeCompare(String(b.person), "ru") || String(a.metricLabel).localeCompare(String(b.metricLabel), "ru"));
+    .sort((a, b) => {
+      const statusPriority = { low: 0, high: 0, unknown: 1, normal: 2 };
+      const aPriority = statusPriority[a.latest?.assessmentStatus] ?? 1;
+      const bPriority = statusPriority[b.latest?.assessmentStatus] ?? 1;
+      if (aPriority !== bPriority) return aPriority - bPriority;
+      return String(a.person).localeCompare(String(b.person), "ru") || String(a.metricLabel).localeCompare(String(b.metricLabel), "ru");
+    });
 }
 
 function canonicalEventType(label) {
@@ -1309,6 +1343,10 @@ export async function loadDashboardData({ includeInbox = false, publicDocuments 
     profile.keyMetrics = metricGroups
       .filter((group) => group.person === profile.name && keyMetricIds.has(group.metricId))
       .sort((a, b) => {
+        const statusPriority = { low: 0, high: 0, unknown: 1, normal: 2 };
+        const aPriority = statusPriority[a.latest?.assessmentStatus] ?? 1;
+        const bPriority = statusPriority[b.latest?.assessmentStatus] ?? 1;
+        if (aPriority !== bPriority) return aPriority - bPriority;
         const aLatest = a.latest?.date || "";
         const bLatest = b.latest?.date || "";
         return bLatest.localeCompare(aLatest) || String(a.metricLabel).localeCompare(String(b.metricLabel), "ru");

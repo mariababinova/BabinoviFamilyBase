@@ -15,8 +15,7 @@ const questions = group.doctorQuestions || [];
 
 function statusBadgeLabel(record: any) {
   if (!record) return "Нет данных";
-  const reference = record.referenceDisplay && record.referenceDisplay !== "Референс не указан" ? ` · ${record.referenceDisplay}` : "";
-  return `${record.assessmentLabel}${reference}`;
+  return record.compactAssessmentLabel || record.assessmentLabel || "Нет данных";
 }
 ---
 
