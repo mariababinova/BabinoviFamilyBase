@@ -817,6 +817,10 @@ select {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.mini-stats.compact-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .soft-row,
 .task-card,
 .search-result {

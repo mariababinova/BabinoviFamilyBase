@@ -17,9 +17,8 @@ const { person } = Astro.props;
     </div>
     <span class="count-badge">{person.eventCount}</span>
   </div>
-  <dl class="mini-stats">
+  <dl class="mini-stats compact-stats">
     <div><dt>События</dt><dd>{person.eventCount}</dd></div>
-    <div><dt>Документы</dt><dd>{person.documentCount}</dd></div>
     <div>
       <dt>Вес</dt>
       <dd>{person.latestWeight?.displayValue || "нет"}</dd>

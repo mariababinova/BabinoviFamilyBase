@@ -248,6 +248,42 @@ export function parseKeyValueList(sections, name) {
   return result;
 }
 
+function pluralRu(number, one, few, many) {
+  const abs = Math.abs(number);
+  const lastTwo = abs % 100;
+  const last = abs % 10;
+  if (lastTwo >= 11 && lastTwo <= 14) return many;
+  if (last === 1) return one;
+  if (last >= 2 && last <= 4) return few;
+  return many;
+}
+
+function daysBetweenIso(startIso, endIso) {
+  const start = new Date(`${startIso}T00:00:00.000Z`);
+  const end = new Date(`${endIso}T00:00:00.000Z`);
+  if (Number.isNaN(start.valueOf()) || Number.isNaN(end.valueOf()) || end < start) return 0;
+  return Math.floor((end.getTime() - start.getTime()) / 86_400_000);
+}
+
+function monthsBetweenIso(startIso, endIso) {
+  const start = new Date(`${startIso}T00:00:00.000Z`);
+  const end = new Date(`${endIso}T00:00:00.000Z`);
+  if (Number.isNaN(start.valueOf()) || Number.isNaN(end.valueOf()) || end < start) return 0;
+  let months = (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + (end.getUTCMonth() - start.getUTCMonth());
+  if (end.getUTCDate() < start.getUTCDate()) months -= 1;
+  return Math.max(0, months);
+}
+
+function postpartumStatus(birthDateIso, label = "первых родов", today = todayIso()) {
+  if (!birthDateIso) return "";
+  const months = monthsBetweenIso(birthDateIso, today);
+  if (months > 0) {
+    return `${months} ${pluralRu(months, "месяц", "месяца", "месяцев")} после ${label}`;
+  }
+  const days = daysBetweenIso(birthDateIso, today);
+  return `${days} ${pluralRu(days, "день", "дня", "дней")} после ${label}`;
+}
+
 async function walk(dir, predicate, output = []) {
   if (!fs.existsSync(dir)) return output;
   const entries = await fsp.readdir(dir, { withFileTypes: true });
@@ -483,6 +519,8 @@ function normalizeProfile(filePath, data, body) {
   const person = data.person || memberNameFromPath(filePath);
   const id = data.id || `profile-${slugify(person)}`;
   const birthDate = isoDateFromText(info["Дата рождения"]);
+  const postpartumBirthDate = isoDateFromText(data.postpartum_birth_date || important["Дата родов"]);
+  const computedImportantStatus = postpartumStatus(postpartumBirthDate, data.postpartum_birth_label || "первых родов");
 
   return {
     id,
@@ -500,7 +538,8 @@ function normalizeProfile(filePath, data, body) {
     chronicConditions: important["Хронические заболевания"] ? [important["Хронические заболевания"]] : [],
     currentMedications: important["Текущие препараты"] ? [important["Текущие препараты"]] : [],
     currentTreatments: important["Текущие курсы лечения"] ? [important["Текущие курсы лечения"]] : [],
-    importantStatus: important["Беременность / важный статус"] || "",
+    postpartumBirthDate,
+    importantStatus: computedImportantStatus || important["Беременность / важный статус"] || "",
     recentImportantEvents: sectionList(sections, "Последние важные события"),
     profileTasks: sectionList(sections, "Ближайшие задачи"),
     eventCount: 0,
