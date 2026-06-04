@@ -127,6 +127,11 @@ const latestWeightDateText = latestWeightData?.date ? `на ${formatDateShort(la
   <script>
     const form = document.querySelector("[data-weight-form]") as HTMLFormElement | null;
     const status = document.querySelector("[data-weight-form-status]") as HTMLElement | null;
+    const configuredUploadApiBase = import.meta.env.PUBLIC_UPLOAD_API_BASE || "";
+    const defaultProductionApiBase = "https://meds-database-site.vercel.app";
+    const apiBase =
+      configuredUploadApiBase ||
+      (window.location.hostname.endsWith("github.io") ? defaultProductionApiBase : "");
 
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -145,7 +150,7 @@ const latestWeightDateText = latestWeightData?.date ? `на ${formatDateShort(la
       submitButton?.setAttribute("disabled", "disabled");
 
       try {
-        const response = await fetch("/api/metrics/weight", {
+        const response = await fetch(`${apiBase}/api/metrics/weight`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
