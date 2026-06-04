@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-06-04T13:34:40.633Z",
+  "records": [
+    {
+      "id": "site-upload-20260604133440-qgieo5rg",
+      "status": "uploaded",
+      "source": "site-upload",
+      "uploaded_at": "2026-06-04T13:34:40.633Z",
+      "person_id": "profile-nika",
+      "person_name": "Ника",
+      "original_name": "2026_05_26_Осмотр_детского_офтальмолога.pdf",
+      "note": "",
+      "blob": {
+        "url": "https://yklcc8ngo9ahgvuz.private.blob.vercel-storage.com/incoming/2026-06-04/profile-nika/2026_05_26_%D0%9E%D1%81%D0%BC%D0%BE%D1%82%D1%80_%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D0%BE%D1%84%D1%82%D0%B0%D0%BB%D1%8C%D0%BC%D0%BE%D0%BB%D0%BE%D0%B3%D0%B0-alrdS2uL2EnxLjJ1sZ2WFBYCLPziw0.pdf",
+        "download_url": "https://yklcc8ngo9ahgvuz.private.blob.vercel-storage.com/incoming/2026-06-04/profile-nika/2026_05_26_%D0%9E%D1%81%D0%BC%D0%BE%D1%82%D1%80_%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D0%BE%D1%84%D1%82%D0%B0%D0%BB%D1%8C%D0%BC%D0%BE%D0%BB%D0%BE%D0%B3%D0%B0-alrdS2uL2EnxLjJ1sZ2WFBYCLPziw0.pdf?download=1",
+        "pathname": "incoming/2026-06-04/profile-nika/2026_05_26_Осмотр_детского_офтальмолога-alrdS2uL2EnxLjJ1sZ2WFBYCLPziw0.pdf",
+        "content_type": "application/pdf",
+        "size": 27956
+      },
+      "next_step": "download-to-intake-and-run-agent"
+    }
+  ]
+}
