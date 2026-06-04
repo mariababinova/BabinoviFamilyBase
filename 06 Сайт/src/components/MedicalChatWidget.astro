@@ -22,8 +22,61 @@
     setOptions?: (options: Record<string, unknown>) => void;
   };
 
+  const vercelApiOrigin = "https://meds-database-site.vercel.app";
+
+  function defaultApiEndpoint(path: string) {
+    if (window.location.hostname.endsWith("github.io")) {
+      return `${vercelApiOrigin}${path}`;
+    }
+
+    return path;
+  }
+
   const endpoint =
-    import.meta.env.PUBLIC_CHATKIT_SESSION_ENDPOINT || "/api/chatkit/session";
+    import.meta.env.PUBLIC_CHATKIT_SESSION_ENDPOINT ||
+    defaultApiEndpoint("/api/chatkit/session");
+  const medicalContextEndpoint =
+    import.meta.env.PUBLIC_MEDICAL_CONTEXT_ENDPOINT ||
+    defaultApiEndpoint("/api/medical-context/search");
+
+  function chatFallback() {
+    return document.getElementById("chatkit-fallback");
+  }
+
+  function setChatFallback(message: string, tone: "loading" | "error" = "loading") {
+    const fallback = chatFallback();
+    if (!fallback) return;
+    fallback.hidden = false;
+    fallback.textContent = message;
+    fallback.setAttribute("data-tone", tone);
+  }
+
+  function hideChatFallback() {
+    const fallback = chatFallback();
+    if (fallback) fallback.hidden = true;
+  }
+
+  function hideLoadingFallback(delayMs = 0) {
+    window.setTimeout(() => {
+      const fallback = chatFallback();
+      if (fallback && fallback.getAttribute("data-tone") !== "error") {
+        fallback.hidden = true;
+      }
+    }, delayMs);
+  }
+
+  async function readJsonResponse(response: Response) {
+    const text = await response.text();
+    if (!text) return {};
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return {
+        error: `Сервер вернул неожиданный ответ (${response.status}).`,
+      };
+    }
+  }
 
   function getStableUserId() {
     const key = "meds-db-chat-user";
@@ -38,7 +91,12 @@
   }
 
   async function getClientSecret(currentClientSecret?: string) {
-    if (currentClientSecret) return currentClientSecret;
+    if (currentClientSecret) {
+      hideChatFallback();
+      return currentClientSecret;
+    }
+
+    setChatFallback("Открываю сессию чата...");
 
     const response = await fetch(endpoint, {
       method: "POST",
@@ -46,16 +104,19 @@
       body: JSON.stringify({ user: getStableUserId() }),
     });
 
-    const payload = await response.json();
+    const payload = await readJsonResponse(response);
     if (!response.ok || !payload.client_secret) {
-      throw new Error(payload.error || "Не удалось открыть сессию ChatKit.");
+      const message = payload.error || "Не удалось открыть сессию ChatKit.";
+      setChatFallback(message, "error");
+      throw new Error(message);
     }
 
+    hideChatFallback();
     return payload.client_secret;
   }
 
   async function searchMedicalContext(params?: SearchParams) {
-    const response = await fetch("/api/medical-context/search", {
+    const response = await fetch(medicalContextEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -65,7 +126,7 @@
       }),
     });
 
-    const payload = await response.json();
+    const payload = await readJsonResponse(response);
     if (!response.ok) {
       return {
         error: payload.error || "Не удалось найти данные в медицинском индексе.",
@@ -77,12 +138,16 @@
 
   function configureChatKit() {
     const chatkit = document.getElementById("medical-chatkit") as ChatKitElement | null;
-    const fallback = document.getElementById("chatkit-fallback");
 
     if (!chatkit || typeof chatkit.setOptions !== "function") {
       window.setTimeout(configureChatKit, 100);
       return;
     }
+
+    chatkit.addEventListener("chatkit.error", (event) => {
+      const detail = (event as CustomEvent<{ error?: Error }>).detail;
+      setChatFallback(detail?.error?.message || "Не удалось загрузить чат.", "error");
+    });
 
     chatkit.setOptions({
       api: { getClientSecret },
@@ -116,7 +181,7 @@
       history: { enabled: true },
     });
 
-    fallback?.remove();
+    hideLoadingFallback(2500);
   }
 
   const toggle = document.querySelector("[data-chat-toggle]");

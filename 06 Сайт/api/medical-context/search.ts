@@ -2,10 +2,28 @@ import fs from "node:fs";
 import path from "node:path";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-const allowedOrigin = process.env.CHATKIT_ALLOWED_ORIGIN || "*";
+const configuredAllowedOrigins = (process.env.CHATKIT_ALLOWED_ORIGIN || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const defaultAllowedOrigins = [
+  "https://meds-database-site.vercel.app",
+  "https://ulyana19svlv.github.io",
+];
 
-function setCors(res: VercelResponse) {
-  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+function allowedOriginFor(req: VercelRequest) {
+  if (configuredAllowedOrigins.includes("*")) return "*";
+
+  const originHeader = req.headers.origin;
+  const origin = Array.isArray(originHeader) ? originHeader[0] : originHeader;
+  const allowedOrigins = new Set([...configuredAllowedOrigins, ...defaultAllowedOrigins]);
+
+  if (origin && allowedOrigins.has(origin)) return origin;
+  return configuredAllowedOrigins[0] || defaultAllowedOrigins[0];
+}
+
+function setCors(req: VercelRequest, res: VercelResponse) {
+  res.setHeader("Access-Control-Allow-Origin", allowedOriginFor(req));
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 }
@@ -74,7 +92,7 @@ function compactResult(item: any, type: string) {
 }
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
-  setCors(res);
+  setCors(req, res);
 
   if (req.method === "OPTIONS") {
     return res.status(204).end();
