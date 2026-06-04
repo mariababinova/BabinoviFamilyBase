@@ -1,0 +1,217 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { pageHref } from "../lib/ui";
+---
+
+<AppLayout title="Очередь загрузок · Медицинская база">
+  <section class="page-header upload-header">
+    <div>
+      <p class="eyebrow">Intake</p>
+      <h1>Очередь загрузок</h1>
+      <p>Файлы, которые уже приняты с сайта и ждут разбора перед добавлением в карточки людей.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button secondary" href={pageHref("/upload")}>Загрузить еще</a>
+      <button class="button" type="button" data-refresh-queue>Обновить</button>
+    </div>
+  </section>
+
+  <section class="queue-summary" aria-label="Сводка очереди">
+    <div class="metric-card">
+      <span>Всего файлов</span>
+      <strong data-total-count>0</strong>
+    </div>
+    <div class="metric-card">
+      <span>Ждут разбора</span>
+      <strong data-waiting-count>0</strong>
+    </div>
+    <div class="metric-card">
+      <span>Профилей</span>
+      <strong data-people-count>0</strong>
+    </div>
+    <div class="metric-card">
+      <span>Обновлено</span>
+      <strong data-updated-at>...</strong>
+    </div>
+  </section>
+
+  <section class="queue-panel" aria-label="Загруженные документы">
+    <div class="queue-panel-header">
+      <div>
+        <h2>Документы на разбор</h2>
+        <p data-queue-caption>Загружаю очередь...</p>
+      </div>
+    </div>
+    <div class="queue-list" data-queue-list>
+      <article class="queue-card skeleton">
+        <div>
+          <span class="queue-status">загрузка</span>
+          <h3>Проверяю очередь</h3>
+          <p>Сейчас подтяну последние файлы из intake.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script>
+    type QueueRecord = {
+      id?: string;
+      status?: string;
+      uploaded_at?: string;
+      person_id?: string;
+      person_name?: string;
+      original_name?: string;
+      note?: string;
+      next_step?: string;
+      blob?: {
+        content_type?: string;
+        size?: number;
+      };
+    };
+
+    const refreshButton = document.querySelector<HTMLButtonElement>("[data-refresh-queue]");
+    const listEl = document.querySelector<HTMLElement>("[data-queue-list]");
+    const captionEl = document.querySelector<HTMLElement>("[data-queue-caption]");
+    const totalEl = document.querySelector<HTMLElement>("[data-total-count]");
+    const waitingEl = document.querySelector<HTMLElement>("[data-waiting-count]");
+    const peopleEl = document.querySelector<HTMLElement>("[data-people-count]");
+    const updatedEl = document.querySelector<HTMLElement>("[data-updated-at]");
+
+    const configuredUploadApiBase = import.meta.env.PUBLIC_UPLOAD_API_BASE || "";
+    const defaultProductionApiBase = "https://meds-database-site.vercel.app";
+    const remoteHosts = ["localhost", "127.0.0.1"];
+    const useRemoteApi =
+      window.location.hostname.endsWith("github.io") || remoteHosts.includes(window.location.hostname);
+    const apiBase = configuredUploadApiBase || (useRemoteApi ? defaultProductionApiBase : "");
+
+    function formatDate(value: string | undefined) {
+      if (!value) return "не указано";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleString("ru-RU", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    function formatSize(bytes: number) {
+      if (!Number.isFinite(bytes) || bytes <= 0) return "размер не указан";
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} КБ`;
+      return `${(bytes / 1024 / 1024).toFixed(1)} МБ`;
+    }
+
+    function statusLabel(status: string | undefined) {
+      const normalized = String(status || "").toLowerCase();
+      if (normalized === "uploaded") return "ждет разбора";
+      if (normalized === "processed") return "разобрано";
+      if (normalized === "failed") return "ошибка";
+      return status || "без статуса";
+    }
+
+    function statusTone(status: string | undefined) {
+      const normalized = String(status || "").toLowerCase();
+      if (normalized === "processed") return "success";
+      if (normalized === "failed") return "error";
+      return "waiting";
+    }
+
+    function escapeHtml(value: unknown) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderRecords(records: QueueRecord[]) {
+      if (!listEl) return;
+      if (!records.length) {
+        listEl.innerHTML = `
+          <article class="queue-empty">
+            <h3>Очередь пустая</h3>
+            <p>Пока нет файлов, которые ждут разбора.</p>
+          </article>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = records
+        .map((record) => {
+          const fileName = escapeHtml(record.original_name || "Документ без названия");
+          const person = escapeHtml(record.person_name || "Профиль не указан");
+          const note = record.note ? `<p class="queue-note">${escapeHtml(record.note)}</p>` : "";
+          const type = escapeHtml(record.blob?.content_type || "тип не указан");
+          const nextStep = escapeHtml(record.next_step || "download-to-intake-and-run-agent");
+          const status = escapeHtml(statusLabel(record.status));
+          const tone = escapeHtml(statusTone(record.status));
+
+          return `
+            <article class="queue-card">
+              <div class="queue-card-main">
+                <span class="queue-status" data-tone="${tone}">${status}</span>
+                <h3>${fileName}</h3>
+                <div class="queue-meta">
+                  <span>${person}</span>
+                  <span>${escapeHtml(formatDate(record.uploaded_at))}</span>
+                  <span>${escapeHtml(formatSize(Number(record.blob?.size) || 0))}</span>
+                  <span>${type}</span>
+                </div>
+                ${note}
+              </div>
+              <div class="queue-next-step">
+                <span>Следующий шаг</span>
+                <strong>${nextStep}</strong>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    async function loadQueue() {
+      if (refreshButton) refreshButton.disabled = true;
+      if (captionEl) captionEl.textContent = "Обновляю очередь...";
+
+      try {
+        const response = await fetch(`${apiBase}/api/uploads/queue`, { cache: "no-store" });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload?.error || "Не удалось получить очередь загрузок.");
+        }
+
+        const records: QueueRecord[] = Array.isArray(payload.records) ? payload.records : [];
+        const waiting = records.filter((record) => String(record.status || "uploaded").toLowerCase() === "uploaded");
+        const people = new Set(records.map((record) => record.person_name || record.person_id).filter(Boolean));
+
+        if (totalEl) totalEl.textContent = String(records.length);
+        if (waitingEl) waitingEl.textContent = String(waiting.length);
+        if (peopleEl) peopleEl.textContent = String(people.size);
+        if (updatedEl) updatedEl.textContent = formatDate(payload.updated_at);
+        if (captionEl) {
+          captionEl.textContent = records.length
+            ? `${records.length} файлов в очереди, ${waiting.length} ждут разбора.`
+            : "Нет файлов, ожидающих разбора.";
+        }
+        renderRecords(records);
+      } catch (error) {
+        if (captionEl) captionEl.textContent = "Очередь не загрузилась.";
+        if (listEl) {
+          listEl.innerHTML = `
+            <article class="queue-empty error">
+              <h3>Не удалось прочитать очередь</h3>
+              <p>${escapeHtml(error instanceof Error ? error.message : "Неизвестная ошибка.")}</p>
+            </article>
+          `;
+        }
+      } finally {
+        if (refreshButton) refreshButton.disabled = false;
+      }
+    }
+
+    refreshButton?.addEventListener("click", loadQueue);
+    loadQueue();
+  </script>
+</AppLayout>

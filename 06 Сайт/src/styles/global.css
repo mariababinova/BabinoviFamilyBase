@@ -1053,6 +1053,7 @@ select {
   background: var(--accent);
   color: #fff;
   font-weight: 750;
+  text-decoration: none;
   box-shadow: 4px 4px 0 rgba(23, 27, 29, 0.12);
 }
 
@@ -1101,7 +1102,8 @@ select {
 }
 
 .upload-header {
-  grid-template-columns: minmax(0, 760px);
+  grid-template-columns: minmax(0, 760px) auto;
+  align-items: end;
 }
 
 .upload-workbench {
@@ -1229,6 +1231,178 @@ select {
 .upload-flow span {
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.queue-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.queue-summary .metric-card {
+  min-height: 110px;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.queue-summary .metric-card span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.queue-summary .metric-card strong {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.queue-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.queue-panel-header {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.queue-panel-header h2 {
+  margin: 0;
+}
+
+.queue-panel-header p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+}
+
+.queue-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.queue-card,
+.queue-empty {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.28fr);
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.queue-card.skeleton {
+  grid-template-columns: 1fr;
+  color: var(--muted);
+}
+
+.queue-empty {
+  grid-template-columns: 1fr;
+  color: var(--muted);
+}
+
+.queue-empty.error {
+  color: var(--danger);
+}
+
+.queue-card h3,
+.queue-empty h3 {
+  margin: 0.45rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.queue-card p,
+.queue-empty p {
+  margin: 0.35rem 0 0;
+}
+
+.queue-status {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 28px;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(32, 36, 38, 0.16);
+  border-radius: 999px;
+  background: #fff7e8;
+  color: #7a4f12;
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.queue-status[data-tone="success"] {
+  background: #e9f8ef;
+  color: #17613a;
+}
+
+.queue-status[data-tone="error"] {
+  background: #fff0ef;
+  color: var(--danger);
+}
+
+.queue-status[data-tone="waiting"] {
+  background: #fff7e8;
+  color: #7a4f12;
+}
+
+.queue-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.queue-meta span {
+  min-height: 28px;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(147, 223, 255, 0.22);
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.queue-note {
+  color: var(--text);
+  font-weight: 650;
+}
+
+.queue-next-step {
+  display: grid;
+  gap: 0.35rem;
+  align-content: center;
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid rgba(32, 36, 38, 0.14);
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.queue-next-step span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.queue-next-step strong {
+  overflow-wrap: anywhere;
+  font-size: 0.92rem;
 }
 
 .weight-form label {
@@ -1648,7 +1822,16 @@ openai-chatkit {
   .metrics-summary,
   .metrics-filter,
   .metric-grid,
+  .queue-summary,
   .upload-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    justify-content: flex-start;
+  }
+
+  .queue-card {
     grid-template-columns: 1fr;
   }
 
