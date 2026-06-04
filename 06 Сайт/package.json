@@ -22,6 +22,7 @@
     "validate:privacy": "node scripts/validate-derived-privacy.mjs",
     "dev:data": "node scripts/generate-data.mjs --dev-assets",
     "dev": "astro dev --host 127.0.0.1",
+    "dev:upload": "node scripts/local-upload-dev-server.mjs",
     "check": "astro check",
     "validate:pages-artifact": "node scripts/validate-pages-artifact.mjs",
     "refresh:derived": "node scripts/tasks-agent.mjs && node scripts/doctor-summary-agent.mjs && node scripts/generate-data.mjs",
@@ -34,10 +35,12 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@openai/chatkit": "^1.7.0",
+    "@types/formidable": "^3.5.1",
+    "@vercel/blob": "^2.4.0",
     "@vercel/node": "^5.5.0",
     "astro": "^5.15.6",
+    "formidable": "^3.5.4",
     "gray-matter": "^4.0.3",
     "typescript": "^5.9.3"
-  },
-  "devDependencies": {}
+  }
 }

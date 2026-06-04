@@ -1,0 +1,215 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { dashboard } from "../lib/ui";
+
+const people = dashboard.people || [];
+---
+
+<AppLayout title="Загрузка документов · Медицинская база">
+  <section class="page-header upload-header">
+    <div>
+      <p class="eyebrow">Intake</p>
+      <h1>Загрузка документов</h1>
+      <p>Новые файлы попадают в очередь разбора и не становятся опубликованными выводами без проверки.</p>
+    </div>
+  </section>
+
+  <section class="upload-workbench">
+    <form class="card upload-form" data-upload-form>
+      <label class="upload-dropzone" data-dropzone>
+        <input
+          data-file-input
+          type="file"
+          multiple
+          accept="application/pdf,image/jpeg,image/png,image/webp,text/plain"
+        />
+        <span data-file-label>Выбрать PDF, фото или тексты</span>
+        <small>До 25 МБ</small>
+      </label>
+
+      <div class="upload-fields">
+        <label>
+          Человек
+          <select data-person-select>
+            <option value="">Выберите профиль</option>
+            {people.map((person) => (
+              <option value={person.id} data-person-name={person.name}>{person.name}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Комментарий
+          <input data-note-input type="text" maxlength="1000" placeholder="Например: анализы после приема" />
+        </label>
+      </div>
+
+      <div class="upload-actions">
+        <button class="button" type="submit" data-submit-button>Загрузить</button>
+        <p class="form-status" data-upload-status aria-live="polite"></p>
+      </div>
+    </form>
+
+    <aside class="card upload-state-card">
+      <h2>Маршрут</h2>
+      <ol class="upload-flow">
+        <li><strong>Файл</strong><span>Blob-хранилище</span></li>
+        <li><strong>Запись</strong><span>очередь intake</span></li>
+        <li><strong>Разбор</strong><span>черновик AI</span></li>
+        <li><strong>Проверка</strong><span>задачи и карточка человека</span></li>
+      </ol>
+    </aside>
+  </section>
+
+  <script>
+    import { upload } from "@vercel/blob/client";
+
+    const form = document.querySelector<HTMLFormElement>("[data-upload-form]");
+    const fileInput = document.querySelector<HTMLInputElement>("[data-file-input]");
+    const fileLabel = document.querySelector<HTMLElement>("[data-file-label]");
+    const personSelect = document.querySelector<HTMLSelectElement>("[data-person-select]");
+    const noteInput = document.querySelector<HTMLInputElement>("[data-note-input]");
+    const statusEl = document.querySelector<HTMLElement>("[data-upload-status]");
+    const submitButton = document.querySelector<HTMLButtonElement>("[data-submit-button]");
+
+    const configuredUploadApiBase = import.meta.env.PUBLIC_UPLOAD_API_BASE || "";
+    const defaultProductionApiBase = "https://meds-database-site.vercel.app";
+    const apiBase =
+      configuredUploadApiBase ||
+      (window.location.hostname.endsWith("github.io") ? defaultProductionApiBase : "");
+    const maxBytes = 25 * 1024 * 1024;
+    const isLocalUpload =
+      window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
+
+    function setStatus(message: string, tone = "") {
+      if (!statusEl) return;
+      statusEl.textContent = message;
+      statusEl.dataset.tone = tone;
+    }
+
+    function safeFileName(name: string) {
+      return name
+        .normalize("NFKD")
+        .replace(/[^\w.\- а-яА-ЯёЁ]+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "")
+        .slice(0, 180) || "document";
+    }
+
+    fileInput?.addEventListener("change", () => {
+      const files = Array.from(fileInput.files || []);
+      if (fileLabel) {
+        fileLabel.textContent =
+          files.length > 1 ? `${files.length} файла выбрано` : files[0]?.name || "Выбрать PDF, фото или тексты";
+      }
+      setStatus("");
+    });
+
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const files = Array.from(fileInput?.files || []);
+      const selectedOption = personSelect?.selectedOptions?.[0];
+      const personId = personSelect?.value || "";
+      const personName = selectedOption?.dataset.personName || selectedOption?.textContent || "";
+      const note = noteInput?.value?.trim() || "";
+
+      if (!files.length) {
+        setStatus("Выберите один или несколько файлов.", "error");
+        return;
+      }
+      if (!personId) {
+        setStatus("Выберите профиль человека.", "error");
+        return;
+      }
+      const oversized = files.find((file) => file.size > maxBytes);
+      if (oversized) {
+        setStatus(`Файл больше 25 МБ: ${oversized.name}`, "error");
+        return;
+      }
+
+      if (submitButton) submitButton.disabled = true;
+      setStatus(files.length > 1 ? `Готовлю ${files.length} файла...` : "Готовлю файл...", "");
+
+      try {
+        const savedPaths: string[] = [];
+
+        for (let index = 0; index < files.length; index += 1) {
+          const file = files[index];
+          const ordinal = `${index + 1} из ${files.length}`;
+          const today = new Date().toISOString().slice(0, 10);
+          const pathname = `incoming/${today}/${personId}/${safeFileName(file.name)}`;
+          const clientPayload = JSON.stringify({
+            personId,
+            personName,
+            originalName: file.name,
+            note,
+          });
+
+          if (isLocalUpload) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("personId", personId);
+            formData.append("personName", personName);
+            formData.append("originalName", file.name);
+            formData.append("note", note);
+
+            setStatus(`Сохраняю локально: ${ordinal}`, "");
+            const localResponse = await fetch(`${apiBase}/api/uploads/local`, {
+              method: "POST",
+              body: formData,
+            });
+            const localText = await localResponse.text();
+            const localJson = localText ? JSON.parse(localText) : {};
+            if (!localResponse.ok) {
+              throw new Error(localJson?.error || `Не удалось сохранить файл: ${file.name}`);
+            }
+            savedPaths.push(localJson.relativePath || file.name);
+            continue;
+          }
+
+          const blob = await upload(pathname, file, {
+            access: "private",
+            handleUploadUrl: `${apiBase}/api/uploads/intake`,
+            clientPayload,
+            multipart: file.size > 5 * 1024 * 1024,
+            onUploadProgress: ({ percentage }) => {
+              setStatus(`Загружаю ${ordinal}: ${Math.round(percentage)}%`, "");
+            },
+          });
+
+          setStatus(`Регистрирую в очереди: ${ordinal}`, "");
+          const registerResponse = await fetch(`${apiBase}/api/uploads/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              blob,
+              personId,
+              personName,
+              originalName: file.name,
+              note,
+              size: file.size,
+            }),
+          });
+          const registerText = await registerResponse.text();
+          const registerJson = registerText ? JSON.parse(registerText) : {};
+          if (!registerResponse.ok) {
+            throw new Error(registerJson?.error || `Не удалось записать в очередь: ${file.name}`);
+          }
+          savedPaths.push(registerJson?.record?.original_name || file.name);
+        }
+
+        form?.reset();
+        if (fileLabel) fileLabel.textContent = "Выбрать PDF, фото или тексты";
+        setStatus(
+          files.length > 1
+            ? `Файлы приняты: ${savedPaths.length} из ${files.length}.`
+            : `Файл принят: ${savedPaths[0] || "очередь разбора"}.`,
+          "success",
+        );
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : "Загрузка не удалась.", "error");
+      } finally {
+        if (submitButton) submitButton.disabled = false;
+      }
+    });
+  </script>
+</AppLayout>

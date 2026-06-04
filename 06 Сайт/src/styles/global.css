@@ -1100,6 +1100,137 @@ select {
   gap: 0.7rem;
 }
 
+.upload-header {
+  grid-template-columns: minmax(0, 760px);
+}
+
+.upload-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.34fr);
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 2rem;
+}
+
+.upload-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.upload-dropzone {
+  display: grid;
+  place-items: center;
+  gap: 0.35rem;
+  min-height: 220px;
+  padding: 1.5rem;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 94% 10%, rgba(147, 223, 255, 0.46) 0 42px, transparent 43px),
+    #fff;
+  text-align: center;
+  cursor: pointer;
+}
+
+.upload-dropzone:hover {
+  border-color: var(--accent);
+  background:
+    radial-gradient(circle at 94% 10%, rgba(255, 143, 200, 0.36) 0 42px, transparent 43px),
+    #fff;
+}
+
+.upload-dropzone input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.upload-dropzone span {
+  color: var(--accent-dark);
+  font-size: 1.2rem;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.upload-dropzone small {
+  color: var(--muted);
+}
+
+.upload-fields {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.4fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.upload-fields label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 750;
+}
+
+.upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.upload-actions .button {
+  min-width: 160px;
+}
+
+.upload-actions .button[disabled] {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.upload-actions .form-status {
+  margin: 0;
+}
+
+.form-status[data-tone="success"] {
+  color: #17613a;
+  font-weight: 750;
+}
+
+.form-status[data-tone="error"] {
+  color: var(--danger);
+  font-weight: 750;
+}
+
+.upload-state-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.upload-flow {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.upload-flow li {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(32, 36, 38, 0.14);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.upload-flow span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .weight-form label {
   display: grid;
   gap: 0.35rem;
@@ -1500,6 +1631,7 @@ openai-chatkit {
   .detail-grid,
   .document-detail,
   .doctor-summary-grid,
+  .upload-workbench,
   .home-people-grid {
     grid-template-columns: 1fr;
   }
@@ -1515,7 +1647,8 @@ openai-chatkit {
 
   .metrics-summary,
   .metrics-filter,
-  .metric-grid {
+  .metric-grid,
+  .upload-fields {
     grid-template-columns: 1fr;
   }
 

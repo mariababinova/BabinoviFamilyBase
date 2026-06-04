@@ -11,6 +11,8 @@ interface Props {
 const { title, description = "Семейная медицинская база" } = Astro.props;
 const navItems = [
   { href: pageHref("/"), label: "Главная" },
+  { href: pageHref("/operations"), label: "Операции" },
+  { href: pageHref("/upload"), label: "Загрузка" },
 ];
 const people = dashboard.people;
 const currentPath = Astro.url.pathname;
