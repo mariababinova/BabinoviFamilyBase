@@ -1,7 +1,25 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-04T13:34:45.415Z",
+  "updated_at": "2026-06-04T13:34:47.354Z",
   "records": [
+    {
+      "id": "site-upload-20260604133447-sv5ujfl6",
+      "status": "uploaded",
+      "source": "site-upload",
+      "uploaded_at": "2026-06-04T13:34:47.354Z",
+      "person_id": "profile-nika",
+      "person_name": "Ника",
+      "original_name": "2026-05-26 Осмотр детского хирурга.pdf",
+      "note": "",
+      "blob": {
+        "url": "https://yklcc8ngo9ahgvuz.private.blob.vercel-storage.com/incoming/2026-06-04/profile-nika/2026-05-26%20%D0%9E%D1%81%D0%BC%D0%BE%D1%82%D1%80%20%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%BE%D0%B3%D0%BE%20%D1%85%D0%B8%D1%80%D1%83%D1%80%D0%B3%D0%B0-EIdIZXCFoFfqmYJA3YrtyiSYx9mrcm.pdf",
+        "download_url": "https://yklcc8ngo9ahgvuz.private.blob.vercel-storage.com/incoming/2026-06-04/profile-nika/2026-05-26%20%D0%9E%D1%81%D0%BC%D0%BE%D1%82%D1%80%20%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%BE%D0%B3%D0%BE%20%D1%85%D0%B8%D1%80%D1%83%D1%80%D0%B3%D0%B0-EIdIZXCFoFfqmYJA3YrtyiSYx9mrcm.pdf?download=1",
+        "pathname": "incoming/2026-06-04/profile-nika/2026-05-26 Осмотр детского хирурга-EIdIZXCFoFfqmYJA3YrtyiSYx9mrcm.pdf",
+        "content_type": "application/pdf",
+        "size": 22528
+      },
+      "next_step": "download-to-intake-and-run-agent"
+    },
     {
       "id": "site-upload-20260604133445-vyxivkvv",
       "status": "uploaded",
