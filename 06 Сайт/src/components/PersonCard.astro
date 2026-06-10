@@ -1,31 +1,38 @@
 ---
+import MetricIcon from "./MetricIcon.astro";
 import { ageText, formatDateShort, pageHref } from "../lib/ui";
 
 const { person } = Astro.props;
+const taskCount = person.nextTasks?.length || 0;
+const metricCount = person.keyMetrics?.length || 0;
 ---
 
 <article class="card person-card">
-  {person.photo && (
-    <a class="person-photo-link" href={person.href} aria-label={`Открыть профиль ${person.name}`}>
-      <img class="person-photo" src={pageHref(person.photo)} alt={person.name} loading="lazy" />
+  <div class="person-card-top">
+    <a class="person-avatar-link" href={person.href} aria-label={`Открыть профиль ${person.name}`}>
+      {person.photo ? (
+        <img class="person-avatar large" src={pageHref(person.photo)} alt={person.name} loading="lazy" />
+      ) : (
+        <span class="person-avatar large fallback" aria-hidden="true">{person.name.slice(0, 1)}</span>
+      )}
     </a>
-  )}
-  <div class="card-header">
     <div>
       <h3><a href={person.href}>{person.name}</a></h3>
       <p>{ageText(person.birthDate) || person.importantStatus || "Профиль"}</p>
     </div>
-    <span class="count-badge">{person.eventCount}</span>
   </div>
-  <dl class="mini-stats compact-stats">
+  <dl class="mini-stats person-stats">
     <div><dt>События</dt><dd>{person.eventCount}</dd></div>
+    <div><dt>Документы</dt><dd>{person.documentCount || 0}</dd></div>
+    <div><dt>Задачи</dt><dd>{taskCount}</dd></div>
     <div>
-      <dt>Вес</dt>
-      <dd>{person.latestWeight?.displayValue || "нет"}</dd>
+      <dt>Показатели</dt>
+      <dd>{metricCount}</dd>
     </div>
   </dl>
   {person.latestWeight && (
-    <a class="soft-row compact" href={person.weightMetric?.href || pageHref("/metrics")}>
+    <a class="soft-row compact metric-soft-row" href={person.weightMetric?.href || pageHref("/metrics")}>
+      <MetricIcon metricName="Вес" status="normal" class="compact" />
       <span>Вес на {formatDateShort(person.latestWeight.date)}</span>
       <strong>{person.latestWeight.displayValue}</strong>
     </a>
@@ -42,5 +49,6 @@ const { person } = Astro.props;
       <strong>{person.nextTasks[0].actionText}</strong>
     </a>
   )}
+  <a class="button secondary inline-button" href={person.href}>Открыть профиль</a>
 </article>
 

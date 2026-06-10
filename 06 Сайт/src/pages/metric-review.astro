@@ -1,5 +1,6 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
+import MetricIcon from "../components/MetricIcon.astro";
 import { dashboard, formatDateShort } from "../lib/ui";
 
 const operations = (dashboard.operations || {}) as any;
@@ -24,8 +25,13 @@ const resolved = metricCandidates.filter((candidate) => !pending.includes(candid
       <div class="stack-list">
         {pending.map((candidate) => (
           <article class="card">
-            <p class="eyebrow">{candidate.person || "Не указан"} · {candidate.metric_category || "Показатель"}</p>
-            <h3>{candidate.metric_label}</h3>
+            <div class="metric-title-line">
+              <MetricIcon metricName={candidate.metric_label} status={candidate.status || "needs_review"} />
+              <div>
+                <p class="eyebrow">{candidate.person || "Не указан"} · {candidate.metric_category || "Показатель"}</p>
+                <h3>{candidate.metric_label}</h3>
+              </div>
+            </div>
             <dl class="details-list">
               <div><dt>Дата</dt><dd>{candidate.date ? formatDateShort(candidate.date) : "Без даты"}</dd></div>
               <div><dt>Значение</dt><dd>{candidate.value_text}{candidate.unit ? ` ${candidate.unit}` : ""}</dd></div>

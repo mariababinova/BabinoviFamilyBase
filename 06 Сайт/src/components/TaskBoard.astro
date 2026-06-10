@@ -12,8 +12,8 @@ const groups = groupTasks(taskItems);
       <h3>{group.title}</h3>
       <div class="task-list" data-task-list>
         {group.tasks.map((task) => (
-          <a class="task-card" href={task.href || task.sourceHref} data-task-card data-due-date={task.dueDate || ""}>
-            <span class="task-status">{task.state.label}</span>
+          <a class:list={["task-card", task.state.bucket]} href={task.href || task.sourceHref} data-task-card data-due-date={task.dueDate || ""}>
+            <span class:list={["task-status", task.state.bucket]}>{task.state.label}</span>
             <span class="task-date">{formatDateShort(task.dueDate)}</span>
             <strong>{task.actionText}</strong>
             {task.items?.length > 0 && (

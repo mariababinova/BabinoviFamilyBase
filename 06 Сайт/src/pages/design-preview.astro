@@ -1,0 +1,2121 @@
+---
+import "../styles/global.css";
+import MetricIcon from "../components/MetricIcon.astro";
+import { ageText, dashboard, formatDateShort, pageHref } from "../lib/ui";
+
+const family = dashboard.people.slice(0, 4);
+const masha = family.find((person) => person.slug === "masha") || family[2] || family[0];
+const recentEvents = [...dashboard.events]
+  .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+  .slice(0, 4);
+const recentDocuments = [...dashboard.documents]
+  .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+  .slice(0, 4);
+const liveTasks = ([...(dashboard.tasks || [])] as any[]).slice(0, 4);
+
+const navItems = [
+  { label: "Главная", icon: "home", active: true, count: "" },
+  { label: "Медкарты", icon: "heart", active: false, count: "" },
+  { label: "Документы", icon: "folder", active: false, count: "" },
+  { label: "Задачи", icon: "check", active: false, count: "7" },
+  { label: "Показатели", icon: "chart", active: false, count: "" },
+  { label: "Загрузки", icon: "upload", active: false, count: "" },
+];
+
+const priorityStats = [
+  {
+    tone: "red",
+    metricName: "Ферритин",
+    value: "12.8",
+    unit: "мкг/л",
+    title: "Ферритин Маши ниже нормы",
+    meta: "Invitro · 08.05.2025 · референс 15-150",
+  },
+  {
+    tone: "yellow",
+    metricName: "",
+    value: "01.08",
+    unit: "срок",
+    title: "Сдать анализы и пройти УЗИ",
+    meta: "Эндокринология · связано с приёмом",
+  },
+  {
+    tone: "violet",
+    metricName: "",
+    value: "1",
+    unit: "PDF",
+    title: "Документ на проверке",
+    meta: "Нужна привязка показателей",
+  },
+  {
+    tone: "blue",
+    metricName: "",
+    value: "2",
+    unit: "приёма",
+    title: "На неделе",
+    meta: "Подготовить документы заранее",
+  },
+];
+
+const metrics = [
+  { tone: "red", name: "Ферритин", value: "12.8", unit: "мкг/л", date: "08.05.2025", status: "ниже нормы" },
+  { tone: "green", name: "Гемоглобин", value: "124", unit: "г/л", date: "08.05.2025", status: "в норме" },
+  { tone: "yellow", name: "ТТГ", value: "1.75", unit: "мкМЕ/мл", date: "14.05.2026", status: "на границе" },
+  { tone: "green", name: "Витамин D", value: "50", unit: "нг/мл", date: "11.05.2026", status: "в норме" },
+];
+
+const plannedTasks = [
+  {
+    tone: "red",
+    title: "Сдать анализы и пройти УЗИ в августе",
+    meta: "Маша · до 01.08.2026",
+    status: "высокий",
+  },
+  {
+    tone: "yellow",
+    title: "Контроль ферритина",
+    meta: "Маша · после курса Hema-Plex",
+    status: "плановый",
+  },
+  {
+    tone: "green",
+    title: "Повторный приём у гинеколога",
+    meta: "Маша · 19.05.2026",
+    status: "готово",
+  },
+];
+
+const reviewDocuments = [
+  {
+    tone: "violet",
+    title: "Анализ крови от 08.05.2025",
+    meta: "Invitro · извлечены показатели",
+    status: "на проверке",
+  },
+  {
+    tone: "green",
+    title: "УЗИ щитовидной железы",
+    meta: "14.05.2026 · привязано к событию",
+    status: "готово",
+  },
+];
+
+const mobileTabs = ["Сводка", "Задачи", "Показ.", "Ещё"];
+
+function initials(name: string) {
+  return name.slice(0, 1).toUpperCase();
+}
+
+function personPhoto(person: { photo?: string }) {
+  return person.photo ? pageHref(person.photo) : "";
+}
+
+function personNote(slug: string) {
+  const notes: Record<string, string> = {
+    aleksandr: "Онкология · контроль ПСА",
+    artem: "Гастроэнтерология · документы",
+    masha: "Эндокринология · ферритин",
+    nika: "Педиатрия · плановые осмотры",
+  };
+  return notes[slug] || "Медицинский профиль";
+}
+
+function taskTone(priority?: string) {
+  if (priority === "high") return "red";
+  if (priority === "medium") return "yellow";
+  return "blue";
+}
+
+const visibleTasks = liveTasks.length
+  ? liveTasks.slice(0, 3).map((task) => ({
+      tone: taskTone(task.priority),
+      href: task.href || pageHref("/tasks"),
+      title: task.actionText || task.title,
+      meta: `${task.person || "Маша"} · ${task.dueDate ? formatDateShort(task.dueDate) : task.specialty || "план"}`,
+      status: task.priority === "high" ? "высокий" : task.priority === "medium" ? "плановый" : task.status || "открыто",
+    }))
+  : plannedTasks.map((task) => ({
+      tone: task.tone,
+      href: pageHref("/tasks"),
+      title: task.title,
+      meta: task.meta,
+      status: task.status,
+    }));
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Design Preview · Dark Family OS</title>
+  </head>
+  <body class="os-body">
+    <main class="os-page">
+      <div class="os-shell">
+        <aside class="os-sidebar" aria-label="Навигация">
+          <a class="os-brand" href={pageHref("/design-preview")}>
+            <span class="os-brand-mark">+</span>
+            <span>
+              <strong>База Бабиновых</strong>
+              <small>Семейный портал</small>
+            </span>
+          </a>
+
+          <nav class="os-nav" aria-label="Разделы">
+            {navItems.map((item) => (
+              <a class:list={["os-nav-item", item.active && "active"]} href={pageHref("/design-preview")}>
+                <span class:list={["os-nav-glyph", item.icon]} aria-hidden="true"></span>
+                <span>{item.label}</span>
+                {item.count && <b>{item.count}</b>}
+              </a>
+            ))}
+          </nav>
+
+          <section class="os-family-nav" aria-label="Члены семьи">
+            <p>Члены семьи</p>
+            {family.map((person) => (
+              <a class:list={["os-family-nav-item", person.slug === "masha" && "active"]} href={pageHref("/design-preview")}>
+                {personPhoto(person) ? (
+                  <img src={personPhoto(person)} alt="" loading="lazy" />
+                ) : (
+                  <span>{initials(person.name)}</span>
+                )}
+                <strong>{person.name}</strong>
+              </a>
+            ))}
+          </section>
+
+          <div class="os-sidebar-bottom">
+            <a class="os-nav-item" href={pageHref("/design-preview")}>
+              <span class="os-nav-glyph settings" aria-hidden="true"></span>
+              <span>Настройки</span>
+            </a>
+            <div class="os-user">
+              <img src={pageHref("/people/masha.jpg")} alt="" loading="lazy" />
+              <span>
+                <strong>Ульяна</strong>
+                <small>Администратор</small>
+              </span>
+            </div>
+          </div>
+        </aside>
+
+        <section class="os-workspace">
+          <header class="os-topbar">
+            <label class="os-search">
+              <span aria-hidden="true"></span>
+              <input type="search" placeholder="Поиск по базе..." aria-label="Поиск по базе" />
+              <kbd>⌘ K</kbd>
+            </label>
+            <div class="os-top-actions">
+              <button type="button" aria-label="Уведомления">·</button>
+              <button type="button" aria-label="Справка">?</button>
+              <img src={pageHref("/people/masha.jpg")} alt="" loading="lazy" />
+            </div>
+          </header>
+
+          <div class="os-mobile-profile">
+            {masha && personPhoto(masha) ? (
+              <img src={personPhoto(masha)} alt="" loading="lazy" />
+            ) : (
+              <span>{masha ? initials(masha.name) : "М"}</span>
+            )}
+            <div>
+              <strong>{masha?.name || "Маша"}</strong>
+              <small>{masha ? `${ageText(masha.birthDate)} · ${personNote(masha.slug)}` : "Семейная медкарта"}</small>
+            </div>
+          </div>
+
+          <div class="os-canvas">
+            <section class="os-dashboard" aria-label="Медицинская база семьи">
+              <header class="os-heading">
+                <div>
+                  <h1>Медицинская база семьи</h1>
+                  <p>Документы, задачи, показатели и история здоровья по каждому члену семьи.</p>
+                </div>
+                <div class="os-heading-actions">
+                  <a href={pageHref("/upload")}>Загрузить документ</a>
+                  <a class="primary" href={pageHref("/tasks")}>Добавить задачу</a>
+                </div>
+              </header>
+
+              <section class="os-priority-panel" aria-labelledby="priority-title">
+                <div class="os-section-head">
+                  <div>
+                    <span>Операционная сводка</span>
+                    <h2 id="priority-title">Что важно сейчас</h2>
+                  </div>
+                  <a href={pageHref("/tasks")}>Перейти к задачам</a>
+                </div>
+                <div class="os-priority-grid">
+                  {priorityStats.map((item) => (
+                    <article class:list={["os-priority-card", item.tone]}>
+                      {item.metricName ? (
+                        <MetricIcon metricName={item.metricName} tone={item.tone} class="compact" />
+                      ) : (
+                        <span class="os-status-icon" aria-hidden="true"></span>
+                      )}
+                      <div class="os-priority-value">
+                        <strong>{item.value}</strong>
+                        <small>{item.unit}</small>
+                      </div>
+                      <div class="os-priority-copy">
+                        <b>{item.title}</b>
+                        <small>{item.meta}</small>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <div class="os-main-grid">
+                <div class="os-left-stack">
+                  <section class="os-panel os-family-panel">
+                  <div class="os-section-head compact">
+                    <h2>Члены семьи</h2>
+                    <a href={pageHref("/overview")}>Все профили</a>
+                  </div>
+                  <div class="os-people-grid">
+                    {family.map((person) => (
+                      <article class:list={["os-person-card", person.slug === "masha" && "selected"]}>
+                        <div class="os-person-photo">
+                          {personPhoto(person) ? (
+                            <img src={personPhoto(person)} alt={person.name} loading="lazy" />
+                          ) : (
+                            <span>{initials(person.name)}</span>
+                          )}
+                        </div>
+                        <div class="os-person-copy">
+                          <div>
+                            <strong>{person.name}</strong>
+                            <small>{ageText(person.birthDate) || "Профиль"}</small>
+                          </div>
+                          <p>{personNote(person.slug)}</p>
+                        </div>
+                        <dl>
+                          <div>
+                            <dt>Событий</dt>
+                            <dd>{person.eventCount}</dd>
+                          </div>
+                          <div>
+                            <dt>Задач</dt>
+                            <dd>{person.nextTasks?.length || 0}</dd>
+                          </div>
+                        </dl>
+                        <footer>
+                          <span>Последнее событие</span>
+                          <b>{person.latestEvent ? `${formatDateShort(person.latestEvent.date)} · ${person.latestEvent.specialty}` : "Нет событий"}</b>
+                        </footer>
+                      </article>
+                    ))}
+                  </div>
+                  </section>
+
+                  <div class="os-lower-grid">
+                    <section class="os-panel os-feed-panel">
+                      <div class="os-section-head compact">
+                        <h2>Лента событий</h2>
+                        <a href={pageHref("/events")}>Все события</a>
+                      </div>
+                      <div class="os-feed">
+                        {recentEvents.map((event, index) => (
+                          <a class:list={["os-feed-row", index === 0 && "blue", index === 1 && "green", index === 2 && "violet", index === 3 && "yellow"]} href={event.href}>
+                            <span class="os-status-icon" aria-hidden="true"></span>
+                            <span>
+                              <strong>{event.title}</strong>
+                              <small>{formatDateShort(event.date)} · {event.specialty} · источник: {event.sourceFileNames?.[0] || "запись"}</small>
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    </section>
+
+                    <section class="os-panel os-feed-panel">
+                      <div class="os-section-head compact">
+                        <h2>Последние документы</h2>
+                        <a href={pageHref("/documents")}>Все документы</a>
+                      </div>
+                      <div class="os-feed">
+                        {recentDocuments.map((document, index) => (
+                          <a class:list={["os-feed-row", index === 0 && "violet", index === 1 && "green", index === 2 && "blue", index === 3 && "yellow"]} href={document.href}>
+                            <span class="os-status-icon" aria-hidden="true"></span>
+                            <span>
+                              <strong>{document.displayName || document.fileName}</strong>
+                              <small>{formatDateShort(document.date)} · {document.person} · {document.linkStatusLabel}</small>
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    </section>
+                  </div>
+                </div>
+
+                <aside class="os-summary-stack" aria-label="Сводные виджеты">
+                  <section class="os-panel os-list-panel">
+                    <div class="os-section-head compact">
+                      <h2>Ключевые показатели</h2>
+                      <a href={pageHref("/metrics")}>Все</a>
+                    </div>
+                    <div class="os-list">
+                      {metrics.map((metric) => (
+                        <a class:list={["os-metric-row", metric.tone]} href={pageHref("/design-preview")}>
+                          <MetricIcon metricName={metric.name} tone={metric.tone} class="compact" />
+                          <span>
+                            <strong>{metric.name}</strong>
+                            <small>{metric.value} {metric.unit} · {metric.date}</small>
+                          </span>
+                          <b>{metric.status}</b>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section class="os-panel os-list-panel">
+                    <div class="os-section-head compact">
+                      <h2>Ближайшие задачи</h2>
+                      <a href={pageHref("/tasks")}>Все</a>
+                    </div>
+                    <div class="os-list">
+                      {visibleTasks.map((task) => (
+                        <a class:list={["os-task-row", task.tone]} href={task.href}>
+                          <span>
+                            <strong>{task.title}</strong>
+                            <small>{task.meta}</small>
+                          </span>
+                          <b>{task.status}</b>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+
+                  <aside class="os-detail-rail os-inline-detail" aria-label="Детали выбранного показателя">
+                    <div class="os-detail-head">
+                      <div>
+                        <MetricIcon metricName="Ферритин" tone="red" class="compact" />
+                        <small>Выбранный показатель</small>
+                        <h2>Ферритин</h2>
+                      </div>
+                      <button type="button" aria-label="Закрыть">×</button>
+                    </div>
+
+                    <section class="os-detail-value red">
+                      <div>
+                        <strong>12.8</strong>
+                        <span>мкг/л</span>
+                      </div>
+                      <b>ниже нормы</b>
+                    </section>
+
+                    <dl class="os-detail-meta">
+                      <div><dt>Дата</dt><dd>08.05.2025</dd></div>
+                      <div><dt>Источник</dt><dd>Invitro</dd></div>
+                      <div><dt>Референс</dt><dd>15-150 мкг/л</dd></div>
+                      <div><dt>Динамика</dt><dd>-0.2 мкг/л</dd></div>
+                    </dl>
+
+                    <section class="os-trend-card">
+                      <div class="os-detail-section-head">
+                        <h3>История значений</h3>
+                        <span>12 мес.</span>
+                      </div>
+                      <svg viewBox="0 0 280 96" role="img" aria-label="Динамика ферритина">
+                        <path class="range high" d="M12 20H268" />
+                        <path class="range low" d="M12 76H268" />
+                        <path class="trend" d="M12 56 C48 50, 58 50, 82 54 C120 62, 142 72, 178 74 C214 78, 238 80, 268 82" />
+                        <circle cx="12" cy="56" r="4" />
+                        <circle cx="82" cy="54" r="4" />
+                        <circle cx="178" cy="74" r="4" />
+                        <circle cx="268" cy="82" r="4" />
+                      </svg>
+                    </section>
+
+                    <section class="os-detail-section">
+                      <h3>Связи</h3>
+                      <a class="os-detail-link violet" href={pageHref("/documents")}>
+                        <strong>Анализ крови от 08.05.2025</strong>
+                        <small>Invitro · источник значения</small>
+                      </a>
+                      <a class="os-detail-link yellow" href={pageHref("/tasks")}>
+                        <strong>Контроль ферритина</strong>
+                        <small>через 6 недель · задача</small>
+                      </a>
+                    </section>
+                  </aside>
+
+                  <section class="os-panel os-list-panel">
+                    <div class="os-section-head compact">
+                      <h2>Документы на проверке</h2>
+                      <a href={pageHref("/documents")}>Все</a>
+                    </div>
+                    <div class="os-list">
+                      {reviewDocuments.map((document) => (
+                        <a class:list={["os-doc-row", document.tone]} href={pageHref("/documents")}>
+                          <span>
+                            <strong>{document.title}</strong>
+                            <small>{document.meta}</small>
+                          </span>
+                          <b>{document.status}</b>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                </aside>
+              </div>
+
+            </section>
+
+            <aside class="os-detail-rail" aria-label="Детали выбранного показателя">
+              <div class="os-detail-head">
+                <div>
+                  <MetricIcon metricName="Ферритин" tone="red" class="compact" />
+                  <small>Выбранный показатель</small>
+                  <h2>Ферритин</h2>
+                </div>
+                <button type="button" aria-label="Закрыть">×</button>
+              </div>
+
+              <section class="os-detail-value red">
+                <div>
+                  <strong>12.8</strong>
+                  <span>мкг/л</span>
+                </div>
+                <b>ниже нормы</b>
+              </section>
+
+              <dl class="os-detail-meta">
+                <div>
+                  <dt>Дата</dt>
+                  <dd>08.05.2025</dd>
+                </div>
+                <div>
+                  <dt>Источник</dt>
+                  <dd>Invitro</dd>
+                </div>
+                <div>
+                  <dt>Референс</dt>
+                  <dd>15-150 мкг/л</dd>
+                </div>
+                <div>
+                  <dt>Динамика</dt>
+                  <dd>-0.2 мкг/л</dd>
+                </div>
+              </dl>
+
+              <section class="os-trend-card">
+                <div class="os-detail-section-head">
+                  <h3>История значений</h3>
+                  <span>за 12 месяцев</span>
+                </div>
+                <svg viewBox="0 0 280 118" role="img" aria-label="Динамика ферритина">
+                  <path class="range high" d="M12 24H268" />
+                  <path class="range low" d="M12 94H268" />
+                  <path class="trend" d="M12 70 C48 64, 58 62, 82 66 C120 74, 142 90, 178 92 C214 95, 238 98, 268 100" />
+                  <circle cx="12" cy="70" r="4" />
+                  <circle cx="82" cy="66" r="4" />
+                  <circle cx="178" cy="92" r="4" />
+                  <circle cx="268" cy="100" r="4" />
+                </svg>
+                <div class="os-trend-scale"><span>15</span><span>150</span></div>
+              </section>
+
+              <section class="os-detail-section">
+                <h3>Интерпретация</h3>
+                <p>Пониженный уровень ферритина может указывать на дефицит железа. Рекомендовано обсудить дальнейшие действия с врачом.</p>
+              </section>
+
+              <section class="os-detail-section">
+                <h3>Связанные документы</h3>
+                <a class="os-detail-link violet" href={pageHref("/documents")}>
+                  <strong>Анализ крови от 08.05.2025</strong>
+                  <small>Invitro · PDF · источник значения</small>
+                </a>
+              </section>
+
+              <section class="os-detail-section">
+                <h3>Связанные задачи</h3>
+                <a class="os-detail-link yellow" href={pageHref("/tasks")}>
+                  <strong>Контроль ферритина</strong>
+                  <small>через 6 недель · плановый контроль</small>
+                </a>
+                <a class="os-detail-link blue" href={pageHref("/tasks")}>
+                  <strong>Сдать анализы и пройти УЗИ</strong>
+                  <small>до 01.08.2026 · следующий шаг</small>
+                </a>
+              </section>
+
+              <div class="os-detail-actions">
+                <a class="primary" href={pageHref("/tasks")}>Создать задачу</a>
+                <a href={pageHref("/metrics")}>Открыть показатель</a>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
+
+      <nav class="os-bottom-nav" aria-label="Нижняя навигация">
+        {mobileTabs.map((tab, index) => (
+          <a class:list={[index === 0 && "active"]} href={pageHref("/design-preview")}>{tab}</a>
+        ))}
+      </nav>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(astro-dev-toolbar) {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  :root {
+    --os-bg: #0e1217;
+    --os-sidebar: #0b0f14;
+    --os-surface: #141a22;
+    --os-surface-2: #19212b;
+    --os-surface-3: #202a36;
+    --os-border: rgba(255, 255, 255, 0.08);
+    --os-border-strong: rgba(255, 255, 255, 0.14);
+    --os-text: #f4f7fa;
+    --os-text-2: #a9b4c0;
+    --os-muted: #6f7a86;
+    --os-blue: #4f8cff;
+    --os-green: #4cd77d;
+    --os-red: #ff5c5c;
+    --os-yellow: #ffc83d;
+    --os-violet: #a970ff;
+    --os-blue-soft: rgba(79, 140, 255, 0.14);
+    --os-green-soft: rgba(76, 215, 125, 0.14);
+    --os-red-soft: rgba(255, 92, 92, 0.14);
+    --os-yellow-soft: rgba(255, 200, 61, 0.14);
+    --os-violet-soft: rgba(169, 112, 255, 0.16);
+  }
+
+  .os-body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+      radial-gradient(circle at top left, rgba(79, 140, 255, 0.08), transparent 34rem),
+      radial-gradient(circle at top right, rgba(76, 215, 125, 0.04), transparent 28rem),
+      var(--os-bg);
+    color: var(--os-text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    letter-spacing: 0;
+    overflow-x: hidden;
+  }
+
+  .os-body *,
+  .os-body *::before,
+  .os-body *::after {
+    box-sizing: border-box;
+  }
+
+  .os-body a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .os-page {
+    min-height: 100vh;
+    padding: 1rem;
+  }
+
+  .os-shell {
+    width: min(100%, 1510px);
+    min-height: calc(100vh - 2rem);
+    display: grid;
+    grid-template-columns: 224px minmax(0, 1fr);
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid var(--os-border);
+    border-radius: 24px;
+    background: rgba(11, 15, 20, 0.72);
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+  }
+
+  .os-sidebar {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 1.3rem;
+    padding: 1.15rem 1rem;
+    border-right: 1px solid var(--os-border);
+    background: linear-gradient(180deg, rgba(11, 15, 20, 0.98), rgba(14, 20, 27, 0.96));
+  }
+
+  .os-brand,
+  .os-nav-item,
+  .os-family-nav-item,
+  .os-user,
+  .os-top-actions,
+  .os-mobile-profile,
+  .os-person-copy > div,
+  .os-section-head,
+  .os-detail-head,
+  .os-detail-value,
+  .os-detail-section-head {
+    display: flex;
+    align-items: center;
+  }
+
+  .os-brand {
+    gap: 0.72rem;
+  }
+
+  .os-brand-mark {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border: 1px solid rgba(255, 92, 92, 0.7);
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255, 92, 92, 0.28), rgba(79, 140, 255, 0.14));
+    color: var(--os-text);
+    font-size: 1.35rem;
+    font-weight: 720;
+  }
+
+  .os-brand strong,
+  .os-user strong,
+  .os-person-copy strong,
+  .os-list strong,
+  .os-feed strong,
+  .os-detail-link strong {
+    display: block;
+    color: var(--os-text);
+    font-weight: 600;
+  }
+
+  .os-brand small,
+  .os-user small,
+  .os-family-nav p,
+  .os-person-copy small,
+  .os-person-copy p,
+  .os-priority-copy small,
+  .os-list small,
+  .os-feed small,
+  .os-detail-link small,
+  .os-detail-head small,
+  .os-detail-meta dt,
+  .os-detail-section p {
+    color: var(--os-text-2);
+  }
+
+  .os-nav,
+  .os-family-nav,
+  .os-sidebar-bottom,
+  .os-summary-stack,
+  .os-list,
+  .os-feed,
+  .os-detail-rail,
+  .os-detail-section,
+  .os-detail-actions {
+    display: grid;
+  }
+
+  .os-nav {
+    gap: 0.34rem;
+  }
+
+  .os-nav-item {
+    min-height: 36px;
+    gap: 0.62rem;
+    padding: 0.42rem 0.56rem;
+    border-radius: 12px;
+    color: var(--os-text-2);
+    font-weight: 520;
+  }
+
+  .os-nav-item.active,
+  .os-family-nav-item.active {
+    background: rgba(79, 140, 255, 0.16);
+    color: var(--os-text);
+  }
+
+  .os-nav-glyph {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    border: 1px solid var(--os-border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.025);
+    color: var(--os-text-2);
+  }
+
+  .os-nav-glyph::before,
+  .os-nav-glyph::after {
+    position: absolute;
+    content: "";
+    border-color: currentColor;
+  }
+
+  .os-nav-glyph.home::before {
+    inset: 9px 6px 6px;
+    border: 1.4px solid currentColor;
+    border-top: 0;
+    border-radius: 2px;
+  }
+
+  .os-nav-glyph.home::after {
+    left: 7px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-left: 1.4px solid currentColor;
+    border-top: 1.4px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .os-nav-glyph.heart::before {
+    left: 7px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border: 1.4px solid currentColor;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    transform: rotate(45deg);
+    border-radius: 2px;
+  }
+
+  .os-nav-glyph.heart::after {
+    left: 6px;
+    top: 5px;
+    width: 12px;
+    height: 8px;
+    border-top: 1.4px solid currentColor;
+    border-left: 1.4px solid currentColor;
+    border-right: 1.4px solid currentColor;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .os-nav-glyph.folder::before {
+    left: 6px;
+    top: 8px;
+    width: 12px;
+    height: 9px;
+    border: 1.4px solid currentColor;
+    border-radius: 2px;
+  }
+
+  .os-nav-glyph.folder::after {
+    left: 7px;
+    top: 6px;
+    width: 6px;
+    height: 3px;
+    border-top: 1.4px solid currentColor;
+    border-left: 1.4px solid currentColor;
+    border-right: 1.4px solid currentColor;
+    border-radius: 2px 2px 0 0;
+  }
+
+  .os-nav-glyph.check::before {
+    left: 6px;
+    top: 7px;
+    width: 12px;
+    height: 12px;
+    border: 1.4px solid currentColor;
+    border-radius: 3px;
+  }
+
+  .os-nav-glyph.check::after {
+    left: 9px;
+    top: 11px;
+    width: 7px;
+    height: 4px;
+    border-left: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+  }
+
+  .os-nav-glyph.chart::before {
+    left: 7px;
+    bottom: 6px;
+    width: 2px;
+    height: 6px;
+    background: currentColor;
+    box-shadow: 5px -4px 0 currentColor, 10px -8px 0 currentColor;
+    border-radius: 2px;
+  }
+
+  .os-nav-glyph.chart::after {
+    left: 6px;
+    bottom: 5px;
+    width: 12px;
+    border-bottom: 1.3px solid currentColor;
+  }
+
+  .os-nav-glyph.upload::before {
+    left: 7px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border-left: 1.4px solid currentColor;
+    border-top: 1.4px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .os-nav-glyph.upload::after {
+    left: 11px;
+    top: 8px;
+    height: 10px;
+    border-left: 1.5px solid currentColor;
+  }
+
+  .os-nav-glyph.settings::before {
+    left: 7px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border: 1.4px solid currentColor;
+    border-radius: 999px;
+  }
+
+  .os-nav-glyph.settings::after {
+    left: 11px;
+    top: 4px;
+    height: 16px;
+    border-left: 1.3px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .os-nav-item.active .os-nav-glyph {
+    border-color: rgba(79, 140, 255, 0.54);
+    background: var(--os-blue-soft);
+    color: var(--os-blue);
+  }
+
+  .os-nav-item b {
+    margin-left: auto;
+    min-width: 20px;
+    padding: 0.04rem 0.35rem;
+    border-radius: 999px;
+    background: var(--os-blue-soft);
+    color: var(--os-blue);
+    font-size: 0.72rem;
+    text-align: center;
+  }
+
+  .os-family-nav {
+    align-content: start;
+    gap: 0.4rem;
+  }
+
+  .os-family-nav p {
+    margin: 0 0 0.2rem;
+    padding-left: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .os-family-nav-item {
+    gap: 0.6rem;
+    min-height: 38px;
+    padding: 0.34rem 0.42rem;
+    border-radius: 12px;
+    color: var(--os-text-2);
+  }
+
+  .os-family-nav-item img,
+  .os-family-nav-item span,
+  .os-user img,
+  .os-top-actions img,
+  .os-mobile-profile img,
+  .os-mobile-profile > span {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+
+  .os-family-nav-item span,
+  .os-mobile-profile > span {
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(79, 140, 255, 0.4);
+    background: var(--os-blue-soft);
+    color: var(--os-blue);
+    font-weight: 680;
+  }
+
+  .os-sidebar-bottom {
+    gap: 0.7rem;
+  }
+
+  .os-user {
+    gap: 0.62rem;
+    padding: 0.62rem;
+    border: 1px solid var(--os-border);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .os-workspace {
+    min-width: 0;
+    background: rgba(14, 18, 23, 0.92);
+  }
+
+  .os-topbar {
+    min-height: 60px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.7rem 1.2rem;
+    border-bottom: 1px solid var(--os-border);
+    background: rgba(11, 15, 20, 0.4);
+  }
+
+  .os-search {
+    width: min(460px, 100%);
+    justify-self: center;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 0.62rem;
+    padding: 0 0.72rem;
+    border: 1px solid var(--os-border-strong);
+    border-radius: 13px;
+    background: rgba(10, 14, 19, 0.68);
+  }
+
+  .os-search span {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    border: 2px solid var(--os-muted);
+    border-radius: 999px;
+  }
+
+  .os-search input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--os-text);
+    font: inherit;
+  }
+
+  .os-search kbd {
+    padding: 0.08rem 0.4rem;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--os-muted);
+    font-size: 0.72rem;
+  }
+
+  .os-top-actions {
+    gap: 0.62rem;
+  }
+
+  .os-top-actions button,
+  .os-detail-head button {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--os-border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.035);
+    color: var(--os-text-2);
+  }
+
+  .os-mobile-profile {
+    display: none;
+  }
+
+  .os-canvas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .os-canvas > .os-detail-rail {
+    display: none;
+  }
+
+  .os-dashboard {
+    min-width: 0;
+    display: grid;
+    gap: 0.76rem;
+    align-content: start;
+  }
+
+  .os-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.1rem 0.2rem 0.15rem;
+  }
+
+  .os-heading h1 {
+    margin: 0 0 0.18rem;
+    font-size: clamp(1.32rem, 1.55vw, 1.62rem);
+    line-height: 1.1;
+    font-weight: 560;
+  }
+
+  .os-heading p {
+    margin: 0;
+    color: var(--os-text-2);
+    font-size: 0.84rem;
+  }
+
+  .os-heading-actions {
+    display: none;
+    gap: 0.55rem;
+  }
+
+  .os-heading-actions a,
+  .os-detail-actions a {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.32rem 0.65rem;
+    border: 1px solid var(--os-border-strong);
+    border-radius: 11px;
+    color: var(--os-text-2);
+    font-weight: 610;
+    white-space: nowrap;
+  }
+
+  .os-heading-actions a.primary,
+  .os-detail-actions a.primary {
+    border-color: rgba(79, 140, 255, 0.54);
+    background: var(--os-blue-soft);
+    color: var(--os-blue);
+  }
+
+  .os-panel,
+  .os-priority-panel,
+  .os-detail-rail {
+    border: 1px solid var(--os-border);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(24, 31, 40, 0.78), rgba(17, 23, 30, 0.94));
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+  }
+
+  .os-panel,
+  .os-priority-panel {
+    padding: 0.78rem;
+  }
+
+  .os-section-head {
+    justify-content: space-between;
+    gap: 0.9rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .os-section-head.compact {
+    margin-bottom: 0.5rem;
+  }
+
+  .os-section-head span {
+    display: block;
+    margin-bottom: 0.12rem;
+    color: var(--os-text-2);
+    font-size: 0.78rem;
+  }
+
+  .os-section-head h2 {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.16;
+    font-weight: 560;
+  }
+
+  .os-section-head a {
+    flex: 0 0 auto;
+    color: var(--os-blue);
+    font-size: 0.78rem;
+    font-weight: 560;
+  }
+
+  .os-priority-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.58rem;
+  }
+
+  .os-priority-card {
+    --tone: var(--os-blue);
+    --tone-bg: var(--os-blue-soft);
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 30px minmax(42px, auto) minmax(0, 1fr);
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 58px;
+    padding: 0.46rem;
+    border: 1px solid var(--os-border);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.022);
+  }
+
+  .os-priority-card.red,
+  .red {
+    --tone: var(--os-red);
+    --tone-bg: var(--os-red-soft);
+  }
+
+  .os-priority-card.yellow,
+  .yellow {
+    --tone: var(--os-yellow);
+    --tone-bg: var(--os-yellow-soft);
+  }
+
+  .os-priority-card.violet,
+  .violet {
+    --tone: var(--os-violet);
+    --tone-bg: var(--os-violet-soft);
+  }
+
+  .os-priority-card.blue,
+  .blue {
+    --tone: var(--os-blue);
+    --tone-bg: var(--os-blue-soft);
+  }
+
+  .os-priority-card.green,
+  .green {
+    --tone: var(--os-green);
+    --tone-bg: var(--os-green-soft);
+  }
+
+  .os-status-icon {
+    --tone: var(--os-blue);
+    --tone-bg: var(--os-blue-soft);
+    width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border: 1px solid color-mix(in srgb, var(--tone) 45%, transparent);
+    border-radius: 10px;
+    background: var(--tone-bg);
+  }
+
+  .os-status-icon::after {
+    width: 6px;
+    height: 6px;
+    content: "";
+    border-radius: 999px;
+    background: var(--tone);
+  }
+
+  .os-status-icon.red,
+  .os-feed-row.red,
+  .os-metric-row.red,
+  .os-task-row.red,
+  .os-doc-row.red,
+  .os-detail-link.red {
+    --tone: var(--os-red);
+    --tone-bg: var(--os-red-soft);
+  }
+
+  .os-status-icon.green,
+  .os-feed-row.green,
+  .os-metric-row.green,
+  .os-task-row.green,
+  .os-doc-row.green,
+  .os-detail-link.green {
+    --tone: var(--os-green);
+    --tone-bg: var(--os-green-soft);
+  }
+
+  .os-status-icon.yellow,
+  .os-feed-row.yellow,
+  .os-metric-row.yellow,
+  .os-task-row.yellow,
+  .os-doc-row.yellow,
+  .os-detail-link.yellow {
+    --tone: var(--os-yellow);
+    --tone-bg: var(--os-yellow-soft);
+  }
+
+  .os-status-icon.violet,
+  .os-feed-row.violet,
+  .os-metric-row.violet,
+  .os-task-row.violet,
+  .os-doc-row.violet,
+  .os-detail-link.violet {
+    --tone: var(--os-violet);
+    --tone-bg: var(--os-violet-soft);
+  }
+
+  .os-status-icon.blue,
+  .os-feed-row.blue,
+  .os-metric-row.blue,
+  .os-task-row.blue,
+  .os-doc-row.blue,
+  .os-detail-link.blue {
+    --tone: var(--os-blue);
+    --tone-bg: var(--os-blue-soft);
+  }
+
+  .os-priority-card .os-status-icon {
+    --tone: inherit;
+    --tone-bg: inherit;
+  }
+
+  .os-priority-card .metric-icon,
+  .os-metric-row .metric-icon,
+  .os-detail-head .metric-icon {
+    flex: 0 0 auto;
+  }
+
+  .os-priority-value strong {
+    display: block;
+    font-size: 0.98rem;
+    line-height: 1;
+    font-weight: 610;
+  }
+
+  .os-priority-value small {
+    color: var(--os-text-2);
+    font-size: 0.66rem;
+  }
+
+  .os-priority-copy {
+    min-width: 0;
+  }
+
+  .os-priority-copy b {
+    display: block;
+    color: var(--os-text-2);
+    font-size: 0.82rem;
+    line-height: 1.2;
+    font-weight: 540;
+  }
+
+  .os-priority-copy small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--os-muted);
+    font-size: 0.7rem;
+  }
+
+  .os-main-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 318px;
+    gap: 0.76rem;
+    align-items: start;
+  }
+
+  .os-left-stack {
+    min-width: 0;
+    display: grid;
+    gap: 0.76rem;
+    align-content: start;
+  }
+
+  .os-people-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.58rem;
+  }
+
+  .os-person-card {
+    min-width: 0;
+    display: grid;
+    gap: 0.48rem;
+    padding: 0.62rem;
+    border: 1px solid var(--os-border);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.026);
+  }
+
+  .os-person-card.selected {
+    border-color: rgba(79, 140, 255, 0.32);
+    background: linear-gradient(180deg, rgba(79, 140, 255, 0.08), rgba(255, 255, 255, 0.024));
+  }
+
+  .os-person-photo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .os-person-photo img,
+  .os-person-photo span {
+    width: 60px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+
+  .os-person-photo span {
+    border: 1px solid rgba(79, 140, 255, 0.45);
+    background: var(--os-blue-soft);
+    color: var(--os-blue);
+    font-size: 1.08rem;
+    font-weight: 650;
+  }
+
+  .os-person-copy > div {
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .os-person-copy p {
+    margin: 0.18rem 0 0;
+    min-height: 2.3em;
+    overflow: hidden;
+    color: var(--os-muted);
+    font-size: 0.74rem;
+    line-height: 1.16;
+  }
+
+  .os-person-card dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.42rem;
+    margin: 0;
+  }
+
+  .os-person-card dt {
+    color: var(--os-muted);
+    font-size: 0.68rem;
+  }
+
+  .os-person-card dd {
+    margin: 0.1rem 0 0;
+    color: var(--os-text);
+    font-size: 0.96rem;
+    font-weight: 600;
+  }
+
+  .os-person-card footer {
+    display: grid;
+    gap: 0.12rem;
+    min-height: 34px;
+  }
+
+  .os-person-card footer span {
+    color: var(--os-muted);
+    font-size: 0.68rem;
+  }
+
+  .os-person-card footer b {
+    color: var(--os-text-2);
+    font-size: 0.72rem;
+    font-weight: 520;
+    line-height: 1.24;
+  }
+
+  .os-summary-stack {
+    gap: 0.68rem;
+  }
+
+  .os-summary-stack .os-panel {
+    padding: 0.68rem;
+  }
+
+  .os-summary-stack > section:nth-of-type(1) {
+    order: 1;
+  }
+
+  .os-summary-stack > section:nth-of-type(2) {
+    order: 2;
+  }
+
+  .os-inline-detail {
+    order: 3;
+  }
+
+  .os-summary-stack > section:nth-of-type(3) {
+    order: 4;
+  }
+
+  .os-list,
+  .os-feed {
+    gap: 0.4rem;
+  }
+
+  .os-summary-stack .os-list {
+    gap: 0.34rem;
+  }
+
+  .os-metric-row,
+  .os-task-row,
+  .os-doc-row,
+  .os-feed-row,
+  .os-detail-link {
+    --tone: var(--os-blue);
+    --tone-bg: var(--os-blue-soft);
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.52rem;
+    min-height: 45px;
+    padding: 0.46rem;
+    border: 1px solid var(--os-border);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.024);
+  }
+
+  .os-summary-stack .os-metric-row,
+  .os-summary-stack .os-task-row,
+  .os-summary-stack .os-doc-row {
+    min-height: 40px;
+    padding: 0.38rem;
+  }
+
+  .os-metric-row > span:not(.os-status-icon):not(.metric-icon),
+  .os-task-row > span,
+  .os-doc-row > span,
+  .os-feed-row > span:not(.os-status-icon):not(.metric-icon),
+  .os-detail-link > span {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .os-metric-row b,
+  .os-task-row b,
+  .os-doc-row b,
+  .os-detail-value b {
+    flex: 0 0 auto;
+    padding: 0.12rem 0.42rem;
+    border-radius: 999px;
+    background: var(--tone-bg);
+    color: var(--tone);
+    font-size: 0.64rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .os-list strong,
+  .os-feed strong,
+  .os-detail-link strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--os-text-2);
+    font-size: 0.8rem;
+    font-weight: 540;
+  }
+
+  .os-list small,
+  .os-feed small,
+  .os-detail-link small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--os-muted);
+    font-size: 0.7rem;
+  }
+
+  .os-lower-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.76rem;
+  }
+
+  .os-feed-row {
+    min-height: 48px;
+  }
+
+  .os-detail-rail {
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+    display: grid;
+    gap: 0.64rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding: 0.78rem;
+    background: linear-gradient(180deg, rgba(18, 25, 33, 0.64), rgba(14, 19, 25, 0.86));
+    scrollbar-width: thin;
+  }
+
+  .os-inline-detail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    gap: 0.5rem;
+    padding: 0.58rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.018);
+    box-shadow: none;
+  }
+
+  .os-inline-detail .os-detail-head button,
+  .os-inline-detail .os-trend-card {
+    display: none;
+  }
+
+  .os-detail-head {
+    justify-content: space-between;
+    gap: 0.68rem;
+  }
+
+  .os-detail-head > div {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.5rem;
+    align-items: center;
+  }
+
+  .os-detail-head .os-status-icon {
+    grid-row: span 2;
+  }
+
+  .os-detail-head .metric-icon {
+    grid-row: span 2;
+  }
+
+  .os-detail-head h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 590;
+  }
+
+  .os-detail-value {
+    --tone: var(--os-red);
+    --tone-bg: var(--os-red-soft);
+    justify-content: space-between;
+    gap: 0.65rem;
+    padding-bottom: 0.52rem;
+    border-bottom: 1px solid var(--os-border);
+  }
+
+  .os-detail-value strong {
+    font-size: 1.24rem;
+    line-height: 1;
+    font-weight: 610;
+  }
+
+  .os-detail-value span {
+    color: var(--os-text-2);
+  }
+
+  .os-detail-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.42rem 0.62rem;
+    margin: 0;
+  }
+
+  .os-detail-meta dd {
+    margin: 0.08rem 0 0;
+    color: var(--os-text-2);
+    font-size: 0.78rem;
+    font-weight: 560;
+  }
+
+  .os-trend-card,
+  .os-detail-section {
+    padding-top: 0.54rem;
+    border-top: 1px solid var(--os-border);
+  }
+
+  .os-detail-section {
+    gap: 0.36rem;
+  }
+
+  .os-detail-section h3,
+  .os-detail-section-head h3 {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .os-detail-section p {
+    margin: 0;
+    line-height: 1.46;
+  }
+
+  .os-detail-section-head {
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .os-detail-section-head span {
+    color: var(--os-muted);
+    font-size: 0.72rem;
+  }
+
+  .os-trend-card svg {
+    width: 100%;
+    max-height: 118px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.024);
+  }
+
+  .os-trend-card .range {
+    fill: none;
+    stroke-dasharray: 5 7;
+    stroke-width: 1;
+  }
+
+  .os-trend-card .range.high {
+    stroke: rgba(76, 215, 125, 0.48);
+  }
+
+  .os-trend-card .range.low {
+    stroke: rgba(255, 92, 92, 0.52);
+  }
+
+  .os-trend-card .trend {
+    fill: none;
+    stroke: var(--os-red);
+    stroke-linecap: round;
+    stroke-width: 3;
+  }
+
+  .os-trend-card circle {
+    fill: var(--os-red);
+    stroke: var(--os-bg);
+    stroke-width: 2;
+  }
+
+  .os-trend-scale {
+    display: flex;
+    justify-content: space-between;
+    color: var(--os-muted);
+    font-size: 0.72rem;
+  }
+
+  .os-detail-link {
+    align-items: flex-start;
+    border-color: color-mix(in srgb, var(--tone) 28%, transparent);
+    background: color-mix(in srgb, var(--tone-bg) 68%, rgba(255, 255, 255, 0.02));
+  }
+
+  .os-inline-detail .os-detail-link {
+    min-height: 42px;
+    padding: 0.42rem;
+  }
+
+  .os-detail-actions {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .os-bottom-nav {
+    display: none;
+  }
+
+  @media (max-width: 1500px) {
+    .os-shell {
+      grid-template-columns: 210px minmax(0, 1fr);
+    }
+
+    .os-canvas {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.85rem;
+      padding: 0.85rem;
+    }
+
+    .os-main-grid {
+      grid-template-columns: minmax(0, 1fr) 304px;
+    }
+
+    .os-people-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .os-person-card {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 0.42rem;
+      padding: 0.54rem;
+    }
+
+    .os-person-photo,
+    .os-person-photo img,
+    .os-person-photo span {
+      width: 48px;
+      height: 48px;
+    }
+
+    .os-person-card dl {
+      grid-column: auto;
+      min-width: 0;
+    }
+
+    .os-person-card footer {
+      grid-column: auto;
+    }
+
+    .os-priority-card {
+      grid-template-columns: 27px minmax(38px, auto) minmax(0, 1fr);
+      gap: 0.42rem;
+      min-height: 54px;
+      padding: 0.42rem;
+    }
+
+    .os-detail-rail {
+      padding: 0.64rem;
+    }
+
+    .os-inline-detail {
+      padding: 0.52rem;
+    }
+  }
+
+  @media (max-width: 1180px) {
+    .os-shell {
+      grid-template-columns: 190px minmax(0, 1fr);
+    }
+
+    .os-canvas {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .os-detail-rail {
+      position: static;
+      max-height: none;
+      overflow: visible;
+    }
+
+    .os-main-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .os-summary-stack {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .os-priority-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .os-page,
+    .os-shell,
+    .os-workspace,
+    .os-canvas,
+    .os-dashboard,
+    .os-priority-panel,
+    .os-panel,
+    .os-detail-rail {
+      width: 100%;
+      max-width: 100vw;
+      min-width: 0;
+      overflow-x: hidden;
+    }
+
+    .os-page {
+      padding: 0;
+      padding-bottom: calc(78px + env(safe-area-inset-bottom));
+    }
+
+    .os-shell {
+      display: block;
+      width: 100%;
+      min-height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .os-sidebar {
+      display: none;
+    }
+
+    .os-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      min-height: 56px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding: 0.62rem 0.72rem;
+      background: rgba(11, 15, 20, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .os-search {
+      justify-self: stretch;
+      width: auto;
+      min-width: 0;
+    }
+
+    .os-search kbd,
+    .os-top-actions button {
+      display: none;
+    }
+
+    .os-mobile-profile {
+      display: flex;
+      gap: 0.62rem;
+      margin: 0.64rem 0.68rem 0;
+      padding: 0.6rem;
+      border: 1px solid var(--os-border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(25, 33, 43, 0.78), rgba(18, 24, 31, 0.9));
+    }
+
+    .os-mobile-profile img,
+    .os-mobile-profile > span {
+      width: 42px;
+      height: 42px;
+    }
+
+    .os-mobile-profile strong {
+      display: block;
+      font-size: 0.94rem;
+      font-weight: 590;
+    }
+
+    .os-canvas,
+    .os-dashboard,
+    .os-main-grid,
+    .os-summary-stack,
+    .os-lower-grid,
+    .os-people-grid,
+    .os-priority-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .os-canvas {
+      gap: 0.62rem;
+      padding: 0.66rem;
+      padding-bottom: calc(128px + env(safe-area-inset-bottom));
+    }
+
+    .os-heading {
+      display: block;
+      order: 1;
+      padding: 0 0.1rem;
+    }
+
+    .os-heading h1 {
+      margin: 0;
+      color: var(--os-text-2);
+      font-size: 0.96rem;
+      font-weight: 560;
+    }
+
+    .os-heading p,
+    .os-heading-actions {
+      display: none;
+    }
+
+    .os-priority-panel {
+      order: 2;
+      padding: 0.62rem;
+      border-radius: 16px;
+    }
+
+    .os-main-grid {
+      order: 3;
+    }
+
+    .os-summary-stack {
+      order: 1;
+    }
+
+    .os-left-stack {
+      order: 2;
+    }
+
+    .os-lower-grid {
+      order: 4;
+    }
+
+    .os-detail-rail {
+      order: 5;
+      border-radius: 18px;
+    }
+
+    .os-summary-stack > .os-inline-detail {
+      order: 3;
+    }
+
+    .os-section-head {
+      margin-bottom: 0.44rem;
+    }
+
+    .os-section-head span,
+    .os-priority-panel .os-section-head a {
+      display: none;
+    }
+
+    .os-section-head h2 {
+      font-size: 0.98rem;
+    }
+
+    .os-main-grid .os-section-head a,
+    .os-lower-grid .os-section-head a {
+      display: none;
+    }
+
+    .os-priority-grid {
+      gap: 0.32rem;
+    }
+
+    .os-priority-card {
+      grid-template-columns: 24px minmax(38px, auto) minmax(0, 1fr);
+      min-height: 52px;
+      padding: 0.4rem;
+      gap: 0.36rem;
+      border-radius: 13px;
+    }
+
+    .os-priority-card .os-status-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 9px;
+    }
+
+    .os-priority-value strong {
+      font-size: 0.9rem;
+    }
+
+    .os-priority-copy b {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.76rem;
+    }
+
+    .os-priority-copy small {
+      font-size: 0.66rem;
+    }
+
+    .os-panel {
+      padding: 0.66rem;
+      border-radius: 16px;
+    }
+
+    .os-person-card {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: 0.5rem;
+      padding: 0.56rem;
+    }
+
+    .os-person-photo,
+    .os-person-photo img,
+    .os-person-photo span {
+      width: 44px;
+      height: 44px;
+    }
+
+    .os-person-card dl {
+      grid-column: 1 / -1;
+      min-width: 0;
+      gap: 0.35rem;
+    }
+
+    .os-person-card footer {
+      grid-column: 1 / -1;
+      min-height: 0;
+    }
+
+    .os-summary-stack {
+      gap: 0.58rem;
+    }
+
+    .os-detail-meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .os-bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      width: 100vw;
+      max-width: 100vw;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--os-border);
+      background: rgba(11, 15, 20, 0.97);
+      backdrop-filter: blur(16px);
+    }
+
+    .os-bottom-nav a {
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      min-height: calc(54px + env(safe-area-inset-bottom));
+      color: var(--os-muted);
+      font-size: 0.68rem;
+      font-weight: 560;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .os-bottom-nav a.active {
+      color: var(--os-blue);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .os-body {
+      background: var(--os-bg);
+    }
+
+    .os-page,
+    .os-shell,
+    .os-workspace {
+      width: min(100vw, 390px);
+      max-width: 390px;
+      margin-inline: 0;
+    }
+
+    .os-topbar,
+    .os-mobile-profile,
+    .os-canvas {
+      width: min(100%, 390px);
+      max-width: 390px;
+      margin-inline: 0;
+    }
+
+    .os-bottom-nav {
+      left: 0;
+      right: auto;
+      width: min(100vw, 390px);
+      max-width: 390px;
+      transform: none;
+    }
+
+    .os-canvas {
+      gap: 0.58rem;
+      padding-inline: 0.62rem;
+    }
+
+    .os-priority-card {
+      grid-template-columns: 24px 36px minmax(0, 1fr);
+      min-height: 50px;
+      padding: 0.38rem;
+    }
+
+    .os-priority-copy small {
+      max-width: 100%;
+    }
+
+    .os-list strong,
+    .os-feed strong,
+    .os-detail-link strong,
+    .os-priority-copy b,
+    .os-person-card footer b {
+      white-space: normal;
+    }
+
+    .os-list small,
+    .os-feed small,
+    .os-detail-link small {
+      white-space: nowrap;
+    }
+  }
+</style>

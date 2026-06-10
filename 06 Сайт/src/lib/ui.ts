@@ -55,6 +55,77 @@ export function compactList(items?: string[], max = 2) {
   return (items || []).filter(Boolean).slice(0, max);
 }
 
+export type MetricIconName =
+  | "blood-drop"
+  | "red-cell"
+  | "thyroid"
+  | "sun"
+  | "capsule"
+  | "molecule"
+  | "heart-vessel"
+  | "liver"
+  | "kidney"
+  | "molecule-chain"
+  | "coagulation"
+  | "scale"
+  | "blood-pressure"
+  | "pulse"
+  | "inflammation"
+  | "lab";
+
+export type MetricIconRule = {
+  icon: MetricIconName;
+  label: string;
+  patterns: string[];
+};
+
+export const metricIconMap: MetricIconRule[] = [
+  { icon: "blood-drop", label: "Капля крови / железо", patterns: ["ферритин", "железо"] },
+  { icon: "thyroid", label: "Щитовидная железа / гормон", patterns: ["ттг", "т3", "т4", "тиреотроп", "свободный т"] },
+  { icon: "sun", label: "Солнце / витамин D", patterns: ["витамин d", "25(oh)d", "25-oh", "25 oh"] },
+  { icon: "capsule", label: "Капсула / витамин", patterns: ["витамин b12", "b12", "фолат", "омега"] },
+  { icon: "molecule", label: "Молекула / глюкоза", patterns: ["глюкоза", "инсулин", "гликирован", "hba1c"] },
+  { icon: "heart-vessel", label: "Сердце / сосуды", patterns: ["холестерин", "лпнп", "лпвп", "триглицер"] },
+  { icon: "liver", label: "Печень", patterns: ["алт", "аст", "билирубин", "альбумин"] },
+  { icon: "kidney", label: "Почки", patterns: ["креатинин", "мочевина", "мочевая кислота", "моче"] },
+  { icon: "molecule-chain", label: "Молекулярная цепочка / гомоцистеин", patterns: ["гомоцистеин"] },
+  { icon: "coagulation", label: "Коагуляция / свертывание", patterns: ["коагул", "фибриноген", "ачтв", "мно", "протромбин", "тромбинов"] },
+  { icon: "scale", label: "Весы", patterns: ["вес", "масса тела", "индекс массы"] },
+  { icon: "blood-pressure", label: "Давление", patterns: ["давление", "систол", "диастол"] },
+  { icon: "pulse", label: "Пульс / сердечный ритм", patterns: ["пульс", "чсс", "ритм"] },
+  { icon: "inflammation", label: "Воспалительный / иммунный маркер", patterns: ["c-реактив", "с-реактив", "срб", "соэ", "ревматоид", "асло"] },
+  { icon: "lab", label: "Лабораторный показатель", patterns: ["мазке", "квм", "впч", "общий белок"] },
+  { icon: "red-cell", label: "Клетки крови", patterns: ["гемоглобин", "гематокрит", "эритроц", "mch", "mchc", "лейкоцит", "тромбоцит", "эозинофил"] },
+];
+
+function normalizeMetricName(value?: string) {
+  return (value || "")
+    .toLocaleLowerCase("ru-RU")
+    .replace(/ё/g, "е")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function getMetricIcon(metricName?: string) {
+  const normalized = normalizeMetricName(metricName);
+  return metricIconMap.find((rule) => rule.patterns.some((pattern) => normalized.includes(pattern))) || {
+    icon: "lab" as MetricIconName,
+    label: "Лабораторный показатель",
+    patterns: [],
+  };
+}
+
+export function metricStatusTone(status?: string, label?: string) {
+  const normalizedStatus = normalizeMetricName(status);
+  const normalizedLabel = normalizeMetricName(label);
+  if (normalizedStatus === "normal" || normalizedLabel.includes("норм")) return "green";
+  if (normalizedLabel.includes("границ") || normalizedLabel.includes("контрол")) return "yellow";
+  if (normalizedStatus === "low" || normalizedStatus === "high") return "red";
+  if (normalizedStatus.includes("review") || normalizedStatus.includes("processing")) return "violet";
+  if (normalizedStatus === "unknown" || normalizedLabel.includes("нет данных")) return "blue";
+  return "blue";
+}
+
 export function excerpt(items?: string[], max = 160) {
   const text = (items || []).filter(Boolean).join(" ");
   if (text.length <= max) return text;

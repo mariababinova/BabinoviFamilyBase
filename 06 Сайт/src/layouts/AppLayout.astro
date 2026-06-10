@@ -10,10 +10,8 @@ interface Props {
 
 const { title, description = "Семейная медицинская база" } = Astro.props;
 const navItems = [
-  { href: pageHref("/"), label: "Главная" },
-  { href: pageHref("/operations"), label: "Операции" },
+  { href: pageHref("/"), label: "Сегодня" },
   { href: pageHref("/upload"), label: "Загрузка" },
-  { href: pageHref("/upload-queue"), label: "Очередь" },
 ];
 const people = dashboard.people;
 const currentPath = Astro.url.pathname;
@@ -22,7 +20,14 @@ function isActiveNav(href: string) {
   const normalizePath = (value: string) => (value.length > 1 ? value.replace(/\/$/, "") : value);
   const path = normalizePath(new URL(href, Astro.url).pathname);
   const activePath = normalizePath(currentPath);
-  return activePath === path || (path.endsWith("/documents") && activePath.startsWith(`${path}/`));
+  return activePath === path || (path.endsWith("/upload") && activePath.startsWith(`${path}`));
+}
+
+function isActivePerson(person: { href: string }) {
+  const normalizePath = (value: string) => (value.length > 1 ? value.replace(/\/$/, "") : value);
+  const path = normalizePath(new URL(person.href, Astro.url).pathname);
+  const activePath = normalizePath(currentPath);
+  return activePath === path || activePath.startsWith(`${path}/`);
 }
 ---
 
@@ -43,35 +48,47 @@ function isActiveNav(href: string) {
     <div class="app-shell">
       <aside class="sidebar" aria-label="Основная навигация">
         <a class="brand" href={pageHref("/")}>
-          <span class="brand-mark">M</span>
+          <span class="brand-mark">Б</span>
           <span>
-            <strong>Медбаза</strong>
-            <small>только просмотр</small>
+            <strong>База Бабиновых</strong>
+            <small>семейная база знаний</small>
           </span>
         </a>
         <nav class="side-nav">
-          {navItems.map((item) => (
-            <a class:list={["nav-link", isActiveNav(item.href) && "active"]} href={item.href}>
-              {item.label}
-            </a>
-          ))}
+          <a class:list={["nav-link", isActiveNav(navItems[0].href) && "active"]} href={navItems[0].href}>
+            {navItems[0].label}
+          </a>
+          <div class="nav-group">
+            <span class="nav-group-label">Медкарты</span>
+            {people.map((person) => (
+              <a class:list={["person-pill", isActivePerson(person) && "active"]} href={person.href}>
+                {person.photo ? (
+                  <img src={pageHref(person.photo)} alt="" loading="lazy" />
+                ) : (
+                  <span class="person-initial" aria-hidden="true">{person.name.slice(0, 1)}</span>
+                )}
+                <span>{person.name}</span>
+              </a>
+            ))}
+          </div>
+          <a class:list={["nav-link", isActiveNav(navItems[1].href) && "active"]} href={navItems[1].href}>
+            {navItems[1].label}
+          </a>
         </nav>
-        <div class="side-section">
-          <span class="side-label">Люди</span>
-          {people.map((person) => (
-            <a class="person-pill" href={person.href}>{person.name}</a>
-          ))}
+        <div class="side-section side-section-secondary">
+          <span class="side-label">Служебное</span>
+          <a class="person-pill" href={pageHref("/upload-queue")}>Очередь загрузки</a>
         </div>
       </aside>
       <div class="main-area">
         <header class="topbar">
           <form action={pageHref("/search")} method="get" class="search-form">
             <label class="sr-only" for="global-search">Поиск</label>
-            <input id="global-search" type="search" name="q" placeholder="Поиск по базе" />
+            <input id="global-search" type="search" name="q" placeholder="Поиск по базе: ферритин Маши, документы Ники, онкология Александр" />
           </form>
           <div class="topbar-meta">
             <span>Обновлено {new Date(dashboard.generatedAt).toLocaleDateString("ru-RU")}</span>
-            <a href={pageHref("/owner-guide")}>Служебное</a>
+            <a class="topbar-avatar" href={pageHref("/owner-guide")} aria-label="Служебный раздел">Б</a>
           </div>
         </header>
         <main class="content">
@@ -80,8 +97,9 @@ function isActiveNav(href: string) {
       </div>
     </div>
     <nav class="bottom-nav" aria-label="Быстрая навигация">
-      <a href={pageHref("/")}>Главная</a>
-      {people.map((person) => <a href={person.href}>{person.name}</a>)}
+      <a href={pageHref("/")}>Сегодня</a>
+      <a href={`${pageHref("/")}#medcards`}>Медкарты</a>
+      <a href={pageHref("/upload")}>Загрузка</a>
     </nav>
     <MedicalChatWidget />
   </body>

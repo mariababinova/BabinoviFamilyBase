@@ -1,5 +1,6 @@
 ﻿---
 import AppLayout from "../../layouts/AppLayout.astro";
+import MetricIcon from "../../components/MetricIcon.astro";
 import { dashboard, formatDate, formatDateShort } from "../../lib/ui";
 
 export function getStaticPaths() {
@@ -17,21 +18,33 @@ function statusBadgeLabel(record: any) {
   if (!record) return "Нет данных";
   return record.compactAssessmentLabel || record.assessmentLabel || "Нет данных";
 }
+
+const latestStatusLabel = statusBadgeLabel(latest);
 ---
 
 <AppLayout title={`${group.metricLabel} · Показатели`}>
   <section class="page-header">
-    <p class="eyebrow">{group.person}</p>
-    <h1>{group.metricLabel}</h1>
-    <p>История значений из подтвержденных записей. Это не медицинская интерпретация, а удобная сводка для просмотра динамики и подготовки вопросов врачу.</p>
+    <div class="metric-page-title">
+      <MetricIcon metricName={group.metricLabel} status={latest?.assessmentStatus} statusLabel={latestStatusLabel} class="large" />
+      <div>
+        <p class="eyebrow">{group.person}</p>
+        <h1>{group.metricLabel}</h1>
+        <p>История значений из подтвержденных записей. Это не медицинская интерпретация, а удобная сводка для просмотра динамики и подготовки вопросов врачу.</p>
+      </div>
+    </div>
   </section>
 
   <section class="metrics-summary">
     <article class:list={["card", "metric-summary-card", latest?.assessmentStatus || "unknown"]} data-assessment-label={statusBadgeLabel(latest)}>
-      <span class:list={["metric-reference-badge", latest?.assessmentStatus || "unknown"]}>
-        {statusBadgeLabel(latest)}
-      </span>
-      <span class="muted-text">Последнее значение</span>
+      <div class="metric-summary-head">
+        <MetricIcon metricName={group.metricLabel} status={latest?.assessmentStatus} statusLabel={latestStatusLabel} />
+        <div>
+          <span class:list={["metric-reference-badge", latest?.assessmentStatus || "unknown"]}>
+            {latestStatusLabel}
+          </span>
+          <span class="muted-text">Последнее значение</span>
+        </div>
+      </div>
       <strong>{latest?.displayValue || "Нет данных"}</strong>
       {latest && <small>{formatDate(latest.date)}</small>}
     </article>
@@ -65,7 +78,17 @@ function statusBadgeLabel(record: any) {
             {[...group.records].reverse().map((record) => (
               <tr>
                 <td>{formatDateShort(record.date)}</td>
-                <td><strong>{record.displayValue}</strong></td>
+                <td>
+                  <span class="metric-name-cell">
+                    <MetricIcon
+                      metricName={group.metricLabel}
+                      status={record.assessmentStatus}
+                      statusLabel={record.compactAssessmentLabel || record.assessmentLabel}
+                      class="compact"
+                    />
+                    <strong>{record.displayValue}</strong>
+                  </span>
+                </td>
                 <td><span class:list={["metric-status", record.assessmentStatus]}>{record.assessmentLabel}</span></td>
                 <td>{record.referenceDisplay}</td>
                 <td>{record.eventHref ? <a href={record.eventHref}>{record.eventTitle || "событие"}</a> : <span class="muted-text">запись</span>}</td>

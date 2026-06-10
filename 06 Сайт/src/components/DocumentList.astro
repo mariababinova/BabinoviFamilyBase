@@ -17,6 +17,11 @@ interface DocumentItem {
 }
 
 const { documents, compact = false } = Astro.props as { documents: DocumentItem[]; compact?: boolean };
+
+function documentTone(document: DocumentItem) {
+  if (document.isLinkedToEvent) return "success";
+  return "review";
+}
 ---
 
 <div class="document-list">
@@ -32,7 +37,7 @@ const { documents, compact = false } = Astro.props as { documents: DocumentItem[
         <h3><a href={document.href}>{document.displayName || document.fileName}</a></h3>
       </div>
       <div class="document-actions">
-        <span class:list={["status-pill", document.isLinkedToEvent ? "linked" : "unlinked"]}>{document.linkStatusLabel}</span>
+        <span class:list={["status-pill", document.isLinkedToEvent ? "linked" : "unlinked"]} data-tone={documentTone(document)}>{document.linkStatusLabel}</span>
         {document.publicUrl ? (
           <a class="button secondary" href={document.publicUrl} target="_blank" rel="noreferrer">Открыть</a>
         ) : document.encryptedUrl ? (

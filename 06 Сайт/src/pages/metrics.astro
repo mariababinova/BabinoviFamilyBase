@@ -1,5 +1,6 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
+import MetricIcon from "../components/MetricIcon.astro";
 import { dashboard, formatDateShort } from "../lib/ui";
 
 const metricGroups = dashboard.metricGroups || [];
@@ -111,6 +112,7 @@ function sparkline(records: Array<{ numeric_value?: number | null }>) {
         const latest = group.latest;
         const previous = group.previous;
         const points = sparkline(group.records);
+        const latestStatusLabel = statusBadgeLabel(latest);
         return (
           <article
             class:list={["card", "metric-card", latest?.assessmentStatus || "unknown"]}
@@ -118,15 +120,18 @@ function sparkline(records: Array<{ numeric_value?: number | null }>) {
             data-person={group.person}
             data-category={group.metricCategory}
             data-name={group.metricLabel.toLowerCase()}
-            data-assessment-label={statusBadgeLabel(latest)}
+            data-assessment-label={latestStatusLabel}
           >
             <span class:list={["metric-reference-badge", latest?.assessmentStatus || "unknown"]}>
-              {statusBadgeLabel(latest)}
+              {latestStatusLabel}
             </span>
             <div class="metric-card-header">
-              <div>
-                <span class="chip muted">{group.person}</span>
-                <h3><a href={group.href}>{group.metricLabel}</a></h3>
+              <div class="metric-title-line">
+                <MetricIcon metricName={group.metricLabel} status={latest?.assessmentStatus} statusLabel={latestStatusLabel} />
+                <div>
+                  <span class="chip muted">{group.person}</span>
+                  <h3><a href={group.href}>{group.metricLabel}</a></h3>
+                </div>
               </div>
               <span class="count-badge">{group.count}</span>
             </div>
@@ -176,7 +181,17 @@ function sparkline(records: Array<{ numeric_value?: number | null }>) {
             <tr>
               <td>{formatDateShort(record.date)}</td>
               <td>{record.person}</td>
-              <td>{record.metric_label}</td>
+              <td>
+                <span class="metric-name-cell">
+                  <MetricIcon
+                    metricName={record.metric_label}
+                    status={record.assessmentStatus}
+                    statusLabel={record.compactAssessmentLabel || record.assessmentLabel}
+                    class="compact"
+                  />
+                  <span>{record.metric_label}</span>
+                </span>
+              </td>
               <td><strong>{record.displayValue}</strong></td>
               <td><span class:list={["metric-status", record.assessmentStatus]}>{record.assessmentLabel}</span></td>
               <td>{record.referenceDisplay}</td>
