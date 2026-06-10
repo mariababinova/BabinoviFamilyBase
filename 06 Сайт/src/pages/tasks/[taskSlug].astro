@@ -10,7 +10,15 @@ export function getStaticPaths() {
 }
 
 const { task } = Astro.props;
-const sourceIds = Array.from(new Set([...(task.groupedSourceEventIds || []), ...(task.items || []).map((item) => item.sourceEventId).filter(Boolean)]));
+const sourceIds = Array.from(
+  new Set(
+    [
+      task.sourceEventId,
+      ...(task.groupedSourceEventIds || []),
+      ...(task.items || []).map((item) => item.sourceEventId),
+    ].filter(Boolean),
+  ),
+);
 const sourceEvents: any[] = sourceIds
   .map((id) => dashboard.events.find((event) => event.id === id))
   .filter(Boolean)

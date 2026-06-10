@@ -1283,12 +1283,12 @@ input::placeholder {
 
 .profile-tabs {
   position: sticky;
-  top: calc(72px + 122px);
+  top: 72px;
   z-index: 7;
   display: flex;
   gap: 0.4rem;
   overflow-x: auto;
-  margin: -0.3rem 0 1.5rem;
+  margin: 0 0 1.5rem;
   padding: 0.4rem;
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-card);
@@ -1313,7 +1313,7 @@ input::placeholder {
 
 .profile-dashboard {
   display: grid;
-  grid-template-columns: minmax(260px, 0.32fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
   gap: 1rem;
   margin-bottom: 1rem;
   align-items: start;
@@ -1326,6 +1326,123 @@ input::placeholder {
 
 .profile-card {
   align-content: start;
+  display: grid;
+  gap: 1rem;
+}
+
+.profile-card-overview {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.profile-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+.profile-card-overview h2,
+.profile-card-overview p {
+  margin: 0;
+}
+
+.profile-card-overview p {
+  color: var(--text-muted);
+}
+
+.profile-card .profile-photo {
+  width: 124px;
+  height: 124px;
+  margin: 0;
+}
+
+.profile-details-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.profile-card-actions .button {
+  min-height: 36px;
+  padding: 0.45rem 0.68rem;
+  font-size: 0.86rem;
+}
+
+.profile-weight-compact {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.42fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 0.75rem;
+  padding: 0.7rem;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-control);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.profile-weight-head {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.profile-weight-compact .eyebrow {
+  margin-bottom: 0.25rem;
+}
+
+.profile-weight-compact .metric-latest {
+  gap: 0;
+}
+
+.profile-weight-compact .metric-latest strong {
+  font-size: 1.06rem;
+  line-height: 1.1;
+}
+
+.compact-weight-form {
+  grid-template-columns: minmax(112px, 1fr) minmax(86px, 0.7fr) auto;
+  gap: 0.45rem;
+  align-items: end;
+}
+
+.compact-weight-form input {
+  min-height: 36px;
+  padding: 0.45rem 0.56rem;
+}
+
+.compact-weight-form .button {
+  min-height: 36px;
+  padding: 0.45rem 0.64rem;
+}
+
+.compact-weight-form .form-status {
+  grid-column: 1 / -1;
+  min-height: 0;
+  margin: 0;
+}
+
+.compact-weight-form .form-status:empty {
+  display: none;
+}
+
+.profile-summary-card .care-list {
+  gap: 0.55rem;
+}
+
+.profile-summary-card .care-item {
+  padding: 0.7rem;
+}
+
+.profile-lower-grid {
+  grid-template-columns: 1fr;
 }
 
 .metrics-summary,
@@ -1496,7 +1613,32 @@ input::placeholder {
 }
 
 .task-card {
+  display: grid;
+  gap: 0.4rem;
+  min-height: 76px;
+  align-content: center;
+  padding: 0.85rem 0.95rem;
   border-left: 4px solid var(--blue);
+}
+
+.task-card strong {
+  color: var(--text-main);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.55rem;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.task-meta time {
+  color: var(--text-secondary);
+  font-weight: 700;
 }
 
 .task-card.overdue {
@@ -1990,6 +2132,29 @@ openai-chatkit {
 
   .profile-identity {
     align-items: flex-start;
+  }
+
+  .profile-card-overview {
+    display: grid;
+  }
+
+  .profile-card .profile-photo {
+    width: 112px;
+    height: 112px;
+  }
+
+  .profile-details-grid,
+  .profile-weight-compact,
+  .compact-weight-form {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card-actions {
+    align-items: stretch;
+  }
+
+  .profile-card-actions .button {
+    width: 100%;
   }
 
   .hero-avatar {

@@ -39,35 +39,9 @@ const weightHistory: WeightRecord[] = weightMetricData?.records || [];
 const weightMetricHref = weightMetricData?.href;
 const latestWeightValue = latestWeightData?.displayValue || "Нет данных";
 const latestWeightDateText = latestWeightData?.date ? `на ${formatDateShort(latestWeightData.date)}` : "История пока пустая";
-const lastActivity = recentEvents[0]?.date ? formatDateShort(recentEvents[0].date) : "нет событий";
 ---
 
 <AppLayout title={`${person.name} · Медицинская база`}>
-  <section class="profile-hero">
-    <div class="profile-identity">
-      {person.photo ? (
-        <img class="person-avatar hero-avatar" src={pageHref(person.photo)} alt={person.name} />
-      ) : (
-        <span class="person-avatar hero-avatar fallback" aria-hidden="true">{person.name.slice(0, 1)}</span>
-      )}
-      <div>
-        <p class="eyebrow">Медкарта</p>
-        <h1>{person.name}</h1>
-        <p>
-          {[ageText(person.birthDate), person.bloodType, person.rhFactor, person.importantStatus]
-            .filter(Boolean)
-            .join(" · ") || "Основная медицинская информация"}
-        </p>
-        <span class="muted-text">Последняя активность: {lastActivity}</span>
-      </div>
-    </div>
-    <div class="header-actions">
-      <a class="button secondary" href={pageHref("/upload")}>Загрузить документ</a>
-      <a class="button secondary" href={pageHref("/tasks")}>Добавить задачу</a>
-      <a class="button" href={pageHref("/events")}>Открыть историю</a>
-    </div>
-  </section>
-
   <nav class="profile-tabs" aria-label={`Разделы профиля ${person.name}`}>
     <a class="active" href="#summary">Сводка</a>
     <a href="#tasks">Задачи {tasks.length}</a>
@@ -78,99 +52,103 @@ const lastActivity = recentEvents[0]?.date ? formatDateShort(recentEvents[0].dat
   </nav>
 
   <section class="profile-dashboard" id="summary">
-    <article class="card profile-card">
-      <span class="eyebrow">Основное</span>
-      {person.photo && <img class="profile-photo" src={pageHref(person.photo)} alt={person.name} />}
-      <dl class="details-list">
+    <article class="card profile-card" id="profile">
+      <div class="profile-card-overview">
+        <div class="profile-card-heading">
+          {person.photo && <img class="profile-photo" src={pageHref(person.photo)} alt={person.name} />}
+          <div>
+            <span class="eyebrow">Основное</span>
+            <h2>{person.name}</h2>
+            <p>{ageText(person.birthDate) || "Возраст не указан"}</p>
+          </div>
+        </div>
+      </div>
+
+      <dl class="details-list profile-details-grid">
         <div><dt>Дата рождения</dt><dd>{person.birthDate ? formatDate(person.birthDate) : person.birthDateText || "Не указана"}</dd></div>
         <div><dt>Группа крови</dt><dd>{person.bloodType || "Не указана"}</dd></div>
         <div><dt>Резус-фактор</dt><dd>{person.rhFactor || "Не указан"}</dd></div>
         {person.importantStatus && <div><dt>Статус</dt><dd>{person.importantStatus}</dd></div>}
       </dl>
-    </article>
 
-    <div class="profile-main-stack">
-      <article class="card care-panel">
-        <div class="section-heading compact">
+      <div class="profile-card-actions" aria-label={`Действия по медкарте ${person.name}`}>
+        <a class="button secondary" href={pageHref("/upload")}>Загрузить документ</a>
+        <a class="button secondary" href={pageHref("/tasks")}>Добавить задачу</a>
+        <a class="button" href="#events">Открыть историю</a>
+      </div>
+
+      <div class="profile-weight-compact">
+        <div class="profile-weight-head">
           <div>
-            <span class="eyebrow">Сводка</span>
-            <h2>Что важно сейчас</h2>
+            <span class="eyebrow">Вес</span>
+            <div class="metric-latest">
+              <strong>{latestWeightValue}</strong>
+              <span>{latestWeightDateText}</span>
+            </div>
           </div>
-        </div>
-        <div class="care-list">
-          {attentionMetrics.map((group) => (
-            <a class:list={["care-item", "metric-care-item", group.latest?.assessmentStatus === "high" ? "danger" : "warning"]} href={group.href}>
-              <MetricIcon
-                metricName={group.metricLabel}
-                status={group.latest?.assessmentStatus}
-                statusLabel={group.latest?.compactAssessmentLabel || group.latest?.assessmentLabel}
-                class="compact"
-              />
-              <span>{group.metricLabel}</span>
-              <strong>{group.latest?.displayValue}</strong>
-              <small>{group.latest?.assessmentLabel || "Проверьте референс"} · {formatDateShort(group.latest?.date)}</small>
-            </a>
-          ))}
-          {tasks.slice(0, 3).map((task) => (
-            <a class="care-item warning" href={task.href || task.sourceHref}>
-              <span>{task.specialty || "Задача"}</span>
-              <strong>{task.actionText}</strong>
-              <small>{task.dueDate ? `до ${formatDateShort(task.dueDate)}` : "без даты"}</small>
-            </a>
-          ))}
-          {unlinkedDocuments.map((document) => (
-            <a class="care-item violet" href={document.href}>
-              <span>Документ на проверку</span>
-              <strong>{document.displayName || document.fileName}</strong>
-              <small>{formatDateShort(document.date)}</small>
-            </a>
-          ))}
-          {attentionMetrics.length === 0 && tasks.length === 0 && unlinkedDocuments.length === 0 && (
-            <p class="empty">Нет активных задач или документов, которые требуют отдельного внимания.</p>
+          {weightHistory.length > 0 && (
+            <a class="text-link" href={weightMetricHref}>История</a>
           )}
         </div>
-      </article>
 
-      <article class="card">
-        <h2>Сводные числа</h2>
-      <dl class="mini-stats compact-stats">
-        <div><dt>События</dt><dd>{person.eventCount}</dd></div>
-        <div><dt>Задачи</dt><dd>{tasks.length}</dd></div>
-        <div><dt>Документы</dt><dd>{documents.length}</dd></div>
-        <div><dt>Показатели</dt><dd>{metricGroups.length}</dd></div>
-      </dl>
-      {person.specialtySummary?.length > 0 && (
-        <div class="chip-row spacious">
-          {person.specialtySummary.map((item) => <span class="chip">{item.label}: {item.count}</span>)}
+        <form class="weight-form compact-weight-form" data-weight-form data-person-id={person.slug} data-person-name={person.name}>
+          <label>
+            <span class="side-label">Дата</span>
+            <input name="date" type="date" required value={new Date().toISOString().slice(0, 10)} />
+          </label>
+          <label>
+            <span class="side-label">Вес, кг</span>
+            <input name="weight" type="number" inputmode="decimal" step="0.01" min="0.1" required placeholder="68.5" />
+          </label>
+          <button class="button secondary" type="submit">Сохранить</button>
+          <p class="form-status" data-weight-form-status aria-live="polite"></p>
+        </form>
+      </div>
+    </article>
+
+    <article class="card care-panel profile-summary-card">
+      <div class="section-heading compact">
+        <div>
+          <span class="eyebrow">Сводка</span>
+          <h2>Что важно сейчас</h2>
         </div>
-      )}
-      </article>
-    </div>
+      </div>
+      <div class="care-list">
+        {attentionMetrics.map((group) => (
+          <a class:list={["care-item", "metric-care-item", group.latest?.assessmentStatus === "high" ? "danger" : "warning"]} href={group.href}>
+            <MetricIcon
+              metricName={group.metricLabel}
+              status={group.latest?.assessmentStatus}
+              statusLabel={group.latest?.compactAssessmentLabel || group.latest?.assessmentLabel}
+              class="compact"
+            />
+            <span>{group.metricLabel}</span>
+            <strong>{group.latest?.displayValue}</strong>
+            <small>{group.latest?.assessmentLabel || "Проверьте референс"} · {formatDateShort(group.latest?.date)}</small>
+          </a>
+        ))}
+        {tasks.slice(0, 3).map((task) => (
+          <a class="care-item warning" href={task.href || task.sourceHref}>
+            <span>{task.specialty || "Задача"}</span>
+            <strong>{task.actionText}</strong>
+            <small>{task.dueDate ? `до ${formatDateShort(task.dueDate)}` : "без даты"}</small>
+          </a>
+        ))}
+        {unlinkedDocuments.map((document) => (
+          <a class="care-item violet" href={document.href}>
+            <span>Документ на проверку</span>
+            <strong>{document.displayName || document.fileName}</strong>
+            <small>{formatDateShort(document.date)}</small>
+          </a>
+        ))}
+        {attentionMetrics.length === 0 && tasks.length === 0 && unlinkedDocuments.length === 0 && (
+          <p class="empty">Нет активных задач или документов, которые требуют отдельного внимания.</p>
+        )}
+      </div>
+    </article>
   </section>
 
-  <section class="section-grid two">
-    <article class="card weight-card" id="profile">
-      <h2>Вес</h2>
-      <div class="metric-latest">
-        <strong>{latestWeightValue}</strong>
-        <span>{latestWeightDateText}</span>
-      </div>
-      {weightHistory.length > 0 && (
-        <a class="text-link" href={weightMetricHref}>Открыть историю</a>
-      )}
-      <form class="weight-form" data-weight-form data-person-id={person.slug} data-person-name={person.name}>
-        <label>
-          <span class="side-label">Дата</span>
-          <input name="date" type="date" required value={new Date().toISOString().slice(0, 10)} />
-        </label>
-        <label>
-          <span class="side-label">Вес, кг</span>
-          <input name="weight" type="number" inputmode="decimal" step="0.01" min="0.1" required placeholder="Например, 68.5" />
-        </label>
-        <button class="button" type="submit">Сохранить вес</button>
-        <p class="form-status" data-weight-form-status aria-live="polite"></p>
-      </form>
-    </article>
+  <section class="section-grid profile-lower-grid">
     <article class="card">
       <h2>Последние документы</h2>
       <div class="stack">

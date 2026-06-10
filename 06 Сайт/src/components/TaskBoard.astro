@@ -12,18 +12,20 @@ const groups = groupTasks(taskItems);
       <h3>{group.title}</h3>
       <div class="task-list" data-task-list>
         {group.tasks.map((task) => (
-          <a class:list={["task-card", task.state.bucket]} href={task.href || task.sourceHref} data-task-card data-due-date={task.dueDate || ""}>
-            <span class:list={["task-status", task.state.bucket]}>{task.state.label}</span>
-            <span class="task-date">{formatDateShort(task.dueDate)}</span>
-            <strong>{task.actionText}</strong>
-            {task.items?.length > 0 && (
-              <ul class="task-items" aria-label="Состав задачи">
-                {task.items.map((item: any) => (
-                  <li>{item.title}</li>
-                ))}
-              </ul>
+          <a
+            class:list={["task-card", task.state.bucket]}
+            href={task.href || task.sourceHref}
+            data-task-card
+            data-due-date={task.dueDate || ""}
+            aria-label={`Открыть задачу: ${task.actionText || task.title || "Задача"}`}
+          >
+            <strong>{task.actionText || task.title || "Задача"}</strong>
+            {(task.dueDate || task.specialty) && (
+              <span class="task-meta">
+                {task.dueDate && <time datetime={task.dueDate}>{formatDateShort(task.dueDate)}</time>}
+                {task.specialty && <span>{task.specialty}</span>}
+              </span>
             )}
-            <span>{task.person} · {task.specialty}</span>
           </a>
         ))}
       </div>
@@ -80,9 +82,7 @@ const groups = groupTasks(taskItems);
 
       for (const card of cards) {
         const state = taskState(card.getAttribute("data-due-date"));
-        const status = card.querySelector(".task-status");
         const targetList = columns.get(state.bucket)?.querySelector("[data-task-list]");
-        if (status) status.textContent = state.label;
         targetList?.append(card);
       }
 

@@ -639,12 +639,19 @@ function normalizeEvent(filePath, data, body, idCounts, issues) {
 function buildTaskFromEvent(event) {
   if (!event.followUpDate) return undefined;
   if (event.followUpDate < todayIso()) return undefined;
+  const id = `task-${event.slug}-${event.followUpDate}`;
+  const slug = slugify(id.replace(/^task-/, ""), id);
+  const taskRoutePath = `/tasks/${slug}`;
   const actionText = event.followUpAction || `Контроль: ${event.specialty}`;
   return {
-    id: `task-${event.slug}-${event.followUpDate}`,
+    id,
+    slug,
+    kind: "event_follow_up",
+    taskPage: true,
     person: event.person,
     personSlug: event.personSlug,
-    href: event.href,
+    href: addBase(taskRoutePath),
+    routePath: taskRoutePath,
     dueDate: event.followUpDate,
     specialty: event.specialty,
     specialtyId: event.specialtyId,
@@ -683,23 +690,32 @@ function followUpScore(value) {
 }
 
 function buildProfileTasks(profile) {
-  return cleanList(profile.profileTasks).map((task, index) => ({
-    id: `task-${profile.slug}-profile-${index}`,
-    person: profile.name,
-    personSlug: profile.slug,
-    href: profile.href,
-    dueDate: undefined,
-    specialty: "Профиль",
-    specialtyId: "profile",
-    sourceType: "profile",
-    sourcePath: profile.routePath,
-    sourceHref: profile.href,
-    sourceTitle: `Профиль — ${profile.name}`,
-    title: task,
-    stateBucket: "unknown",
-    statusLabel: "Без даты",
-    actionText: task,
-  }));
+  return cleanList(profile.profileTasks).map((task, index) => {
+    const id = `task-${profile.slug}-profile-${index}`;
+    const slug = slugify(id.replace(/^task-/, ""), id);
+    const taskRoutePath = `/tasks/${slug}`;
+    return {
+      id,
+      slug,
+      kind: "profile_task",
+      taskPage: true,
+      person: profile.name,
+      personSlug: profile.slug,
+      href: addBase(taskRoutePath),
+      routePath: taskRoutePath,
+      dueDate: undefined,
+      specialty: "Профиль",
+      specialtyId: "profile",
+      sourceType: "profile",
+      sourcePath: profile.routePath,
+      sourceHref: profile.href,
+      sourceTitle: `Профиль — ${profile.name}`,
+      title: task,
+      stateBucket: "unknown",
+      statusLabel: "Без даты",
+      actionText: task,
+    };
+  });
 }
 
 function buildSearchItems({ people, events, documents, tasks, doctorSummaries }) {
@@ -860,7 +876,8 @@ function normalizeTaskRecord(record, eventsById, profilesByPerson, issues) {
     : [];
   const id = String(record.id || `task-${hashText(actionText, 12)}`);
   const isGroupedTask = record.kind === "grouped_task" || record.task_page === true || groupedSourceEventIds.length > 1 || items.length > 1;
-  const taskRoutePath = isGroupedTask ? `/tasks/${slugify(id.replace(/^task-/, ""), id)}` : event?.routePath || record.source_path || profile?.routePath || "/tasks";
+  const slug = slugify(id.replace(/^task-/, ""), id);
+  const taskRoutePath = `/tasks/${slug}`;
 
   if (!actionText) {
     issues.push(
@@ -873,9 +890,9 @@ function normalizeTaskRecord(record, eventsById, profilesByPerson, issues) {
 
   return {
     id,
-    slug: slugify(id.replace(/^task-/, ""), id),
+    slug,
     kind: record.kind || (isGroupedTask ? "grouped_task" : "single_task"),
-    taskPage: isGroupedTask,
+    taskPage: true,
     person,
     personSlug: profile?.slug || slugify(person || record.person_id || "unknown"),
     href: addBase(taskRoutePath),
