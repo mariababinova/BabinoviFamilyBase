@@ -15,7 +15,9 @@ interface Props {
 }
 
 const { title, description = "Семейная база знаний", homePortal = false, portalTopbarAction } = Astro.props;
+const familyAvatarSrc = pageHref("/brand/family-avatar.png");
 const lineIconPaths = {
+  dashboard: ["M4.5 5h6v6h-6z", "M13.5 5h6v9h-6z", "M4.5 14h6v5h-6z", "M13.5 17h6v2h-6z"],
   home: ["M3.5 10.5 12 3.5l8.5 7", "M5.5 10.5V20h13v-9.5", "M9.5 20v-5.5h5V20"],
   heart: ["M20.5 6.8c0 5.2-8.5 10.7-8.5 10.7S3.5 12 3.5 6.8A4.3 4.3 0 0 1 12 5a4.3 4.3 0 0 1 8.5 1.8Z"],
   house: ["M4 10.5 12 4l8 6.5", "M6 10v9.5h12V10", "M10 19.5v-5h4v5"],
@@ -39,7 +41,7 @@ type PortalNavItem = {
 };
 
 const portalNavItems: PortalNavItem[] = [
-  { href: pageHref("/"), label: "Главная", icon: "home", exact: true },
+  { href: pageHref("/"), label: "Главная", icon: "dashboard", exact: true },
   { href: pageHref("/health"), label: "Здоровье", icon: "heart", prefixes: ["/health", "/people", "/metrics", "/events", "/tasks", "/documents", "/doctor-summaries"] },
   { href: pageHref("/home"), label: "Быт", icon: "house", prefixes: ["/home"] },
   { href: pageHref("/places"), label: "Досуг", icon: "map-pin", prefixes: ["/places"] },
@@ -111,7 +113,9 @@ function isActivePerson(person: { href: string }) {
     <div class:list={["app-shell", homePortal && "portal-home-shell"]}>
       <aside class="sidebar" aria-label="Основная навигация">
         <a class="brand" href={pageHref("/")}>
-          <span class="brand-mark">Б</span>
+          <span class="brand-mark brand-mark-photo">
+            <img src={familyAvatarSrc} alt="" loading="eager" />
+          </span>
           <span>
             <strong>База Бабиновых</strong>
             <small>семейная база знаний</small>
@@ -191,7 +195,9 @@ function isActivePerson(person: { href: string }) {
                 </button>
               )}
               <span>Обновлено {homePortal ? homeUpdatedAtLabel : new Date(dashboard.generatedAt).toLocaleDateString("ru-RU")}</span>
-              <a class="topbar-avatar" href={pageHref("/owner-guide")} aria-label="Служебный раздел">Б</a>
+              <a class="topbar-avatar topbar-avatar-photo" href={pageHref("/owner-guide")} aria-label="Служебный раздел">
+                <img src={familyAvatarSrc} alt="" loading="lazy" />
+              </a>
             </div>
           )}
         </header>

@@ -14,6 +14,7 @@
     "agent:tasks": "node scripts/tasks-agent.mjs",
     "agent:doctor-summaries": "node scripts/doctor-summary-agent.mjs",
     "import:trello:affairs": "node scripts/import-trello-affairs.mjs",
+    "encrypt:family-documents": "node scripts/encrypt-family-documents.mjs",
     "update:base": "node scripts/update-base.mjs",
     "agent:all": "node scripts/update-base.mjs",
     "doctor:env": "node scripts/doctor-env.mjs",

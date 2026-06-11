@@ -1,0 +1,364 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-06-11T10:18:14.407Z",
+  "crypto": {
+    "kdf": "PBKDF2",
+    "hash": "SHA-256",
+    "iterations": 240000,
+    "cipher": "AES-256-GCM"
+  },
+  "documents": [
+    {
+      "id": "masha-ru-passport",
+      "files": [
+        {
+          "id": "masha-ru-passport-1",
+          "display_name": "Русский паспорт · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "masha-ru-passport-01-16bb4bf5c4.pdf.enc"
+        },
+        {
+          "id": "masha-ru-passport-2",
+          "display_name": "Русский паспорт · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "masha-ru-passport-02-0a318b47b7.jpg.enc"
+        },
+        {
+          "id": "masha-ru-passport-3",
+          "display_name": "Русский паспорт · JPG 3.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "masha-ru-passport-03-d3d4b12006.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "masha-snils",
+      "files": [
+        {
+          "id": "masha-snils-1",
+          "display_name": "СНИЛС · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "masha-snils-01-2842c3cbb9.pdf.enc"
+        },
+        {
+          "id": "masha-snils-2",
+          "display_name": "СНИЛС · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "masha-snils-02-91720707ec.jpg.enc"
+        },
+        {
+          "id": "masha-snils-3",
+          "display_name": "СНИЛС · JPG 3.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "masha-snils-03-ed8d96beb5.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "nika-residence-registration-certificate",
+      "files": [
+        {
+          "id": "nika-residence-registration-certificate-1",
+          "display_name": "Свидетельство о регистрации по месту жительства.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "nika-residence-registration-certificate-01-49fa26ac15.pdf.enc"
+        }
+      ]
+    },
+    {
+      "id": "nika-scanned-documents",
+      "files": [
+        {
+          "id": "nika-scanned-documents-1",
+          "display_name": "Отсканированные документы.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "nika-scanned-documents-01-b83b4e47df.pdf.enc"
+        }
+      ]
+    },
+    {
+      "id": "nika-citizenship-stamp",
+      "files": [
+        {
+          "id": "nika-citizenship-stamp-1",
+          "display_name": "Штамп о гражданстве.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "nika-citizenship-stamp-01-ebd5097771.pdf.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-ru-passport",
+      "files": [
+        {
+          "id": "artem-ru-passport-1",
+          "display_name": "Русский паспорт · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-ru-passport-01-c5adc2fe1f.pdf.enc"
+        },
+        {
+          "id": "artem-ru-passport-2",
+          "display_name": "Русский паспорт · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-ru-passport-02-061f663dd8.jpg.enc"
+        },
+        {
+          "id": "artem-ru-passport-3",
+          "display_name": "Русский паспорт · JPG 3.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-ru-passport-03-58dcd81bb4.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-snils",
+      "files": [
+        {
+          "id": "artem-snils-1",
+          "display_name": "СНИЛС · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-snils-01-9b17e8292f.pdf.enc"
+        },
+        {
+          "id": "artem-snils-2",
+          "display_name": "СНИЛС · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-snils-02-83b652da71.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-ru-driver-license",
+      "files": [
+        {
+          "id": "artem-ru-driver-license-1",
+          "display_name": "Водительское удостоверение РФ · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-ru-driver-license-01-e200991b6e.pdf.enc"
+        },
+        {
+          "id": "artem-ru-driver-license-2",
+          "display_name": "Водительское удостоверение РФ · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-ru-driver-license-02-3f2c213da8.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-ip-certificate",
+      "files": [
+        {
+          "id": "artem-ip-certificate-1",
+          "display_name": "Свидетельство ИП · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-ip-certificate-01-4ab796a443.pdf.enc"
+        },
+        {
+          "id": "artem-ip-certificate-2",
+          "display_name": "Свидетельство ИП · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-ip-certificate-02-76caff3def.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-moscow-tekstilshchiki",
+      "files": [
+        {
+          "id": "artem-moscow-tekstilshchiki-1",
+          "display_name": "Апартаменты Москва Текстильщики.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-moscow-tekstilshchiki-01-84e0882c2d.pdf.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-moscow-novokhokhlovskaya",
+      "files": [
+        {
+          "id": "artem-moscow-novokhokhlovskaya-1",
+          "display_name": "Квартира ПИК Москва Новохохловская.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-moscow-novokhokhlovskaya-01-712925569e.pdf.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-kg-id",
+      "files": [
+        {
+          "id": "artem-kg-id-1",
+          "display_name": "Киргизский ID · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-kg-id-01-1703c6006f.pdf.enc"
+        },
+        {
+          "id": "artem-kg-id-2",
+          "display_name": "Киргизский ID · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-kg-id-02-06fbfa7b75.jpg.enc"
+        },
+        {
+          "id": "artem-kg-id-3",
+          "display_name": "Киргизский ID · JPG 3.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-kg-id-03-637cf304f3.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-kg-passport",
+      "files": [
+        {
+          "id": "artem-kg-passport-1",
+          "display_name": "Киргизский паспорт · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-kg-passport-01-c500221c39.pdf.enc"
+        },
+        {
+          "id": "artem-kg-passport-2",
+          "display_name": "Киргизский паспорт · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-kg-passport-02-e6daf1ee41.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-ru-international-passport-main",
+      "files": [
+        {
+          "id": "artem-ru-international-passport-main-1",
+          "display_name": "Загранпаспорт РФ основной · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-ru-international-passport-main-01-730ac5f4f0.pdf.enc"
+        },
+        {
+          "id": "artem-ru-international-passport-main-2",
+          "display_name": "Загранпаспорт РФ основной · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-ru-international-passport-main-02-3f600fa220.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-ru-international-passport-extra",
+      "files": [
+        {
+          "id": "artem-ru-international-passport-extra-1",
+          "display_name": "Загранпаспорт РФ дополнительный · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-ru-international-passport-extra-01-eddbd69349.pdf.enc"
+        },
+        {
+          "id": "artem-ru-international-passport-extra-2",
+          "display_name": "Загранпаспорт РФ дополнительный · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-ru-international-passport-extra-02-b998d18137.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-dubai-resident-id",
+      "files": [
+        {
+          "id": "artem-dubai-resident-id-1",
+          "display_name": "Резидентство Дубай ID карта · PDF 1.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-dubai-resident-id-01-d3af195b48.pdf.enc"
+        },
+        {
+          "id": "artem-dubai-resident-id-2",
+          "display_name": "Резидентство Дубай ID карта · JPG 2.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-dubai-resident-id-02-26267fd2d1.jpg.enc"
+        },
+        {
+          "id": "artem-dubai-resident-id-3",
+          "display_name": "Резидентство Дубай ID карта · JPG 3.jpg",
+          "extension": "jpg",
+          "mime_type": "image/jpeg",
+          "encrypted_file": "artem-dubai-resident-id-03-53e3b0500b.jpg.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-dubai-ejari-2026",
+      "files": [
+        {
+          "id": "artem-dubai-ejari-2026-1",
+          "display_name": "Ejari 2026 прописка Дубай.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-dubai-ejari-2026-01-27ccb19f45.pdf.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-dubai-apartment",
+      "files": [
+        {
+          "id": "artem-dubai-apartment-1",
+          "display_name": "Квартира Дубай.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-dubai-apartment-01-d87ce49d98.pdf.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-colife-real-estate-2025",
+      "files": [
+        {
+          "id": "artem-colife-real-estate-2025-1",
+          "display_name": "Colife Real Estate L.L.C. 2025.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-colife-real-estate-2025-01-00d365b056.pdf.enc"
+        }
+      ]
+    },
+    {
+      "id": "artem-colife-vacation-homes-license-2025",
+      "files": [
+        {
+          "id": "artem-colife-vacation-homes-license-2025-1",
+          "display_name": "License Colife Vacation Homes 2025.pdf",
+          "extension": "pdf",
+          "mime_type": "application/pdf",
+          "encrypted_file": "artem-colife-vacation-homes-license-2025-01-56cd3a8e9e.pdf.enc"
+        }
+      ]
+    }
+  ]
+}

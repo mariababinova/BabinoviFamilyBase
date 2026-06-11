@@ -19,6 +19,30 @@ type FamilyDocument = {
   source_files?: string[];
 };
 
+type FamilyDocumentVaultFile = {
+  id: string;
+  display_name: string;
+  extension: string;
+  mime_type: string;
+  encrypted_file: string;
+  encrypted_url?: string;
+};
+
+type FamilyDocumentVaultRecord = {
+  id: string;
+  files: FamilyDocumentVaultFile[];
+};
+
+type FamilyDocumentVault = {
+  schema_version: number;
+  updated_at: string;
+  documents: FamilyDocumentVaultRecord[];
+};
+
+type FamilyDocumentView = FamilyDocument & {
+  vaultFiles: FamilyDocumentVaultFile[];
+};
+
 type FamilyDocumentsRegistry = {
   schema_version: number;
   updated_at: string;
@@ -31,12 +55,24 @@ type PersonSection = {
   name: string;
   role: string;
   tone: Tone;
-  documents: FamilyDocument[];
+  documents: FamilyDocumentView[];
   categoryCounts: Array<{ title: string; tone: Tone; count: number }>;
 };
 
 const registryPath = new URL("../../../11 Документы/family_documents.json", import.meta.url);
 const registry = JSON.parse(fs.readFileSync(registryPath, "utf8")) as FamilyDocumentsRegistry;
+const vaultPath = new URL("../../../11 Документы/family_document_vault.json", import.meta.url);
+const vault = fs.existsSync(vaultPath)
+  ? (JSON.parse(fs.readFileSync(vaultPath, "utf8")) as FamilyDocumentVault)
+  : ({ schema_version: 1, updated_at: "", documents: [] } as FamilyDocumentVault);
+const vaultByDocumentId = new Map(vault.documents.map((document) => [document.id, document.files || []]));
+const documentsWithVault: FamilyDocumentView[] = registry.documents.map((document) => ({
+  ...document,
+  vaultFiles: (vaultByDocumentId.get(document.id) || []).map((file) => ({
+    ...file,
+    encrypted_url: pageHref(`/files/family-vault/${file.encrypted_file}`),
+  })),
+}));
 
 const peopleConfig: Array<Omit<PersonSection, "documents" | "categoryCounts">> = [
   { key: "masha", name: "Маша", role: "личные, семейные и бытовые документы", tone: "violet" },
@@ -91,7 +127,7 @@ function documentTone(document: FamilyDocument) {
 }
 
 const personSections: PersonSection[] = peopleConfig.map((person) => {
-  const documents = registry.documents
+  const documents = documentsWithVault
     .filter((document) => document.person === person.name)
     .sort((a, b) => {
       const categoryDiff = categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
@@ -114,6 +150,25 @@ const defaultPersonKey = personSections.find((person) => person.documents.length
 const totalDocuments = registry.documents.length;
 const totalFiles = registry.documents.reduce((sum, document) => sum + document.file_count, 0);
 const totalPeopleWithDocuments = personSections.filter((person) => person.documents.length > 0).length;
+const vaultClientDocuments = Object.fromEntries(
+  documentsWithVault
+    .filter((document) => document.vaultFiles.length > 0)
+    .map((document) => [
+      document.id,
+      {
+        id: document.id,
+        title: document.title,
+        person: document.person,
+        files: document.vaultFiles.map((file) => ({
+          id: file.id,
+          displayName: file.display_name,
+          extension: file.extension,
+          mimeType: file.mime_type,
+          url: file.encrypted_url,
+        })),
+      },
+    ]),
+);
 
 const iconPaths = {
   archive: ["M4.5 7.5h15", "M6 7.5v12h12v-12", "M8 4.5h8l1.5 3h-11z", "M10 12h4"],
@@ -122,6 +177,7 @@ const iconPaths = {
   lock: ["M6.5 10.5h11v9h-11z", "M9 10.5V8a3 3 0 0 1 6 0v2.5"],
   shield: ["M12 21c4.2-1.6 6.5-4.7 6.5-9.3V6.2L12 3.5 5.5 6.2v5.5c0 4.6 2.3 7.7 6.5 9.3Z", "M9 12l2 2 4-4"],
   stack: ["M7 8.5 12 6l5 2.5-5 2.5z", "M7 12l5 2.5 5-2.5", "M7 15.5l5 2.5 5-2.5"],
+  eye: ["M2.8 12s3.2-5.5 9.2-5.5S21.2 12 21.2 12s-3.2 5.5-9.2 5.5S2.8 12 2.8 12Z", "M12 9.4a2.6 2.6 0 1 1 0 5.2 2.6 2.6 0 0 1 0-5.2Z"],
 } as const;
 ---
 
@@ -271,6 +327,24 @@ const iconPaths = {
                     <span>{filesLabel(document.file_count)}</span>
                     <strong>{document.status}</strong>
                   </footer>
+
+                  <div class="family-document-card-actions">
+                    {document.vaultFiles.length > 0 ? (
+                      <button
+                        class="family-document-vault-button"
+                        type="button"
+                        data-family-vault-open
+                        data-family-vault-document-id={document.id}
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          {iconPaths.eye.map((path) => <path d={path} />)}
+                        </svg>
+                        Смотреть
+                      </button>
+                    ) : (
+                      <span class="family-document-vault-note">оригинал скрыт</span>
+                    )}
+                  </div>
                 </article>
               ))
             ) : (
@@ -290,9 +364,59 @@ const iconPaths = {
     </section>
   </div>
 
-  <script is:inline define:vars={{ defaultPersonKey }}>
+  <div class="family-vault-modal" data-family-vault-modal hidden>
+    <section class="family-vault-dialog" role="dialog" aria-modal="true" aria-labelledby="family-vault-title">
+      <header>
+        <div>
+          <p class="family-documents-kicker" data-family-vault-person></p>
+          <h2 id="family-vault-title" data-family-vault-title></h2>
+        </div>
+        <button class="family-vault-close" type="button" data-family-vault-close aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12" />
+            <path d="M18 6 6 18" />
+          </svg>
+        </button>
+      </header>
+      <div class="family-vault-files" data-family-vault-files></div>
+      <p class="family-vault-status" data-family-vault-status></p>
+      <button class="family-vault-forget" type="button" data-family-vault-forget>Забыть пароль в этой вкладке</button>
+    </section>
+  </div>
+
+  <div class="family-vault-modal" data-family-vault-password-modal hidden>
+    <form class="family-vault-dialog family-vault-password-form" data-family-vault-password-form>
+      <header>
+        <div>
+          <p class="family-documents-kicker">Семейный сейф</p>
+          <h2>Пароль к документам</h2>
+        </div>
+        <button class="family-vault-close" type="button" data-family-vault-password-cancel aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12" />
+            <path d="M18 6 6 18" />
+          </svg>
+        </button>
+      </header>
+      <label>
+        <span>Пароль</span>
+        <input type="password" autocomplete="current-password" data-family-vault-password-input required />
+      </label>
+      <div class="family-vault-password-actions">
+        <button class="family-document-vault-button" type="submit">Открыть</button>
+        <button class="family-vault-secondary" type="button" data-family-vault-password-cancel>Отмена</button>
+      </div>
+      <p class="family-vault-status" data-family-vault-password-status></p>
+    </form>
+  </div>
+
+  <script is:inline define:vars={{ defaultPersonKey, vaultClientDocuments }}>
     const tabs = Array.from(document.querySelectorAll("[data-documents-tab]"));
     const panels = Array.from(document.querySelectorAll("[data-documents-panel]"));
+    const textEncoder = new TextEncoder();
+    const keyPrefix = "familyDocumentKey:v1:";
+    let activeVaultDocument = null;
+    let pendingVaultAction = null;
 
     function activateDocumentsTab(key) {
       tabs.forEach((tab) => {
@@ -321,6 +445,246 @@ const iconPaths = {
     } else {
       activateDocumentsTab(defaultPersonKey);
     }
+
+    function base64ToBytes(value) {
+      const binary = atob(value);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+      return bytes;
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let index = 0; index < bytes.length; index += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+      }
+      return btoa(binary);
+    }
+
+    function storageGet(key) {
+      try {
+        return sessionStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    }
+
+    function storageSet(key, value) {
+      try {
+        sessionStorage.setItem(key, value);
+      } catch {
+        // Session storage can be blocked in private browser modes.
+      }
+    }
+
+    function storageForgetVaultKeys() {
+      try {
+        for (const key of Object.keys(sessionStorage)) {
+          if (key.startsWith(keyPrefix)) sessionStorage.removeItem(key);
+        }
+      } catch {
+        // Nothing to clear.
+      }
+    }
+
+    function setVaultStatus(message) {
+      document.querySelectorAll("[data-family-vault-status]").forEach((element) => {
+        element.textContent = message || "";
+      });
+    }
+
+    async function parseEncryptedPayload(url) {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw new Error("Не удалось загрузить зашифрованный файл.");
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      const magic = new TextDecoder().decode(bytes.slice(0, 4));
+      if (magic !== "FDB1" && magic !== "MDB1") throw new Error("Неизвестный формат файла.");
+      const headerLength = new DataView(bytes.buffer, bytes.byteOffset + 4, 4).getUint32(0, false);
+      const headerStart = 8;
+      const headerEnd = headerStart + headerLength;
+      const header = JSON.parse(new TextDecoder().decode(bytes.slice(headerStart, headerEnd)));
+      return { header, encryptedBytes: bytes.slice(headerEnd) };
+    }
+
+    async function deriveKey(password, header) {
+      const baseKey = await crypto.subtle.importKey("raw", textEncoder.encode(password), "PBKDF2", false, ["deriveKey"]);
+      return crypto.subtle.deriveKey(
+        {
+          name: "PBKDF2",
+          hash: header.kdf.hash,
+          salt: base64ToBytes(header.kdf.salt),
+          iterations: header.kdf.iterations,
+        },
+        baseKey,
+        { name: "AES-GCM", length: 256 },
+        true,
+        ["decrypt"],
+      );
+    }
+
+    async function cachedKey(header) {
+      const rawKey = storageGet(`${keyPrefix}${header.kdf.salt}`);
+      if (!rawKey) return null;
+      return crypto.subtle.importKey("raw", base64ToBytes(rawKey), "AES-GCM", true, ["decrypt"]);
+    }
+
+    async function saveKey(header, key) {
+      const raw = new Uint8Array(await crypto.subtle.exportKey("raw", key));
+      storageSet(`${keyPrefix}${header.kdf.salt}`, bytesToBase64(raw));
+    }
+
+    async function decryptPayload(payload, key) {
+      const authTag = base64ToBytes(payload.header.authTag);
+      const encryptedWithTag = new Uint8Array(payload.encryptedBytes.length + authTag.length);
+      encryptedWithTag.set(payload.encryptedBytes, 0);
+      encryptedWithTag.set(authTag, payload.encryptedBytes.length);
+      return crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: base64ToBytes(payload.header.iv), tagLength: 128 },
+        key,
+        encryptedWithTag,
+      );
+    }
+
+    function openBlob(blob, fileName, shouldDownload) {
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.rel = "noreferrer";
+      if (shouldDownload) {
+        link.download = fileName;
+      } else {
+        link.target = "_blank";
+      }
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(objectUrl), shouldDownload ? 30000 : 120000);
+    }
+
+    function showPasswordModal(action) {
+      pendingVaultAction = action;
+      const modal = document.querySelector("[data-family-vault-password-modal]");
+      const input = document.querySelector("[data-family-vault-password-input]");
+      const status = document.querySelector("[data-family-vault-password-status]");
+      if (status) status.textContent = "";
+      modal?.removeAttribute("hidden");
+      input?.focus();
+    }
+
+    function hidePasswordModal() {
+      const modal = document.querySelector("[data-family-vault-password-modal]");
+      const input = document.querySelector("[data-family-vault-password-input]");
+      modal?.setAttribute("hidden", "");
+      if (input) input.value = "";
+    }
+
+    async function runVaultAction(action, password) {
+      setVaultStatus("Открываю файл...");
+      const payload = await parseEncryptedPayload(action.url);
+      let key = password ? await deriveKey(password, payload.header) : await cachedKey(payload.header);
+      if (!key) {
+        setVaultStatus("");
+        showPasswordModal(action);
+        return;
+      }
+      try {
+        const decrypted = await decryptPayload(payload, key);
+        if (password) await saveKey(payload.header, key);
+        const blob = new Blob([decrypted], { type: action.mimeType || payload.header.mimeType || "application/octet-stream" });
+        openBlob(blob, action.fileName || payload.header.fileName, action.download);
+        setVaultStatus("Готово.");
+      } catch (error) {
+        if (!password) {
+          setVaultStatus("");
+          showPasswordModal(action);
+          return;
+        }
+        throw new Error("Пароль не подошёл.");
+      }
+    }
+
+    function renderVaultFiles(record) {
+      const filesContainer = document.querySelector("[data-family-vault-files]");
+      if (!filesContainer) return;
+      filesContainer.textContent = "";
+      for (const file of record.files || []) {
+        const row = document.createElement("article");
+        row.className = "family-vault-file-row";
+
+        const info = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = file.displayName;
+        const meta = document.createElement("span");
+        meta.textContent = String(file.extension || "file").toUpperCase();
+        info.append(title, meta);
+
+        const actions = document.createElement("div");
+        actions.className = "family-vault-file-actions";
+
+        const openButton = document.createElement("button");
+        openButton.type = "button";
+        openButton.textContent = "Открыть";
+        openButton.addEventListener("click", () => runVaultAction({ ...file, fileName: file.displayName, download: false }));
+
+        const downloadButton = document.createElement("button");
+        downloadButton.type = "button";
+        downloadButton.textContent = "Скачать";
+        downloadButton.addEventListener("click", () => runVaultAction({ ...file, fileName: file.displayName, download: true }));
+
+        actions.append(openButton, downloadButton);
+        row.append(info, actions);
+        filesContainer.append(row);
+      }
+    }
+
+    function showVaultModal(documentId) {
+      activeVaultDocument = vaultClientDocuments[documentId];
+      if (!activeVaultDocument) return;
+      const modal = document.querySelector("[data-family-vault-modal]");
+      const title = document.querySelector("[data-family-vault-title]");
+      const person = document.querySelector("[data-family-vault-person]");
+      if (title) title.textContent = activeVaultDocument.title;
+      if (person) person.textContent = activeVaultDocument.person || "Семейный сейф";
+      setVaultStatus("");
+      renderVaultFiles(activeVaultDocument);
+      modal?.removeAttribute("hidden");
+    }
+
+    function hideVaultModal() {
+      document.querySelector("[data-family-vault-modal]")?.setAttribute("hidden", "");
+      activeVaultDocument = null;
+      pendingVaultAction = null;
+      setVaultStatus("");
+    }
+
+    document.querySelectorAll("[data-family-vault-open]").forEach((button) => {
+      button.addEventListener("click", () => showVaultModal(button.dataset.familyVaultDocumentId));
+    });
+
+    document.querySelectorAll("[data-family-vault-close]").forEach((button) => {
+      button.addEventListener("click", hideVaultModal);
+    });
+
+    document.querySelectorAll("[data-family-vault-password-cancel]").forEach((button) => {
+      button.addEventListener("click", hidePasswordModal);
+    });
+
+    document.querySelector("[data-family-vault-password-form]")?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const input = document.querySelector("[data-family-vault-password-input]");
+      const status = document.querySelector("[data-family-vault-password-status]");
+      try {
+        if (status) status.textContent = "Проверяю пароль...";
+        await runVaultAction(pendingVaultAction, input?.value || "");
+        hidePasswordModal();
+      } catch (error) {
+        if (status) status.textContent = error.message || "Не удалось открыть файл.";
+      }
+    });
+
+    document.querySelector("[data-family-vault-forget]")?.addEventListener("click", () => {
+      storageForgetVaultKeys();
+      setVaultStatus("Пароль забыт в этой вкладке.");
+    });
   </script>
 </AppLayout>
 
@@ -679,7 +1043,7 @@ const iconPaths = {
     min-width: 0;
     min-height: 220px;
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
     gap: 0.72rem;
     padding: 0.86rem;
     border-left: 3px solid var(--documents-tone);
@@ -774,6 +1138,219 @@ const iconPaths = {
     font-weight: 720;
   }
 
+  .family-document-card-actions {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+  }
+
+  .family-document-vault-button,
+  .family-vault-secondary,
+  .family-vault-file-actions button,
+  .family-vault-forget,
+  .family-vault-close {
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--text-main);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .family-document-vault-button {
+    width: 100%;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    border-color: color-mix(in srgb, var(--documents-tone) 34%, rgba(255, 255, 255, 0.12));
+    background:
+      radial-gradient(circle at 20% 0, color-mix(in srgb, var(--documents-tone) 18%, transparent), transparent 5rem),
+      color-mix(in srgb, var(--documents-tone) 11%, rgba(255, 255, 255, 0.04));
+    color: color-mix(in srgb, var(--documents-tone) 78%, white);
+    font-size: 0.84rem;
+    font-weight: 760;
+  }
+
+  .family-document-vault-button:hover,
+  .family-vault-secondary:hover,
+  .family-vault-file-actions button:hover,
+  .family-vault-forget:hover,
+  .family-vault-close:hover {
+    border-color: color-mix(in srgb, var(--documents-tone, var(--blue)) 38%, rgba(255, 255, 255, 0.16));
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .family-document-vault-note {
+    width: 100%;
+    min-height: 34px;
+    display: grid;
+    place-items: center;
+    border: 1px dashed var(--border-soft);
+    border-radius: var(--radius-pill);
+    color: rgba(169, 180, 192, 0.72);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .family-vault-modal[hidden] {
+    display: none;
+  }
+
+  .family-vault-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: grid;
+    place-items: center;
+    padding: 1.2rem;
+    background: rgba(3, 8, 16, 0.72);
+    backdrop-filter: blur(18px);
+  }
+
+  .family-vault-dialog {
+    --documents-tone: var(--violet);
+    width: min(620px, 100%);
+    max-height: min(760px, calc(100vh - 2rem));
+    display: grid;
+    gap: 0.9rem;
+    overflow: auto;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 20px;
+    background:
+      radial-gradient(circle at 0 0, color-mix(in srgb, var(--documents-tone) 13%, transparent), transparent 13rem),
+      linear-gradient(180deg, rgba(20, 28, 42, 0.98), rgba(10, 16, 26, 0.98));
+    box-shadow: 0 24px 90px rgba(0, 0, 0, 0.45);
+  }
+
+  .family-vault-dialog header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.85rem;
+    align-items: start;
+  }
+
+  .family-vault-dialog h2 {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 1.35rem;
+    font-weight: 560;
+    line-height: 1.15;
+  }
+
+  .family-vault-close {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    color: rgba(207, 216, 226, 0.88);
+  }
+
+  .family-vault-files {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .family-vault-file-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    min-height: 70px;
+    padding: 0.72rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .family-vault-file-row strong,
+  .family-vault-file-row span {
+    display: block;
+    min-width: 0;
+  }
+
+  .family-vault-file-row strong {
+    overflow: hidden;
+    color: var(--text-main);
+    font-size: 0.94rem;
+    font-weight: 650;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .family-vault-file-row span {
+    margin-top: 0.16rem;
+    color: rgba(169, 180, 192, 0.76);
+    font-size: 0.75rem;
+    font-weight: 720;
+  }
+
+  .family-vault-file-actions {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .family-vault-file-actions button,
+  .family-vault-secondary,
+  .family-vault-forget {
+    min-height: 34px;
+    padding: 0.3rem 0.7rem;
+    color: rgba(225, 232, 241, 0.9);
+    font-size: 0.78rem;
+    font-weight: 720;
+  }
+
+  .family-vault-status {
+    min-height: 1.2rem;
+    margin: 0;
+    color: rgba(169, 180, 192, 0.82);
+    font-size: 0.84rem;
+  }
+
+  .family-vault-forget {
+    justify-self: start;
+    color: rgba(169, 180, 192, 0.82);
+  }
+
+  .family-vault-password-form label {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .family-vault-password-form label span {
+    color: rgba(169, 180, 192, 0.82);
+    font-size: 0.82rem;
+    font-weight: 720;
+  }
+
+  .family-vault-password-form input {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid var(--border-medium);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.055);
+    color: var(--text-main);
+    font: inherit;
+    padding: 0 0.85rem;
+    outline: none;
+  }
+
+  .family-vault-password-form input:focus {
+    border-color: color-mix(in srgb, var(--violet) 46%, rgba(255, 255, 255, 0.14));
+    box-shadow: 0 0 0 3px rgba(176, 132, 255, 0.12);
+  }
+
+  .family-vault-password-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.55rem;
+    align-items: center;
+  }
+
   .family-documents-empty {
     grid-column: 1 / -1;
     display: grid;
@@ -866,6 +1443,16 @@ const iconPaths = {
     .family-documents-person-avatar {
       width: 58px;
       height: 58px;
+    }
+
+    .family-vault-file-row,
+    .family-vault-password-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .family-vault-file-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

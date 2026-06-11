@@ -22,6 +22,7 @@ async function walk(dir) {
     } else if (forbiddenExtensions.has(path.extname(entry.name).toLowerCase())) {
       const relativePath = path.relative(distDir, fullPath).split(path.sep).join("/");
       if (relativePath.startsWith("people/")) continue;
+      if (relativePath.startsWith("brand/")) continue;
       violations.push(relativePath);
     }
   }
