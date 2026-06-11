@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-02T12:19:46.697Z",
+  "updated_at": "2026-06-11T04:49:01.192Z",
   "records": [
     {
       "id": "metric-796676149ca6069b278cba38",
@@ -2574,6 +2574,39 @@
       "reference_source": "source_file",
       "reference_source_file": "2026-05-15 Маша — омега-3 индекс.pdf",
       "reference_source_text": "RBC omega-3 cardiovascular risk scale: <4 high risk; 4-8 moderate risk; >8 low risk."
+    },
+    {
+      "id": "metric-ae64e60cff859d11fe7a0c76",
+      "status": "approved",
+      "dedupe_key": "ae64e60cff859d11fe7a0c76",
+      "person": "Ника",
+      "person_id": "nika",
+      "date": "2026-06-11",
+      "source_type": "manual_profile_form",
+      "source_event_id": "",
+      "source_event_path": "",
+      "source_files": [],
+      "source_draft_path": "",
+      "metric_id": "weight",
+      "metric_label": "Вес",
+      "metric_category": "body",
+      "metric_value_type": "numeric",
+      "custom_metric_label": "",
+      "value": "5.3",
+      "numeric_value": 5.3,
+      "comparator": "",
+      "qualitative_value": "",
+      "value_text": "5,3",
+      "unit": "кг",
+      "reference_low": null,
+      "reference_high": null,
+      "reference_text": "",
+      "is_abnormal": null,
+      "source_text": "Вес: 5,3 кг.",
+      "extraction_confidence": "manual",
+      "reviewed_at": "",
+      "created_at": "2026-06-11T04:49:01.192Z",
+      "approved_at": "2026-06-11T04:49:01.192Z"
     }
   ]
 }
