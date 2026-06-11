@@ -247,7 +247,7 @@ function main() {
     remediation: "Set MEDS_GITHUB_TOKEN only in trusted local or Vercel server environments.",
   });
   checkEnv(results, LEVELS.PRODUCTION, "MEDS_GITHUB_REPO", "GitHub repo", {
-    defaultValue: "Ulyana19svlv/MedsDataBase",
+    defaultValue: "Ulyana19svlv/BabinoviFamilyBase",
     required: false,
   });
   checkEnv(results, LEVELS.PRODUCTION, "MEDS_GITHUB_BRANCH", "GitHub branch", {

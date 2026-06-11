@@ -19,6 +19,35 @@ Before changing or reviewing UI:
 
 Keep the existing stack. This repository uses Astro and CSS conventions. Do not convert to Next.js, React, shadcn/ui, Tailwind, or another stack unless the user explicitly asks.
 
+## Visual Freeze
+
+The currently implemented dark interface is the accepted visual baseline and source of truth.
+
+For future UI and architecture tasks, do not:
+
+- change the color system;
+- change card radii;
+- change typography;
+- change shadows;
+- change the overall visual mood;
+- redesign cards merely for aesthetic polish;
+- try to re-approximate the interface to the references;
+- use `design/references/` as a mandatory visual target.
+
+Use `design/references/` only as conceptual guidance for:
+
+- information architecture;
+- module logic;
+- drill-down pages;
+- data structure;
+- UX patterns.
+
+Do not use the references for visual redesign unless the user explicitly asks.
+
+For architectural tasks, preserve the current CSS classes, components, colors, sizes, cards, and overall appearance.
+
+If a new structure requires small layout adjustments, make them minimal and careful, without changing the design system.
+
 ## Product Target
 
 Build and preserve **Dark Family OS**: a dark, calm, premium Russian-language family medical operating system.
@@ -80,14 +109,14 @@ Mobile should prefer:
 
 ## UI References
 
-Use references as inspiration only:
+Use references as conceptual inspiration only:
 
 - Linear for compact sidebar, right detail drawer, dense elegant layouts, and task/status systems.
 - Notion for knowledge-base structure, linked entities, clear page blocks, metadata, and notes.
 - Apple Health for indicators, reference ranges, trends, interpretation, and source documents.
 - Raycast for command palette, grouped search, quick actions, and keyboard-first search.
 
-Do not copy any reference pixel-perfect.
+Do not copy any reference pixel-perfect. Do not use references as visual redesign targets while the Visual Freeze is active, unless the user explicitly asks for visual redesign.
 
 ## Visual QA Checklist
 

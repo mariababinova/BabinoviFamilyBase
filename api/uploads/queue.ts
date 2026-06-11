@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-const repo = process.env.MEDS_GITHUB_REPO || "Ulyana19svlv/MedsDataBase";
+const repo = process.env.MEDS_GITHUB_REPO || "Ulyana19svlv/BabinoviFamilyBase";
 const branch = process.env.MEDS_GITHUB_BRANCH || "main";
 const token = process.env.MEDS_GITHUB_TOKEN;
 const queuePath = "04 Входящие/site-upload-queue.json";

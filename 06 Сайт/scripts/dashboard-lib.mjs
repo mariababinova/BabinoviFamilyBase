@@ -20,7 +20,7 @@ export const generatedDir = path.join(siteDir, "src", "generated");
 export const publicDocumentsDir = path.join(siteDir, "public", "files", "documents");
 export const distDocumentsDir = path.join(siteDir, "dist", "files", "documents");
 export const distEncryptedDocumentsDir = path.join(siteDir, "dist", "files", "encrypted-documents");
-const configuredBasePath = process.env.PUBLIC_BASE_PATH ?? (process.env.VERCEL ? "" : "/MedsDataBase");
+const configuredBasePath = process.env.PUBLIC_BASE_PATH ?? (process.env.VERCEL ? "" : "/BabinoviFamilyBase");
 export const basePath = configuredBasePath === "/" ? "" : configuredBasePath.replace(/\/$/, "");
 
 const assetExtensions = new Set([".pdf", ".jpg", ".jpeg", ".png"]);

@@ -31,6 +31,35 @@ The intended feel combines:
 
 The visual language is named **Dark Family OS**.
 
+### Visual Freeze
+
+The currently implemented dark interface is the accepted visual baseline and source of truth.
+
+For future tasks, do not:
+
+- change the color system;
+- change card radii;
+- change typography;
+- change shadows;
+- change the overall visual mood;
+- redesign cards merely for aesthetic polish;
+- try to re-approximate the interface to the references;
+- use `design/references/` as a mandatory visual target.
+
+Use `design/references/` only as conceptual guidance for:
+
+- information architecture;
+- module logic;
+- drill-down pages;
+- data structure;
+- UX patterns.
+
+Do not use the references for visual redesign unless the user explicitly asks.
+
+For architectural tasks, preserve the current CSS classes, components, colors, sizes, cards, and overall appearance.
+
+If a new structure requires small layout adjustments, make them minimal and careful, without changing the design system.
+
 The interface must feel:
 
 - dark;

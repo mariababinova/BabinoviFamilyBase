@@ -4,6 +4,35 @@ This document defines product and UX references for "База Бабиновых
 
 The app must remain its own product: a Russian-language private family knowledge base and medical family operating system.
 
+## Visual Freeze
+
+The currently implemented dark interface is the accepted visual baseline and source of truth.
+
+For future tasks, do not:
+
+- change the color system;
+- change card radii;
+- change typography;
+- change shadows;
+- change the overall visual mood;
+- redesign cards merely for aesthetic polish;
+- try to re-approximate the interface to the references;
+- use `design/references/` as a mandatory visual target.
+
+Use `design/references/` only as conceptual guidance for:
+
+- information architecture;
+- module logic;
+- drill-down pages;
+- data structure;
+- UX patterns.
+
+Do not use the references for visual redesign unless the user explicitly asks.
+
+For architectural tasks, preserve the current CSS classes, components, colors, sizes, cards, and overall appearance.
+
+If a new structure requires small layout adjustments, make them minimal and careful, without changing the design system.
+
 ## Primary Direction
 
 Name: **Dark Family OS**.
@@ -219,4 +248,4 @@ Mobile is not a squeezed desktop layout. Mobile screens must preserve the key fl
 
 ## Reference Assets
 
-Images and notes in `design/references/` are the primary visual reference when present. Match mood, hierarchy, spacing, card softness, entity structure, right detail drawers, and mobile behavior. Do not copy pixel-perfect.
+Images and notes in `design/references/` are conceptual references only. Use them for information architecture, module logic, drill-down pages, data structure, and UX patterns. Do not use them as mandatory visual targets or as a reason to redesign the accepted current dark interface unless the user explicitly asks.

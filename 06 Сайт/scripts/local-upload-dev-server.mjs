@@ -97,9 +97,9 @@ async function handleLocalUpload(req, res) {
 
 function proxyToAstro(req, res) {
   const incomingUrl = new URL(req.url || "/", `http://127.0.0.1:${bridgePort}`);
-  const pathname = incomingUrl.pathname.startsWith("/MedsDataBase/")
+  const pathname = incomingUrl.pathname.startsWith("/BabinoviFamilyBase/")
     ? incomingUrl.pathname
-    : `/MedsDataBase${incomingUrl.pathname === "/" ? "" : incomingUrl.pathname}`;
+    : `/BabinoviFamilyBase${incomingUrl.pathname === "/" ? "" : incomingUrl.pathname}`;
   const targetPath = `${pathname}${incomingUrl.search}`;
 
   const proxy = http.request(
