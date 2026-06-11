@@ -1,0 +1,197 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Входящие - Секретная Москва</title>
+    <link rel="stylesheet" href="./tokens.css?v=meds-places-1" />
+    <link rel="stylesheet" href="./inbox.css?v=meds-places-1" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Секретная Москва</p>
+          <h1>Входящие места</h1>
+          <p class="lead">Вставь сюда сообщения из Instagram или Telegram. Разные места лучше отделять пустой строкой, чтобы черновики получились аккуратнее.</p>
+        </div>
+        <a class="back-link" href="./">Назад к карте</a>
+      </header>
+
+      <div class="workspace">
+        <section class="panel input-panel">
+          <p>Сюда можно вставлять ссылки, комментарии Маши, пересланные сообщения и короткие заметки.</p>
+          <textarea id="inboxText" placeholder="Маша: запиши это&#10;https://www.instagram.com/reel/...&#10;&#10;Еще одно место&#10;https://t.me/..."></textarea>
+          <div class="actions">
+            <button class="primary-button" id="parseInboxButton">Разобрать</button>
+            <button class="secondary-button" id="copyInboxButton">Скопировать JSON</button>
+            <button class="secondary-button" id="downloadInboxButton">Скачать JSON</button>
+            <button class="secondary-button" id="clearInboxButton">Очистить</button>
+          </div>
+          <p class="privacy-note">Текст разбирается только в этом браузере и никуда не отправляется.</p>
+        </section>
+
+        <section class="panel output-panel">
+          <div class="output-head">
+            <h2>Черновики</h2>
+            <p class="meta-line" id="inboxCountLabel">0 черновиков</p>
+          </div>
+          <div class="draft-list" id="inboxDraftList">
+            <div class="empty-state">Пока пусто. Вставь сообщения и нажми «Разобрать».</div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const INBOX_URL_RE = /https?:\/\/[^\s)>\]"']+/gi;
+      const state = { drafts: [] };
+
+      const elements = {
+        clearButton: document.querySelector("#clearInboxButton"),
+        copyButton: document.querySelector("#copyInboxButton"),
+        countLabel: document.querySelector("#inboxCountLabel"),
+        downloadButton: document.querySelector("#downloadInboxButton"),
+        draftList: document.querySelector("#inboxDraftList"),
+        parseButton: document.querySelector("#parseInboxButton"),
+        text: document.querySelector("#inboxText")
+      };
+
+      function cleanUrl(url) {
+        return url.trim().replace(/[.,;]+$/, "");
+      }
+
+      function splitBlocks(text) {
+        return text
+          .trim()
+          .split(/\n\s*\n+/)
+          .map((block) => block.split("\n").map((line) => line.trim()).filter(Boolean).join("\n"))
+          .filter(Boolean);
+      }
+
+      function guessCategory(text) {
+        const lower = text.toLowerCase();
+        const checks = [
+          ["рестораны и кафе", ["кафе", "кофе", "ресторан", "бар", "завтрак", "ужин", "еда"]],
+          ["музеи и выставки", ["музей", "выстав", "галере", "павильон", "экспози"]],
+          ["парки и прогулки", ["парк", "сад", "прогул", "набереж", "трамвайчик"]],
+          ["спорт и активность", ["йога", "спорт", "батут", "падел", "фитнес", "клуб"]],
+          ["мастер-классы", ["мастер", "студия", "рисован", "шить", "гончар", "керамик"]],
+          ["пространства", ["пространство", "лофт", "холл", "ателье"]],
+          ["спа и красота", ["спа", "массаж", "салон", "уход"]],
+          ["события", ["событие", "концерт", "игра", "лото", "фестиваль"]]
+        ];
+        const found = checks.find(([, words]) => words.some((word) => lower.includes(word)));
+        return found ? found[0] : "не разобрано";
+      }
+
+      function guessSource(urls) {
+        const joined = urls.join(" ").toLowerCase();
+        if (joined.includes("instagram.com")) return "instagram";
+        if (joined.includes("t.me") || joined.includes("telegram")) return "telegram";
+        return urls.length ? "link" : "text";
+      }
+
+      function titleFromBlock(block, urls) {
+        const lines = block.split("\n").map((line) => line.trim()).filter(Boolean);
+        const nonUrlLine = lines.find((line) => {
+          INBOX_URL_RE.lastIndex = 0;
+          return !INBOX_URL_RE.test(line);
+        });
+        if (nonUrlLine) return nonUrlLine.replace(/^(маша|masha|я|me)\s*:\s*/i, "").slice(0, 90);
+        if (urls[0]) return urls[0].replace(/^https?:\/\//i, "").split("?")[0].slice(0, 90);
+        return "Новое место";
+      }
+
+      async function makeId(text) {
+        const data = new TextEncoder().encode(text);
+        const hash = await crypto.subtle.digest("SHA-1", data);
+        return "inbox-" + Array.from(new Uint8Array(hash))
+          .slice(0, 6)
+          .map((byte) => byte.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      async function parseInbox(text) {
+        const createdAt = new Date().toISOString();
+        const drafts = [];
+        for (const block of splitBlocks(text)) {
+          INBOX_URL_RE.lastIndex = 0;
+          const urls = Array.from(new Set((block.match(INBOX_URL_RE) || []).map(cleanUrl)));
+          drafts.push({
+            id: await makeId(block),
+            status: "new",
+            source: guessSource(urls),
+            title: titleFromBlock(block, urls),
+            raw_text: block,
+            urls,
+            category_guess: guessCategory(block),
+            notes: "",
+            created_at: createdAt
+          });
+        }
+        return drafts;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function jsonText() {
+        return JSON.stringify(state.drafts, null, 2);
+      }
+
+      function renderDrafts() {
+        elements.countLabel.textContent = `${state.drafts.length} черновиков`;
+        if (!state.drafts.length) {
+          elements.draftList.innerHTML = '<div class="empty-state">Пока пусто. Вставь сообщения и нажми «Разобрать».</div>';
+          return;
+        }
+
+        elements.draftList.innerHTML = state.drafts.map((draft) => `
+          <article class="draft-card">
+            <h3>${escapeHtml(draft.title)}</h3>
+            <div class="draft-meta">
+              <span>${escapeHtml(draft.source)}</span>
+              <span>${escapeHtml(draft.category_guess)}</span>
+              <span>${escapeHtml(draft.status)}</span>
+            </div>
+            <pre>${escapeHtml(draft.raw_text)}</pre>
+          </article>
+        `).join("");
+      }
+
+      function downloadJson() {
+        const blob = new Blob([jsonText()], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "places_inbox.json";
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+
+      elements.parseButton.addEventListener("click", async () => {
+        state.drafts = await parseInbox(elements.text.value);
+        renderDrafts();
+      });
+
+      elements.copyButton.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(jsonText());
+      });
+
+      elements.downloadButton.addEventListener("click", downloadJson);
+
+      elements.clearButton.addEventListener("click", () => {
+        elements.text.value = "";
+        state.drafts = [];
+        renderDrafts();
+      });
+    </script>
+  </body>
+</html>

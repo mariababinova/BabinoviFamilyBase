@@ -1,0 +1,57 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { pageHref } from "../lib/ui";
+
+const columns = [
+  {
+    title: "Входящие",
+    tone: "unknown",
+    cards: ["Разобрать новые поручения"],
+  },
+  {
+    title: "Нужно уточнить",
+    tone: "week",
+    cards: ["Уточнить контекст задачи"],
+  },
+  {
+    title: "В работе",
+    tone: "month",
+    cards: ["Подготовить список следующих действий"],
+  },
+  {
+    title: "Ожидает ответа",
+    tone: "later",
+    cards: ["Ждём внешнее подтверждение"],
+  },
+  {
+    title: "Готово",
+    tone: "later",
+    cards: ["Закрытые поручения будут здесь"],
+  },
+];
+---
+
+<AppLayout title="Дела · База Бабиновых">
+  <section class="page-header">
+    <p class="eyebrow">Дела</p>
+    <h1>Дела</h1>
+    <p>Задачи ассистента и семейные поручения: входящие, в работе, ожидание и готово.</p>
+    <a class="button secondary inline-button" href={pageHref("/")}>На главную</a>
+  </section>
+
+  <section class="task-board" aria-label="Будущий задачник ассистента">
+    {columns.map((column) => (
+      <div class="task-column">
+        <h3>{column.title}</h3>
+        <div class="task-list">
+          {column.cards.map((card) => (
+            <article class:list={["task-card", column.tone]}>
+              <strong>{card}</strong>
+              <span class="task-meta">skeleton</span>
+            </article>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</AppLayout>

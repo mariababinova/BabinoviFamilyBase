@@ -1,0 +1,197 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import MetricIcon from "../components/MetricIcon.astro";
+import { ageText, dashboard, formatDateShort, pageHref } from "../lib/ui";
+
+const people = dashboard.people || [];
+const tasks = dashboard.tasks || [];
+const documents = dashboard.documents || [];
+const metricGroups = dashboard.metricGroups || [];
+const operations = (dashboard.operations || {}) as any;
+const metricCandidates = (operations.metricCandidates?.records || []) as any[];
+
+const abnormalMetrics = metricGroups
+  .filter((group) => ["low", "high"].includes(group.latest?.assessmentStatus))
+  .sort((a, b) => String(b.latest?.date || "").localeCompare(String(a.latest?.date || "")));
+
+const datedTasks = tasks
+  .filter((task) => task.dueDate)
+  .sort((a, b) => String(a.dueDate).localeCompare(String(b.dueDate)));
+
+const tasksWithoutDate = tasks.filter((task) => !task.dueDate);
+const unlinkedDocuments = documents.filter((document) => !document.isLinkedToEvent);
+const pendingMetricCandidates = metricCandidates.filter((candidate) => (candidate.status || "needs_review") === "needs_review");
+const metricsWithoutReference = metricGroups.filter((group) => {
+  const latest = group.latest;
+  const reference = String(latest?.referenceDisplay || latest?.reference_text || "").toLocaleLowerCase("ru-RU");
+  return latest && (!reference || reference.includes("нет") || reference.includes("не указан"));
+});
+
+const importantItems = [
+  ...abnormalMetrics.slice(0, 3).map((group) => ({
+    kind: "metric",
+    tone: "red",
+    href: group.href,
+    person: group.person,
+    title: `${group.metricLabel}: ${group.latest?.displayValue || "нет значения"}`,
+    meta: `${group.latest?.compactAssessmentLabel || group.latest?.assessmentLabel || "проверьте референс"} · ${formatDateShort(group.latest?.date)}`,
+    metricName: group.metricLabel,
+  })),
+  ...datedTasks.slice(0, 2).map((task) => ({
+    kind: "task",
+    tone: task.priority === "high" ? "red" : "yellow",
+    href: task.href || task.sourceHref || pageHref("/tasks"),
+    person: task.person || "Семья",
+    title: task.actionText || task.title || "Задача",
+    meta: `${task.dueDate ? `до ${formatDateShort(task.dueDate)}` : "без даты"} · ${task.specialty || "план"}`,
+    metricName: "",
+  })),
+  ...unlinkedDocuments.slice(0, 1).map((document) => ({
+    kind: "document",
+    tone: "violet",
+    href: document.href || pageHref("/documents"),
+    person: document.person || "Документ",
+    title: document.displayName || document.fileName || "Документ на проверке",
+    meta: `${formatDateShort(document.date)} · требуется привязка`,
+    metricName: "",
+  })),
+].slice(0, 6);
+
+const reviewItems = [
+  {
+    tone: "violet",
+    label: "Документы на проверке",
+    value: unlinkedDocuments.length,
+    href: pageHref("/documents?status=document_only"),
+    note: pendingMetricCandidates.length ? `${pendingMetricCandidates.length} кандидатов показателей` : "нужна привязка к событиям",
+  },
+  {
+    tone: "yellow",
+    label: "Задачи без даты",
+    value: tasksWithoutDate.length,
+    href: pageHref("/tasks"),
+    note: "нужно назначить срок или контекст",
+  },
+  {
+    tone: "blue",
+    label: "Показатели без референса",
+    value: metricsWithoutReference.length,
+    href: pageHref("/metrics"),
+    note: "проверить лабораторный диапазон",
+  },
+];
+
+const quickActions = [
+  { label: "Загрузить документ", href: pageHref("/upload"), tone: "blue" },
+  { label: "Добавить задачу", href: pageHref("/tasks"), tone: "yellow" },
+  { label: "Добавить приём", href: pageHref("/events"), tone: "green" },
+  { label: "Найти в базе", href: pageHref("/search"), tone: "violet" },
+];
+---
+
+<AppLayout title="Здоровье · База Бабиновых">
+  <div class="today-page">
+    <section class="today-header" aria-labelledby="health-title">
+      <div>
+        <p class="eyebrow">Здоровье</p>
+        <h1 id="health-title">Обзор здоровья семьи</h1>
+        <p>Профили здоровья, сигналы, ближайшие действия и быстрый вход в историю каждого члена семьи.</p>
+      </div>
+      <a class="button secondary" href={pageHref("/")}>На главную</a>
+    </section>
+
+    <section class="today-priority-panel" aria-labelledby="important-title">
+      <div class="section-heading compact">
+        <div>
+          <span class="eyebrow">Семейная сводка</span>
+          <h2 id="important-title">Что важно сейчас</h2>
+        </div>
+      </div>
+
+      <div class="today-priority-list">
+        {importantItems.map((item) => (
+          <a class:list={["today-priority-item", item.tone]} href={item.href}>
+            {item.kind === "metric" ? (
+              <MetricIcon metricName={item.metricName} tone={item.tone} class="compact" />
+            ) : (
+              <span class="today-priority-dot" aria-hidden="true"></span>
+            )}
+            <span>
+              <small>{item.person}</small>
+              <strong>{item.title}</strong>
+              <em>{item.meta}</em>
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section id="health-cards" aria-labelledby="health-cards-title">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">Здоровье</span>
+          <h2 id="health-cards-title">Члены семьи</h2>
+        </div>
+        <span class="muted-text">{people.length} профиля</span>
+      </div>
+
+      <div class="home-medcards-grid">
+        {people.map((person) => (
+          <article class="home-medcard">
+            <div class="home-medcard-head">
+              {person.photo ? (
+                <img class="person-avatar" src={pageHref(person.photo)} alt={person.name} loading="lazy" />
+              ) : (
+                <span class="person-avatar fallback" aria-hidden="true">{person.name.slice(0, 1)}</span>
+              )}
+              <div>
+                <h3>{person.name}</h3>
+                <p>{ageText(person.birthDate) || person.birthDateText || "Возраст не указан"}</p>
+              </div>
+              <a class="home-medcard-open" href={person.href} aria-label={`Открыть профиль здоровья ${person.name}`}>Открыть</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="today-bottom-grid">
+      <article class="today-review-panel" aria-labelledby="review-title">
+        <div class="section-heading compact">
+          <div>
+            <span class="eyebrow">Очередь</span>
+            <h2 id="review-title">Требует разбора</h2>
+          </div>
+        </div>
+        <div class="today-review-list">
+          {reviewItems.map((item) => (
+            <a class:list={["today-review-row", item.tone]} href={item.href}>
+              <span class="today-review-value">{item.value}</span>
+              <span>
+                <strong>{item.label}</strong>
+                <small>{item.note}</small>
+              </span>
+            </a>
+          ))}
+        </div>
+      </article>
+
+      <article class="today-actions-panel" aria-labelledby="actions-title">
+        <div class="section-heading compact">
+          <div>
+            <span class="eyebrow">Действия</span>
+            <h2 id="actions-title">Быстрые действия</h2>
+          </div>
+        </div>
+        <div class="today-actions-grid">
+          {quickActions.map((action) => (
+            <a class:list={["today-action", action.tone]} href={action.href}>
+              <span aria-hidden="true"></span>
+              <strong>{action.label}</strong>
+            </a>
+          ))}
+        </div>
+      </article>
+    </section>
+  </div>
+</AppLayout>

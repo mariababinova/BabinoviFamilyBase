@@ -6,21 +6,79 @@ import { dashboard, pageHref } from "../lib/ui";
 interface Props {
   title: string;
   description?: string;
+  homePortal?: boolean;
 }
 
-const { title, description = "Семейная медицинская база" } = Astro.props;
-const navItems = [
-  { href: pageHref("/"), label: "Сегодня" },
-  { href: pageHref("/upload"), label: "Загрузка" },
+const { title, description = "Семейная база знаний", homePortal = false } = Astro.props;
+const lineIconPaths = {
+  home: ["M3.5 10.5 12 3.5l8.5 7", "M5.5 10.5V20h13v-9.5", "M9.5 20v-5.5h5V20"],
+  heart: ["M20.5 6.8c0 5.2-8.5 10.7-8.5 10.7S3.5 12 3.5 6.8A4.3 4.3 0 0 1 12 5a4.3 4.3 0 0 1 8.5 1.8Z"],
+  house: ["M4 10.5 12 4l8 6.5", "M6 10v9.5h12V10", "M10 19.5v-5h4v5"],
+  "map-pin": ["M12 21s6-5.3 6-11a6 6 0 0 0-12 0c0 5.7 6 11 6 11Z", "M12 12.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"],
+  "check-square": ["M8.5 12.2 11 14.7l4.5-5.4", "M5 4.5h14v15H5z"],
+  folder: ["M3.8 6.5h6l1.7 2h8.7v9.8a2 2 0 0 1-2 2H5.8a2 2 0 0 1-2-2Z", "M3.8 8.5h16.4"],
+  "upload-cloud": ["M12 16V6.5", "M8.5 10 12 6.5 15.5 10", "M6.5 17.5a4 4 0 0 1 .9-7.9A5 5 0 0 1 17 9a3.7 3.7 0 0 1 .5 7.3"],
+  clock: ["M12 21a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z", "M12 8v4.5l3 2"],
+  settings: ["M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z", "M19 12a6.9 6.9 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a6.9 6.9 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1Z"],
+  search: ["M10.8 18.1a7.3 7.3 0 1 0 0-14.6 7.3 7.3 0 0 0 0 14.6Z", "m16 16 4.5 4.5"],
+  bell: ["M18 9.8a6 6 0 0 0-12 0c0 7-2 7.4-2 7.4h16s-2-.4-2-7.4Z", "M9.7 20a2.5 2.5 0 0 0 4.6 0"],
+} as const;
+
+type IconName = keyof typeof lineIconPaths;
+type PortalNavItem = {
+  href: string;
+  label: string;
+  icon: IconName;
+  exact?: boolean;
+  prefixes?: string[];
+};
+
+const portalNavItems: PortalNavItem[] = [
+  { href: pageHref("/"), label: "Главная", icon: "home", exact: true },
+  { href: pageHref("/health"), label: "Здоровье", icon: "heart", prefixes: ["/health", "/people", "/metrics", "/events", "/tasks", "/documents", "/doctor-summaries"] },
+  { href: pageHref("/home"), label: "Быт", icon: "house", prefixes: ["/home"] },
+  { href: pageHref("/places"), label: "Места", icon: "map-pin", prefixes: ["/places"] },
+  { href: pageHref("/affairs"), label: "Дела", icon: "check-square", prefixes: ["/affairs"] },
+  { href: pageHref("/family-documents"), label: "Документы", icon: "folder", prefixes: ["/family-documents"] },
+];
+const serviceNavItems = [
+  { href: pageHref("/upload"), label: "Загрузка", icon: "upload-cloud" as const, route: "/upload" },
+  { href: pageHref("/upload-queue"), label: "Очередь", icon: "clock" as const, route: "/upload-queue" },
+  { href: pageHref("/owner-guide"), label: "Настройки", icon: "settings" as const, route: "/owner-guide" },
 ];
 const people = dashboard.people;
 const currentPath = Astro.url.pathname;
+const homeUpdatedAtLabel = new Intl.DateTimeFormat("ru-RU", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  timeZone: "Asia/Tbilisi",
+}).format(new Date(dashboard.generatedAt));
 
-function isActiveNav(href: string) {
-  const normalizePath = (value: string) => (value.length > 1 ? value.replace(/\/$/, "") : value);
-  const path = normalizePath(new URL(href, Astro.url).pathname);
+function normalizePath(value: string) {
+  return value.length > 1 ? value.replace(/\/$/, "") : value;
+}
+
+function routePath(route: string) {
+  return normalizePath(new URL(pageHref(route), Astro.url).pathname);
+}
+
+function isActiveNav(item: PortalNavItem) {
   const activePath = normalizePath(currentPath);
-  return activePath === path || (path.endsWith("/upload") && activePath.startsWith(`${path}`));
+  const path = normalizePath(new URL(item.href, Astro.url).pathname);
+  if (item.exact) return activePath === path;
+  if (activePath === path) return true;
+  return (item.prefixes || []).some((prefix) => {
+    const prefixPath = routePath(prefix);
+    return activePath === prefixPath || activePath.startsWith(`${prefixPath}/`);
+  });
+}
+
+function isActiveRoute(route: string) {
+  const normalizePath = (value: string) => (value.length > 1 ? value.replace(/\/$/, "") : value);
+  const path = normalizePath(new URL(pageHref(route), Astro.url).pathname);
+  const activePath = normalizePath(currentPath);
+  return activePath === path || activePath.startsWith(`${path}/`);
 }
 
 function isActivePerson(person: { href: string }) {
@@ -45,7 +103,7 @@ function isActivePerson(person: { href: string }) {
     ></script>
   </head>
   <body>
-    <div class="app-shell">
+    <div class:list={["app-shell", homePortal && "portal-home-shell"]}>
       <aside class="sidebar" aria-label="Основная навигация">
         <a class="brand" href={pageHref("/")}>
           <span class="brand-mark">Б</span>
@@ -55,39 +113,71 @@ function isActivePerson(person: { href: string }) {
           </span>
         </a>
         <nav class="side-nav">
-          <a class:list={["nav-link", isActiveNav(navItems[0].href) && "active"]} href={navItems[0].href}>
-            {navItems[0].label}
-          </a>
-          <div class="nav-group">
-            <span class="nav-group-label">Медкарты</span>
-            {people.map((person) => (
-              <a class:list={["person-pill", isActivePerson(person) && "active"]} href={person.href}>
-                {person.photo ? (
-                  <img src={pageHref(person.photo)} alt="" loading="lazy" />
-                ) : (
-                  <span class="person-initial" aria-hidden="true">{person.name.slice(0, 1)}</span>
-                )}
-                <span>{person.name}</span>
-              </a>
-            ))}
-          </div>
-          <a class:list={["nav-link", isActiveNav(navItems[1].href) && "active"]} href={navItems[1].href}>
-            {navItems[1].label}
-          </a>
+          {portalNavItems.map((item) => (
+            <a class:list={["nav-link", isActiveNav(item) && "active"]} href={item.href}>
+              {homePortal && (
+                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  {lineIconPaths[item.icon].map((path) => <path d={path} />)}
+                </svg>
+              )}
+              <span>{item.label}</span>
+            </a>
+          ))}
+          {!homePortal && (
+            <div class="nav-group">
+              <span class="nav-group-label">Здоровье</span>
+              {people.map((person) => (
+                <a class:list={["person-pill", isActivePerson(person) && "active"]} href={person.href}>
+                  {person.photo ? (
+                    <img src={pageHref(person.photo)} alt="" loading="lazy" />
+                  ) : (
+                    <span class="person-initial" aria-hidden="true">{person.name.slice(0, 1)}</span>
+                  )}
+                  <span>{person.name}</span>
+                </a>
+              ))}
+            </div>
+          )}
         </nav>
         <div class="side-section side-section-secondary">
-          <span class="side-label">Служебное</span>
-          <a class="person-pill" href={pageHref("/upload-queue")}>Очередь загрузки</a>
+          <span class="side-label">{homePortal ? "Сервисы" : "Служебное"}</span>
+          {homePortal ? (
+            serviceNavItems.map((item) => (
+              <a class:list={["person-pill", isActiveRoute(item.route) && "active"]} href={item.href}>
+                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  {lineIconPaths[item.icon].map((path) => <path d={path} />)}
+                </svg>
+                <span>{item.label}</span>
+              </a>
+            ))
+          ) : (
+            <>
+              <a class:list={["person-pill", isActiveRoute("/upload") && "active"]} href={pageHref("/upload")}>Загрузка</a>
+              <a class="person-pill" href={pageHref("/upload-queue")}>Очередь загрузки</a>
+            </>
+          )}
         </div>
       </aside>
       <div class="main-area">
         <header class="topbar">
-          <form action={pageHref("/search")} method="get" class="search-form">
+          <form action={pageHref("/search")} method="get" class:list={["search-form", homePortal && "portal-search-form"]}>
             <label class="sr-only" for="global-search">Поиск</label>
-            <input id="global-search" type="search" name="q" placeholder="Поиск по базе: ферритин Маши, документы Ники, онкология Александр" />
+            {homePortal && (
+              <svg class="portal-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                {lineIconPaths.search.map((path) => <path d={path} />)}
+              </svg>
+            )}
+            <input id="global-search" type="search" name="q" placeholder={homePortal ? "Поиск по базе: здоровье, документы, задачи, места..." : "Поиск по базе: здоровье, документы, задачи, места"} />
           </form>
-          <div class="topbar-meta">
-            <span>Обновлено {new Date(dashboard.generatedAt).toLocaleDateString("ru-RU")}</span>
+          <div class:list={["topbar-meta", homePortal && "portal-topbar-meta"]}>
+            {homePortal && (
+              <button class="topbar-icon-button" type="button" aria-label="Уведомления">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  {lineIconPaths.bell.map((path) => <path d={path} />)}
+                </svg>
+              </button>
+            )}
+            <span>Обновлено {homePortal ? homeUpdatedAtLabel : new Date(dashboard.generatedAt).toLocaleDateString("ru-RU")}</span>
             <a class="topbar-avatar" href={pageHref("/owner-guide")} aria-label="Служебный раздел">Б</a>
           </div>
         </header>
@@ -97,9 +187,9 @@ function isActivePerson(person: { href: string }) {
       </div>
     </div>
     <nav class="bottom-nav" aria-label="Быстрая навигация">
-      <a href={pageHref("/")}>Сегодня</a>
-      <a href={`${pageHref("/")}#medcards`}>Медкарты</a>
-      <a href={pageHref("/upload")}>Загрузка</a>
+      <a href={pageHref("/")}>Главная</a>
+      <a href={pageHref("/health")}>Здоровье</a>
+      <a href={pageHref("/affairs")}>Дела</a>
     </nav>
     <MedicalChatWidget />
   </body>

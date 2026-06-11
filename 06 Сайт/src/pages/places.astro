@@ -1,0 +1,75 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { pageHref } from "../lib/ui";
+
+const placesAppHref = pageHref("/family-places/");
+---
+
+<AppLayout title="Места · База Бабиновых" description="Семейная база мест, куда хочется сходить">
+  <section class="page-header places-page-header">
+    <div>
+      <p class="eyebrow">Места</p>
+      <h1>Куда сходить</h1>
+      <p>Карта, подборки, ссылки, статусы «хотим» / «были» и семейные впечатления.</p>
+    </div>
+    <a class="button secondary inline-button" href={placesAppHref} target="_blank" rel="noreferrer">Открыть полноэкранно</a>
+  </section>
+
+  <section class="places-embed-card" aria-label="Семейная база мест">
+    <iframe
+      title="Семейная база мест"
+      src={placesAppHref}
+      loading="eager"
+      referrerpolicy="no-referrer-when-downgrade"
+      allow="geolocation"
+    ></iframe>
+  </section>
+</AppLayout>
+
+<style>
+  .places-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .places-page-header > div {
+    max-width: 760px;
+  }
+
+  .places-embed-card {
+    height: min(980px, calc(100dvh - 11rem));
+    min-height: 680px;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-card);
+    background: var(--surface-1);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .places-embed-card iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #dfe8dc;
+  }
+
+  @media (max-width: 980px) {
+    .places-page-header {
+      display: grid;
+      align-items: stretch;
+    }
+
+    .places-page-header .inline-button {
+      width: 100%;
+    }
+
+    .places-embed-card {
+      height: calc(100dvh - 13rem);
+      min-height: 560px;
+      border-radius: 18px;
+    }
+  }
+</style>

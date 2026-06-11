@@ -1,196 +1,159 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
-import MetricIcon from "../components/MetricIcon.astro";
-import { ageText, dashboard, formatDateShort, pageHref } from "../lib/ui";
+import { pageHref } from "../lib/ui";
 
-const people = dashboard.people || [];
-const tasks = dashboard.tasks || [];
-const documents = dashboard.documents || [];
-const metricGroups = dashboard.metricGroups || [];
-const operations = (dashboard.operations || {}) as any;
-const metricCandidates = (operations.metricCandidates?.records || []) as any[];
+const iconPaths = {
+  health: ["M20.5 6.8c0 5.2-8.5 10.7-8.5 10.7S3.5 12 3.5 6.8A4.3 4.3 0 0 1 12 5a4.3 4.3 0 0 1 8.5 1.8Z", "M7.5 11h2.3l1.4-3.1 2.6 6.2 1.4-3.1h2.3"],
+  home: ["M4 10.5 12 4l8 6.5", "M6 10v9.5h12V10", "M10 19.5v-5h4v5"],
+  "map-pin": ["M12 21s6-5.3 6-11a6 6 0 0 0-12 0c0 5.7 6 11 6 11Z", "M12 12.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"],
+  "check-square": ["M8.5 12.2 11 14.7l4.5-5.4", "M5 4.5h14v15H5z"],
+  folder: ["M3.8 6.5h6l1.7 2h8.7v9.8a2 2 0 0 1-2 2H5.8a2 2 0 0 1-2-2Z", "M3.8 8.5h16.4"],
+  users: ["M8 18.5a4 4 0 0 1 8 0", "M12 12.2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z", "M18 19a3.5 3.5 0 0 1 3-3.4", "M19 13.4a2.3 2.3 0 1 0 0-4.6"],
+  clock: ["M12 21a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z", "M12 8v4.5l3 2"],
+  map: ["M4 6.5 9.5 4l5 2.5L20 4v13.5L14.5 20l-5-2.5L4 20Z", "M9.5 4v13.5", "M14.5 6.5V20"],
+  grid: ["M4.5 4.5h5v5h-5z", "M14.5 4.5h5v5h-5z", "M4.5 14.5h5v5h-5z", "M14.5 14.5h5v5h-5z"],
+  lock: ["M6.5 10.5h11v9h-11z", "M9 10.5V8a3 3 0 0 1 6 0v2.5"],
+  "upload-cloud": ["M12 16V6.5", "M8.5 10 12 6.5 15.5 10", "M6.5 17.5a4 4 0 0 1 .9-7.9A5 5 0 0 1 17 9a3.7 3.7 0 0 1 .5 7.3"],
+  plus: ["M12 5v14", "M5 12h14"],
+  search: ["M10.8 18.1a7.3 7.3 0 1 0 0-14.6 7.3 7.3 0 0 0 0 14.6Z", "m16 16 4.5 4.5"],
+  arrow: ["M5 12h14", "m13 6 6 6-6 6"],
+} as const;
 
-const abnormalMetrics = metricGroups
-  .filter((group) => ["low", "high"].includes(group.latest?.assessmentStatus))
-  .sort((a, b) => String(b.latest?.date || "").localeCompare(String(a.latest?.date || "")));
+type IconName = keyof typeof iconPaths;
 
-const datedTasks = tasks
-  .filter((task) => task.dueDate)
-  .sort((a, b) => String(a.dueDate).localeCompare(String(b.dueDate)));
-
-const tasksWithoutDate = tasks.filter((task) => !task.dueDate);
-const unlinkedDocuments = documents.filter((document) => !document.isLinkedToEvent);
-const pendingMetricCandidates = metricCandidates.filter((candidate) => (candidate.status || "needs_review") === "needs_review");
-const metricsWithoutReference = metricGroups.filter((group) => {
-  const latest = group.latest;
-  const reference = String(latest?.referenceDisplay || latest?.reference_text || "").toLocaleLowerCase("ru-RU");
-  return latest && (!reference || reference.includes("нет") || reference.includes("не указан"));
-});
-
-const importantItems = [
-  ...abnormalMetrics.slice(0, 3).map((group) => ({
-    kind: "metric",
-    tone: group.latest?.assessmentStatus === "high" ? "red" : "red",
-    href: group.href,
-    person: group.person,
-    title: `${group.metricLabel}: ${group.latest?.displayValue || "нет значения"}`,
-    meta: `${group.latest?.compactAssessmentLabel || group.latest?.assessmentLabel || "проверьте референс"} · ${formatDateShort(group.latest?.date)}`,
-    metricName: group.metricLabel,
-  })),
-  ...datedTasks.slice(0, 2).map((task) => ({
-    kind: "task",
-    tone: task.priority === "high" ? "red" : "yellow",
-    href: task.href || task.sourceHref || pageHref("/tasks"),
-    person: task.person || "Семья",
-    title: task.actionText || task.title || "Задача",
-    meta: `${task.dueDate ? `до ${formatDateShort(task.dueDate)}` : "без даты"} · ${task.specialty || "план"}`,
-    metricName: "",
-  })),
-  ...unlinkedDocuments.slice(0, 1).map((document) => ({
-    kind: "document",
-    tone: "violet",
-    href: document.href || pageHref("/documents"),
-    person: document.person || "Документ",
-    title: document.displayName || document.fileName || "Документ на проверке",
-    meta: `${formatDateShort(document.date)} · требуется привязка`,
-    metricName: "",
-  })),
-].slice(0, 6);
-
-const reviewItems = [
+const portals = [
   {
-    tone: "violet",
-    label: "Документы на проверке",
-    value: unlinkedDocuments.length,
-    href: pageHref("/documents?status=document_only"),
-    note: pendingMetricCandidates.length ? `${pendingMetricCandidates.length} кандидатов показателей` : "нужна привязка к событиям",
+    title: "Здоровье",
+    href: pageHref("/health"),
+    description: "Профили здоровья, показатели, приёмы, вакцинации и медицинские документы семьи.",
+    meta: "4 профиля",
+    tone: "red",
+    icon: "health" as IconName,
+    metaIcon: "users" as IconName,
   },
   {
-    tone: "yellow",
-    label: "Задачи без даты",
-    value: tasksWithoutDate.length,
-    href: pageHref("/tasks"),
-    note: "нужно назначить срок или контекст",
+    title: "Быт",
+    href: pageHref("/home"),
+    description: "Квартира, заказы, контакты, платежи, питание и инструкции.",
+    meta: "Скоро",
+    tone: "green",
+    icon: "home" as IconName,
+    metaIcon: "clock" as IconName,
   },
   {
+    title: "Места",
+    href: pageHref("/places"),
+    description: "Семейные заметки о местах, маршрутах и подборках.",
+    meta: "64 места",
     tone: "blue",
-    label: "Показатели без референса",
-    value: metricsWithoutReference.length,
-    href: pageHref("/metrics"),
-    note: "проверить лабораторный диапазон",
+    icon: "map-pin" as IconName,
+    metaIcon: "map" as IconName,
+  },
+  {
+    title: "Дела",
+    href: pageHref("/affairs"),
+    description: "Входящие, поручения, ожидания и семейные задачи вне медицинского контура.",
+    meta: "Kanban",
+    tone: "yellow",
+    icon: "check-square" as IconName,
+    metaIcon: "grid" as IconName,
+  },
+  {
+    title: "Документы",
+    href: pageHref("/family-documents"),
+    description: "Семейные документы: личные, квартирные, страховые, договоры и гарантии.",
+    meta: "Семейный сейф",
+    tone: "violet",
+    icon: "folder" as IconName,
+    metaIcon: "lock" as IconName,
   },
 ];
 
 const quickActions = [
-  { label: "Загрузить документ", href: pageHref("/upload"), tone: "blue" },
-  { label: "Добавить задачу", href: pageHref("/tasks"), tone: "yellow" },
-  { label: "Добавить приём", href: pageHref("/events"), tone: "green" },
-  { label: "Найти в базе", href: pageHref("/search"), tone: "violet" },
+  {
+    title: "Загрузить документ",
+    description: "Добавить файл в базу",
+    href: pageHref("/upload"),
+    tone: "blue",
+    icon: "upload-cloud" as IconName,
+  },
+  {
+    title: "Добавить задачу",
+    description: "Постановка новой задачи",
+    href: pageHref("/affairs"),
+    tone: "green",
+    icon: "plus" as IconName,
+  },
+  {
+    title: "Добавить место",
+    description: "Сохранить точку на карте",
+    href: pageHref("/places"),
+    tone: "yellow",
+    icon: "map-pin" as IconName,
+  },
+  {
+    title: "Найти в базе",
+    description: "Поиск по всем разделам",
+    href: pageHref("/search"),
+    tone: "violet",
+    icon: "search" as IconName,
+  },
 ];
 ---
 
-<AppLayout title="Сегодня · База Бабиновых">
-  <div class="today-page">
-    <section class="today-header" aria-labelledby="today-title">
-      <div>
-        <p class="eyebrow">Сегодня</p>
-        <h1 id="today-title">Обзор семьи</h1>
-        <p>Только то, что требует внимания сейчас: сигналы, ближайшие действия и быстрый вход в медкарты.</p>
-      </div>
+<AppLayout title="База Бабиновых" homePortal>
+  <div class="portal-home-page">
+    <section class="portal-hero" aria-labelledby="portal-title">
+      <h1 id="portal-title">База Бабиновых</h1>
+      <p>Жизнь разложена по полочкам</p>
     </section>
 
-    <section class="today-priority-panel" aria-labelledby="important-title">
-      <div class="section-heading compact">
-        <div>
-          <span class="eyebrow">Семейная сводка</span>
-          <h2 id="important-title">Что важно сейчас</h2>
-        </div>
-      </div>
-
-      <div class="today-priority-list">
-        {importantItems.map((item) => (
-          <a class:list={["today-priority-item", item.tone]} href={item.href}>
-            {item.kind === "metric" ? (
-              <MetricIcon metricName={item.metricName} tone={item.tone} class="compact" />
-            ) : (
-              <span class="today-priority-dot" aria-hidden="true"></span>
-            )}
-            <span>
-              <small>{item.person}</small>
-              <strong>{item.title}</strong>
-              <em>{item.meta}</em>
+    <section class="portal-modules" aria-label="Разделы семейной базы">
+      <div class="portal-module-grid">
+        {portals.map((portal) => (
+          <a class:list={["portal-module-card", portal.tone]} href={portal.href}>
+            <span class:list={["portal-module-icon", portal.tone]} aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                {iconPaths[portal.icon].map((path) => <path d={path} />)}
+              </svg>
+            </span>
+            <h3>{portal.title}</h3>
+            <p>{portal.description}</p>
+            <span class="portal-module-footer">
+              <span class="portal-module-meta">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  {iconPaths[portal.metaIcon].map((path) => <path d={path} />)}
+                </svg>
+                {portal.meta}
+              </span>
+              <span class="portal-module-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  {iconPaths.arrow.map((path) => <path d={path} />)}
+                </svg>
+              </span>
             </span>
           </a>
         ))}
       </div>
     </section>
 
-    <section id="medcards" aria-labelledby="medcards-title">
-      <div class="section-title">
-        <div>
-          <span class="eyebrow">Медкарты</span>
-          <h2 id="medcards-title">Члены семьи</h2>
-        </div>
-        <span class="muted-text">{people.length} профиля</span>
-      </div>
-
-      <div class="home-medcards-grid">
-        {people.map((person) => (
-          <article class="home-medcard">
-            <div class="home-medcard-head">
-              {person.photo ? (
-                <img class="person-avatar" src={pageHref(person.photo)} alt={person.name} loading="lazy" />
-              ) : (
-                <span class="person-avatar fallback" aria-hidden="true">{person.name.slice(0, 1)}</span>
-              )}
-              <div>
-                <h3>{person.name}</h3>
-                <p>{ageText(person.birthDate) || person.birthDateText || "Возраст не указан"}</p>
-              </div>
-              <a class="home-medcard-open" href={person.href} aria-label={`Открыть медкарту ${person.name}`}>Открыть</a>
-            </div>
-          </article>
+    <section class="portal-quick-actions" aria-labelledby="quick-actions-title">
+      <h2 id="quick-actions-title">БЫСТРЫЕ ДЕЙСТВИЯ</h2>
+      <div class="portal-quick-grid">
+        {quickActions.map((action) => (
+          <a class:list={["portal-quick-card", action.tone]} href={action.href}>
+            <span class:list={["portal-quick-icon", action.tone]} aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                {iconPaths[action.icon].map((path) => <path d={path} />)}
+              </svg>
+            </span>
+            <span>
+              <strong>{action.title}</strong>
+              <small>{action.description}</small>
+            </span>
+          </a>
         ))}
       </div>
-    </section>
-
-    <section class="today-bottom-grid">
-      <article class="today-review-panel" aria-labelledby="review-title">
-        <div class="section-heading compact">
-          <div>
-            <span class="eyebrow">Очередь</span>
-            <h2 id="review-title">Требует разбора</h2>
-          </div>
-        </div>
-        <div class="today-review-list">
-          {reviewItems.map((item) => (
-            <a class:list={["today-review-row", item.tone]} href={item.href}>
-              <span class="today-review-value">{item.value}</span>
-              <span>
-                <strong>{item.label}</strong>
-                <small>{item.note}</small>
-              </span>
-            </a>
-          ))}
-        </div>
-      </article>
-
-      <article class="today-actions-panel" aria-labelledby="actions-title">
-        <div class="section-heading compact">
-          <div>
-            <span class="eyebrow">Действия</span>
-            <h2 id="actions-title">Быстрые действия</h2>
-          </div>
-        </div>
-        <div class="today-actions-grid">
-          {quickActions.map((action) => (
-            <a class:list={["today-action", action.tone]} href={action.href}>
-              <span aria-hidden="true"></span>
-              <strong>{action.label}</strong>
-            </a>
-          ))}
-        </div>
-      </article>
     </section>
   </div>
 </AppLayout>

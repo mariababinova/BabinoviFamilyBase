@@ -1,0 +1,50 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { pageHref } from "../lib/ui";
+
+const categories = [
+  "Личные документы",
+  "Медицинские документы",
+  "Квартира",
+  "Ребёнок",
+  "Страховки",
+  "Договоры",
+  "Платежи",
+  "Гарантии",
+  "Поездки",
+  "Образование",
+];
+---
+
+<AppLayout title="Документы · База Бабиновых">
+  <section class="page-header">
+    <p class="eyebrow">Цифровой сейф</p>
+    <h1>Документы</h1>
+    <p>Все документы в одном месте</p>
+    <a class="button secondary inline-button" href={pageHref("/")}>На главную</a>
+  </section>
+
+  <section class="section-grid two">
+    <article>
+      <div class="section-title">
+        <h2>Категории</h2>
+        <span class="muted-text">skeleton</span>
+      </div>
+      <div class="card-grid">
+        {categories.map((category) => (
+          <article class="card">
+            <span class="eyebrow">Документы</span>
+            <h3>{category}</h3>
+            <p>Раздел подготовлен для будущего наполнения.</p>
+          </article>
+        ))}
+      </div>
+    </article>
+
+    <aside class="card">
+      <span class="eyebrow">Контроль сроков</span>
+      <h2>Скоро истекает</h2>
+      <p class="empty">Документы для контроля сроков появятся здесь после наполнения сейфа.</p>
+    </aside>
+  </section>
+</AppLayout>

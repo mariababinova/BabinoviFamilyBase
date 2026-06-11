@@ -1,0 +1,40 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { pageHref } from "../lib/ui";
+
+const sections = [
+  "Квартира",
+  "Регулярные заказы",
+  "Контакты и мастера",
+  "Платежи",
+  "Питание",
+  "Красота и спорт",
+  "Дни рождения и подарки",
+  "Инструкции",
+];
+---
+
+<AppLayout title="Дом · База Бабиновых">
+  <section class="page-header">
+    <p class="eyebrow">Быт</p>
+    <h1>Дом</h1>
+    <p>Квартира, регулярные заказы, контакты, платежи, питание и домашние инструкции.</p>
+    <a class="button secondary inline-button" href={pageHref("/")}>На главную</a>
+  </section>
+
+  <section aria-labelledby="home-sections-title">
+    <div class="section-title">
+      <h2 id="home-sections-title">Подразделы</h2>
+      <span class="muted-text">skeleton</span>
+    </div>
+    <div class="portal-grid">
+      {sections.map((section) => (
+        <article class="portal-card">
+          <span class="eyebrow">Дом</span>
+          <h3>{section}</h3>
+          <p>Раздел подготовлен для будущего наполнения.</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</AppLayout>

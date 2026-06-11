@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Секретная Москва</title>
+    <link rel="stylesheet" href="./tokens.css?v=meds-places-1" />
+    <link rel="stylesheet" href="./styles.css?v=meds-places-1" />
+    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script defer src="./places.js?v=meds-places-1"></script>
+    <script defer src="./app.js?v=meds-places-1"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <header class="brand">
+          <div>
+            <p class="eyebrow">личный гид</p>
+            <h1 id="brandTitle">Секретная<br />Москва</h1>
+            <p class="brand-subtitle" id="brandSubtitle">места, куда хочется идти</p>
+          </div>
+          <div class="brand-actions">
+            <a class="icon-button" href="../" title="Все базы" aria-label="Все базы">
+              <i data-lucide="layout-dashboard"></i>
+            </a>
+            <a class="icon-button" href="./inbox.html" title="Входящие" aria-label="Входящие">
+              <i data-lucide="inbox"></i>
+            </a>
+            <button class="icon-button" id="randomPlaceButton" title="Случайное место" aria-label="Случайное место">
+              <i data-lucide="shuffle"></i>
+            </button>
+            <button class="icon-button mobile-view-toggle" id="mobileViewToggle" type="button" title="Карта" aria-label="Карта">
+              <i data-lucide="map"></i><span>Карта</span>
+            </button>
+          </div>
+        </header>
+
+        <section class="controls" aria-label="Фильтры">
+          <label class="search-box">
+            <i data-lucide="search"></i>
+            <input id="searchInput" type="search" placeholder="Поиск" />
+          </label>
+          <div class="city-strip" id="cityStrip" aria-label="Города"></div>
+          <div class="category-strip" id="categoryStrip"></div>
+        </section>
+
+        <section class="list-panel" aria-label="Места">
+          <div class="list-meta">
+            <span id="countLabel"></span>
+            <button class="text-button" id="resetButton">Сбросить</button>
+          </div>
+          <div class="place-list" id="placeList"></div>
+        </section>
+      </aside>
+
+      <section class="content-area">
+        <section class="map-area" aria-label="Mini map">
+          <div class="map-toolbar">
+            <span id="mapToolbarTitle">Карта Москвы</span>
+            <button class="icon-button compact" id="closeMapButton" type="button" title="Закрыть карту" aria-label="Закрыть карту">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div id="map"></div>
+        <div class="map-key-panel" id="mapKeyPanel">
+          <div>
+            <p class="panel-kicker">Яндекс.Карты</p>
+            <h2>Нужен API-ключ карты</h2>
+            <p>Ключ сохраняется только в этом браузере. Получить его можно в кабинете разработчика Яндекса для JavaScript API.</p>
+          </div>
+          <div class="key-row">
+            <input id="mapKeyInput" type="password" placeholder="Yandex Maps API key" />
+            <button id="saveMapKeyButton">Открыть карту</button>
+          </div>
+        </div>
+        <div class="map-loading" id="mapLoading">Загружаю карту</div>
+        </section>
+        <article class="details-panel" id="detailsPanel" role="dialog" aria-modal="false" aria-hidden="true"></article>
+      </section>
+    </main>
+  </body>
+</html>
