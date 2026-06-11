@@ -2,74 +2,1407 @@
 import AppLayout from "../layouts/AppLayout.astro";
 import { pageHref } from "../lib/ui";
 
-const placesAppHref = pageHref("/family-places/");
+const familyPlacesBase = pageHref("/family-places/");
+const placesDataHref = pageHref("/family-places/places.js");
+const mapHref = pageHref("/family-places/");
+const addPlaceHref = pageHref("/family-places/inbox.html");
+
+const iconPaths = {
+  map: ["M4 6.5 9.5 4l5 2.5L20 4v13.5L14.5 20l-5-2.5L4 20Z", "M9.5 4v13.5", "M14.5 6.5V20"],
+  dice: ["M5.5 4.5h13v15h-13z", "M9 8.5h.1", "M15 8.5h.1", "M12 12h.1", "M9 15.5h.1", "M15 15.5h.1"],
+  plus: ["M12 5v14", "M5 12h14"],
+} as const;
 ---
 
-<AppLayout title="Места · База Бабиновых" description="Семейная база мест, куда хочется сходить">
-  <section class="page-header places-page-header">
-    <div>
-      <p class="eyebrow">Места</p>
-      <h1>Куда сходить</h1>
-      <p>Карта, подборки, ссылки, статусы «хотим» / «были» и семейные впечатления.</p>
-    </div>
-    <a class="button secondary inline-button" href={placesAppHref} target="_blank" rel="noreferrer">Открыть полноэкранно</a>
-  </section>
+<AppLayout title="Досуг · База Бабиновых" description="Семейный досуг и сохранённые места" homePortal>
+  <div class="leisure-page">
+    <section class="leisure-hero" aria-labelledby="leisure-title">
+      <h1 id="leisure-title">Семейный досуг</h1>
+      <p>Места, которые вдохновляют. Впечатления, которые остаются с семьёй.</p>
+    </section>
 
-  <section class="places-embed-card" aria-label="Семейная база мест">
-    <iframe
-      title="Семейная база мест"
-      src={placesAppHref}
-      loading="eager"
-      referrerpolicy="no-referrer-when-downgrade"
-      allow="geolocation"
-    ></iframe>
-  </section>
+    <section class="leisure-control-zone" aria-label="Фильтры и быстрые действия">
+      <div class="leisure-filter-panel">
+        <div class="filter-row" aria-label="Города">
+          <div class="chip-strip" data-city-filters></div>
+        </div>
+      </div>
+
+      <div class="leisure-quick-actions" aria-label="Быстрые действия досуга">
+        <a class="leisure-action-card blue" href={mapHref} target="_blank" rel="noreferrer">
+          <span class="leisure-action-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              {iconPaths.map.map((path) => <path d={path} />)}
+            </svg>
+          </span>
+          <span>
+            <strong>Открыть карту</strong>
+            <small>Смотреть места рядом</small>
+          </span>
+        </a>
+        <button class="leisure-action-card yellow" type="button" data-random-place>
+          <span class="leisure-action-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              {iconPaths.dice.map((path) => <path d={path} />)}
+            </svg>
+          </span>
+          <span>
+            <strong>Выбрать случайно</strong>
+            <small>Пусть удача решает</small>
+          </span>
+        </button>
+        <a class="leisure-action-card green" href={addPlaceHref} target="_blank" rel="noreferrer">
+          <span class="leisure-action-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              {iconPaths.plus.map((path) => <path d={path} />)}
+            </svg>
+          </span>
+          <span>
+            <strong>Добавить место</strong>
+            <small>Сохранить в базу</small>
+          </span>
+        </a>
+      </div>
+
+      <div class="leisure-category-panel" aria-label="Категории мест">
+        <div class="chip-strip" data-category-filters></div>
+      </div>
+    </section>
+
+    <section class="leisure-workspace" aria-label="Сохранённые места и выбранное место">
+      <aside class="saved-places-panel" aria-labelledby="saved-places-title">
+        <div class="saved-places-head">
+          <h2 id="saved-places-title">Сохранённые места</h2>
+          <span class="places-count" data-places-count>0</span>
+        </div>
+        <div class="saved-place-list" data-place-list></div>
+      </aside>
+
+      <article class="featured-place-card" data-featured-place aria-live="polite"></article>
+    </section>
+  </div>
+
+  <script is:inline define:vars={{ familyPlacesBase, mapHref, addPlaceHref }}>
+    window.__LEISURE_CONFIG__ = { familyPlacesBase, mapHref, addPlaceHref };
+  </script>
+  <script is:inline src={placesDataHref}></script>
+  <script is:inline>
+    (() => {
+      const places = Array.isArray(window.SECRET_MOSCOW_PLACES) ? window.SECRET_MOSCOW_PLACES : [];
+      const config = window.__LEISURE_CONFIG__ || {};
+      const ALL = "__all";
+      const VISIT_NOTES_KEY = "secretMoscowVisitNotes";
+      const CITY_FILTERS = ["Москва", "Все города"];
+      const CATEGORY_FILTERS = [
+        ["Все", ALL, "grid"],
+        ["Музеи и выставки", "музеи и выставки", "museum"],
+        ["Рестораны и кафе", "рестораны и кафе", "utensils"],
+        ["Парки и прогулки", "парки и прогулки", "trees"],
+        ["Спорт и активность", "спорт и активность", "activity"],
+        ["События", "события", "ticket"],
+        ["Пространства", "пространства", "sparkles"],
+        ["Театры", "театры", "theater"],
+        ["Спа и красота", "спа и красота", "flower"],
+        ["Мастер-классы", "мастер-классы", "palette"],
+      ];
+      const ICONS = {
+        activity: ["M4 14h4l2-8 4 14 2-6h4"],
+        check: ["M5 12.5 9.5 17 19 7"],
+        clock: ["M12 21a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z", "M12 8v4.5l3 2"],
+        flower: ["M12 13.5c2.7 0 4.5-1.6 4.5-3.6A2.9 2.9 0 0 0 12 7.5a2.9 2.9 0 0 0-4.5 2.4c0 2 1.8 3.6 4.5 3.6Z", "M12 13.5v6"],
+        globe: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M3.5 12h17", "M12 3c2.3 2.5 3.4 5.5 3.4 9S14.3 18.5 12 21c-2.3-2.5-3.4-5.5-3.4-9S9.7 5.5 12 3Z"],
+        grid: ["M4.5 4.5h5v5h-5z", "M14.5 4.5h5v5h-5z", "M4.5 14.5h5v5h-5z", "M14.5 14.5h5v5h-5z"],
+        image: ["M4.5 5.5h15v13h-15z", "m7 15 3.5-4 2.5 2.8 1.8-2.1 3.2 3.3", "M8.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"],
+        instagram: ["M7.5 4.5h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3Z", "M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z", "M16.8 7.2h.1"],
+        map: ["M4 6.5 9.5 4l5 2.5L20 4v13.5L14.5 20l-5-2.5L4 20Z", "M9.5 4v13.5", "M14.5 6.5V20"],
+        "map-pin": ["M12 21s6-5.3 6-11a6 6 0 0 0-12 0c0 5.7 6 11 6 11Z", "M12 12.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"],
+        metro: ["M7 19h10", "M8 15.5h8", "M8.5 5.5h7L18 19h-3l-3-8-3 8H6z"],
+        museum: ["M4 9h16", "M5.5 9 12 4.5 18.5 9", "M6.5 9v9", "M10.2 9v9", "M13.8 9v9", "M17.5 9v9", "M4.5 18h15"],
+        palette: ["M12 4.5a7.5 7.5 0 0 0 0 15h1.5a2 2 0 0 0 1.7-3 1.5 1.5 0 0 1 1.3-2.3H17a3.5 3.5 0 0 0 3.5-3.5C20.5 7.3 17 4.5 12 4.5Z", "M8.5 10h.1", "M11 8h.1", "M14 8.5h.1"],
+        save: ["M5 4.5h12l2 2v13H5z", "M8 4.5v5h7v-5", "M8 19.5v-6h8v6"],
+        sparkles: ["M12 3.8 13.5 8l4.2 1.5-4.2 1.5L12 15.2 10.5 11 6.3 9.5 10.5 8Z", "M18 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8Z"],
+        star: ["M12 4.5 14.3 9l5 .7-3.6 3.5.9 5-4.6-2.4-4.6 2.4.9-5L4.7 9.7l5-.7Z"],
+        theater: ["M5.5 5.5h13v5.8c0 4.7-3 7.2-6.5 8.2-3.5-1-6.5-3.5-6.5-8.2Z", "M9 10h.1", "M15 10h.1", "M9.5 14c1.5 1.2 3.5 1.2 5 0"],
+        ticket: ["M5 7h14v4a2 2 0 0 0 0 4v4H5v-4a2 2 0 0 0 0-4Z", "M9 8.5v7"],
+        trees: ["M12 4.5 7 12h3l-4 5.5h5V20h2v-2.5h5L14 12h3Z"],
+        utensils: ["M7 4.5v7", "M5.5 4.5v4.2a2.5 2.5 0 0 0 5 0V4.5", "M8 11.5v8", "M16 4.5v15", "M16 4.5c2.2 1.4 3.5 3.8 3.5 6.5H16"],
+      };
+
+      const elements = {
+        categoryFilters: document.querySelector("[data-category-filters]"),
+        cityFilters: document.querySelector("[data-city-filters]"),
+        count: document.querySelector("[data-places-count]"),
+        featured: document.querySelector("[data-featured-place]"),
+        list: document.querySelector("[data-place-list]"),
+        random: document.querySelector("[data-random-place]"),
+      };
+      const state = {
+        city: "Москва",
+        category: ALL,
+        selectedId: places.find((place) => (place.city || "Москва") === "Москва")?.id || places[0]?.id || "",
+        notes: loadNotes(),
+      };
+
+      function icon(name) {
+        const paths = ICONS[name] || ICONS["map-pin"];
+        return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths.map((path) => `<path d="${path}"></path>`).join("")}</svg>`;
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function loadNotes() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(VISIT_NOTES_KEY) || "{}");
+          return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+        } catch {
+          return {};
+        }
+      }
+
+      function saveNotes() {
+        try {
+          localStorage.setItem(VISIT_NOTES_KEY, JSON.stringify(state.notes));
+        } catch {
+          // The page should remain usable even when localStorage is blocked.
+        }
+      }
+
+      function getNote(placeId) {
+        return state.notes[placeId] || { status: "want", comment: "" };
+      }
+
+      function patchNote(placeId, patch) {
+        state.notes[placeId] = { ...getNote(placeId), ...patch };
+        saveNotes();
+      }
+
+      function placeCity(place) {
+        return place.city || "Москва";
+      }
+
+      function filteredPlaces() {
+        return places.filter((place) => {
+          const cityMatches = state.city === "Все города" || placeCity(place) === state.city;
+          const categoryMatches = state.category === ALL || place.category === state.category;
+          return cityMatches && categoryMatches;
+        });
+      }
+
+      function ensureSelection() {
+        const visible = filteredPlaces();
+        if (!visible.length) {
+          state.selectedId = "";
+          return null;
+        }
+        if (!visible.some((place) => place.id === state.selectedId)) {
+          state.selectedId = visible[0].id;
+        }
+        return visible.find((place) => place.id === state.selectedId) || visible[0];
+      }
+
+      function mediaUrl(place) {
+        const media = place.media || {};
+        const value = media.thumbnail || media.src || "";
+        if (!value) return "";
+        if (/^https?:\/\//i.test(value)) return value;
+        if (value.startsWith("./")) return `${config.familyPlacesBase || "/family-places/"}${value.slice(2)}`;
+        return value;
+      }
+
+      function getInstagramEmbedUrl(url) {
+        const match = String(url || "").match(/instagram\.com\/(p|reel|tv)\/([^/?#]+)/i);
+        if (!match) return "";
+        return `https://www.instagram.com/${match[1]}/${match[2]}/embed`;
+      }
+
+      function hasInstagramMedia(place) {
+        return Boolean(getInstagramEmbedUrl(place.media?.type === "instagram" ? place.media.url : ""));
+      }
+
+      function renderMedia(place, sizeClass) {
+        const media = place.media || {};
+        if (media.type === "instagram" && media.url) {
+          const embedUrl = getInstagramEmbedUrl(media.url);
+          if (embedUrl && sizeClass === "large") {
+            return `
+              <div class="instagram-embed-card">
+                <iframe
+                  class="instagram-embed-frame"
+                  src="${escapeHtml(embedUrl)}"
+                  title="${escapeHtml(media.label || `Instagram Reels: ${place.title}`)}"
+                  loading="lazy"
+                  allowtransparency="true"
+                  allowfullscreen>
+                </iframe>
+                <a class="instagram-embed-link" href="${escapeHtml(media.url)}" target="_blank" rel="noreferrer">
+                  ${icon("instagram")}
+                  <span>${escapeHtml(media.label || "Открыть Reels")}</span>
+                </a>
+              </div>
+            `;
+          }
+
+          return `
+            <span class="place-media-fallback instagram ${sizeClass || ""}">
+              ${icon("instagram")}
+              <span>${escapeHtml(media.label || "Reels")}</span>
+            </span>
+          `;
+        }
+
+        const src = mediaUrl(place);
+        if (src) {
+          return `<img src="${escapeHtml(src)}" alt="${escapeHtml(place.media?.alt || place.title)}" loading="lazy" />`;
+        }
+        return `
+          <span class="place-media-fallback ${sizeClass || ""}">
+            ${icon("image")}
+            <span>${escapeHtml(place.category || "Место")}</span>
+          </span>
+        `;
+      }
+
+      function yandexLink(place) {
+        if (Array.isArray(place.coords) && place.coords.length === 2) {
+          const [lat, lon] = place.coords;
+          return `https://yandex.ru/maps/?ll=${encodeURIComponent(lon)},${encodeURIComponent(lat)}&z=15&pt=${encodeURIComponent(lon)},${encodeURIComponent(lat)},pm2rdm`;
+        }
+        return `https://yandex.ru/maps/?text=${encodeURIComponent(place.address || place.title)}`;
+      }
+
+      function driveText(place) {
+        const fromHome = place.access?.fromHome;
+        if (!fromHome) return "маршрут уточнить";
+        return `~${fromHome.minutes} мин · ${fromHome.km} км от дома`;
+      }
+
+      function driveNote(place) {
+        const note = place.access?.fromHome?.note || "без учёта пробок";
+        return note.replace("без учета", "без учёта");
+      }
+
+      function metroMain(place) {
+        return place.access?.metro?.[0]?.name || "метро уточнить";
+      }
+
+      function metroWalk(place) {
+        const distance = Number(place.access?.metro?.[0]?.distanceKm);
+        if (!Number.isFinite(distance)) return "пешком уточнить";
+        return `~${Math.max(2, Math.round(distance * 12))} мин. пешком`;
+      }
+
+      function statusLabel(status) {
+        return status === "visited" ? "были" : "хотим";
+      }
+
+      function statusIcon(status) {
+        return status === "visited" ? "check" : "star";
+      }
+
+      function renderStatusPill(place) {
+        const note = getNote(place.id);
+        return `<span class="status-pill ${note.status === "visited" ? "visited" : "want"}">${icon(statusIcon(note.status))}${statusLabel(note.status)}</span>`;
+      }
+
+      function renderFilters() {
+        elements.cityFilters.innerHTML = CITY_FILTERS.map((city) => `
+          <button class="leisure-chip ${state.city === city ? "active" : ""}" type="button" data-city="${escapeHtml(city)}">
+            ${icon(city === "Все города" ? "map" : "map-pin")}
+            <span>${escapeHtml(city)}</span>
+          </button>
+        `).join("");
+
+        elements.categoryFilters.innerHTML = CATEGORY_FILTERS.map(([label, value, iconName]) => `
+          <button class="leisure-chip ${state.category === value ? "active" : ""}" type="button" data-category="${escapeHtml(value)}">
+            ${icon(iconName)}
+            <span>${escapeHtml(label)}</span>
+          </button>
+        `).join("");
+      }
+
+      function renderList() {
+        const visible = filteredPlaces();
+        elements.count.textContent = String(visible.length);
+        if (!visible.length) {
+          elements.list.innerHTML = `<div class="empty-leisure-state">Нет мест под выбранные фильтры.</div>`;
+          return;
+        }
+        elements.list.innerHTML = visible.map((place) => `
+          <button class="saved-place-row ${place.id === state.selectedId ? "active" : ""}" type="button" data-place-id="${escapeHtml(place.id)}">
+            <span class="saved-place-media">${renderMedia(place, "small")}</span>
+            <span class="saved-place-copy">
+              <strong>${escapeHtml(place.title)}</strong>
+              <small>${escapeHtml(place.category)} · ${escapeHtml(placeCity(place))}</small>
+              ${renderStatusPill(place)}
+            </span>
+          </button>
+        `).join("");
+      }
+
+      function renderFeatured() {
+        const place = ensureSelection();
+        if (!place) {
+          elements.featured.innerHTML = `<div class="empty-leisure-state large">Выберите другие фильтры, чтобы увидеть место.</div>`;
+          return;
+        }
+        const note = getNote(place.id);
+        const links = [
+          ["Сайт", "globe", place.links?.site || ""],
+          ["Instagram", "instagram", place.links?.instagram || ""],
+          ["Яндекс Карты", "map-pin", yandexLink(place)],
+        ];
+        elements.featured.innerHTML = `
+          <div class="featured-main ${hasInstagramMedia(place) ? "has-instagram-media" : ""}">
+            <div class="featured-media">${renderMedia(place, "large")}</div>
+            <div class="featured-info">
+              <h2>${escapeHtml(place.title)}</h2>
+              <span class="category-badge">${icon("museum")}${escapeHtml(place.category)}</span>
+              <p class="place-address">${icon("map-pin")}${escapeHtml(place.address || "Адрес уточнить")}</p>
+              <p class="featured-description">${escapeHtml(place.description || "")}</p>
+              <div class="status-actions" aria-label="Статус места">
+                <button class="compact-status want ${note.status !== "visited" ? "active" : ""}" type="button" data-status="want">${icon("star")}Хотим</button>
+                <button class="compact-status visited ${note.status === "visited" ? "active" : ""}" type="button" data-status="visited">${icon("check")}Были</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="route-strip">
+            <div class="route-item">
+              <span class="route-icon blue">${icon("clock")}</span>
+              <span>
+                <small>Время в пути</small>
+                <strong>${escapeHtml(driveText(place))}</strong>
+                <em>${escapeHtml(driveNote(place))}</em>
+              </span>
+            </div>
+            <div class="route-item">
+              <span class="route-icon metro" aria-hidden="true"><span class="metro-letter">М</span></span>
+              <span>
+                <small>Ближайшее метро</small>
+                <strong>${escapeHtml(metroMain(place))}</strong>
+                <em>${escapeHtml(metroWalk(place))}</em>
+              </span>
+            </div>
+          </div>
+
+          <section class="impressions-panel" aria-label="Наши впечатления">
+            <div class="impressions-head">
+              <span class="impressions-icon">${icon("sparkles")}</span>
+              <span>
+                <h3>Наши впечатления</h3>
+                <p>Поделитесь своими эмоциями и сохраните яркие моменты вместе.</p>
+              </span>
+            </div>
+            <label class="sr-only" for="leisure-impression">Наши впечатления</label>
+            <textarea id="leisure-impression" data-impression-input placeholder="Напишите свои впечатления об этом месте...">${escapeHtml(note.comment || "")}</textarea>
+            <div class="impression-actions">
+              <span class="save-feedback" data-save-feedback></span>
+              <button class="save-impression-button" type="button" data-save-impression>${icon("save")}Сохранить</button>
+            </div>
+          </section>
+
+          <div class="place-link-row">
+            ${links.map(([label, iconName, url]) => url ? `
+              <a class="place-link" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${icon(iconName)}${escapeHtml(label)}</a>
+            ` : `
+              <span class="place-link disabled">${icon(iconName)}${escapeHtml(label)}</span>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      function renderAll() {
+        ensureSelection();
+        renderFilters();
+        renderList();
+        renderFeatured();
+      }
+
+      elements.cityFilters.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-city]");
+        if (!button) return;
+        state.city = button.dataset.city;
+        renderAll();
+      });
+
+      elements.categoryFilters.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-category]");
+        if (!button) return;
+        state.category = button.dataset.category;
+        renderAll();
+      });
+
+      elements.list.addEventListener("click", (event) => {
+        const row = event.target.closest("[data-place-id]");
+        if (!row) return;
+        state.selectedId = row.dataset.placeId;
+        renderList();
+        renderFeatured();
+      });
+
+      elements.featured.addEventListener("click", (event) => {
+        const statusButton = event.target.closest("[data-status]");
+        if (statusButton && state.selectedId) {
+          patchNote(state.selectedId, { status: statusButton.dataset.status });
+          renderList();
+          renderFeatured();
+          return;
+        }
+
+        const saveButton = event.target.closest("[data-save-impression]");
+        if (saveButton && state.selectedId) {
+          const textarea = elements.featured.querySelector("[data-impression-input]");
+          const feedback = elements.featured.querySelector("[data-save-feedback]");
+          patchNote(state.selectedId, { comment: textarea?.value || "" });
+          if (feedback) feedback.textContent = "Сохранено";
+          window.setTimeout(() => {
+            const nextFeedback = elements.featured.querySelector("[data-save-feedback]");
+            if (nextFeedback) nextFeedback.textContent = "";
+          }, 1600);
+        }
+      });
+
+      elements.random.addEventListener("click", () => {
+        const visible = filteredPlaces();
+        if (!visible.length) return;
+        const place = visible[Math.floor(Math.random() * visible.length)];
+        state.selectedId = place.id;
+        renderList();
+        renderFeatured();
+        elements.list.querySelector(`[data-place-id="${CSS.escape(place.id)}"]`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      });
+
+      renderAll();
+    })();
+  </script>
 </AppLayout>
 
-<style>
-  .places-page-header {
+<style is:global>
+  .leisure-page,
+  .leisure-page svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .leisure-page {
+    display: grid;
+    gap: 1.35rem;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .leisure-hero {
+    padding-top: 0.35rem;
+  }
+
+  .leisure-hero h1 {
+    max-width: 940px;
+    margin: 0 0 0.75rem;
+    font-family: "Onest", "Manrope", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: clamp(3rem, 4.8vw, 4.35rem);
+    font-weight: 330;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  .leisure-hero p {
+    max-width: 860px;
+    margin: 0;
+    color: rgba(169, 180, 192, 0.78);
+    font-size: 1.08rem;
+  }
+
+  .leisure-control-zone {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .leisure-filter-panel,
+  .leisure-quick-actions,
+  .leisure-category-panel,
+  .saved-places-panel,
+  .featured-place-card {
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background:
+      linear-gradient(145deg, rgba(19, 29, 44, 0.76), rgba(9, 15, 24, 0.66)),
+      rgba(255, 255, 255, 0.03);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.055),
+      0 22px 68px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px);
+  }
+
+  .leisure-filter-panel {
+    display: grid;
+    padding: 0.9rem 1rem;
+    border-radius: 22px;
+  }
+
+  .leisure-category-panel {
+    display: grid;
+    padding: 0.9rem 1rem;
+    border-radius: 22px;
+  }
+
+  .filter-row {
+    min-width: 0;
+  }
+
+  .chip-strip {
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.58rem;
   }
 
-  .places-page-header > div {
-    max-width: 760px;
+  .leisure-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 0.48rem 0.7rem;
+    background: rgba(8, 14, 23, 0.46);
+    color: rgba(244, 247, 250, 0.78);
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 640;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
   }
 
-  .places-embed-card {
-    height: min(980px, calc(100dvh - 11rem));
-    min-height: 680px;
+  .leisure-chip svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.9;
+    color: rgba(244, 247, 250, 0.68);
+  }
+
+  .leisure-chip:hover,
+  .leisure-chip.active {
+    border-color: rgba(255, 200, 61, 0.45);
+    background:
+      linear-gradient(180deg, rgba(255, 200, 61, 0.15), rgba(255, 200, 61, 0.055));
+    color: color-mix(in srgb, var(--yellow) 78%, white);
+  }
+
+  .leisure-chip:hover svg,
+  .leisure-chip.active svg {
+    color: var(--yellow);
+  }
+
+  .leisure-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0.8rem;
+    border-radius: 22px;
+  }
+
+  .leisure-action-card {
+    --action-tone: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 0.78rem;
+    min-width: 0;
+    min-height: 92px;
+    border: 1px solid color-mix(in srgb, var(--action-tone) 22%, rgba(255, 255, 255, 0.08));
+    border-radius: 16px;
+    padding: 0.78rem 0.9rem;
+    background:
+      radial-gradient(circle at 0 50%, color-mix(in srgb, var(--action-tone) 14%, transparent), transparent 7rem),
+      rgba(8, 14, 23, 0.34);
+    color: rgba(244, 247, 250, 0.9);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+  }
+
+  .leisure-action-card.yellow {
+    --action-tone: var(--yellow);
+  }
+
+  .leisure-action-card.green {
+    --action-tone: var(--green);
+  }
+
+  .leisure-action-card:hover {
+    border-color: color-mix(in srgb, var(--action-tone) 38%, rgba(255, 255, 255, 0.14));
+    background:
+      radial-gradient(circle at 0 50%, color-mix(in srgb, var(--action-tone) 20%, transparent), transparent 7rem),
+      rgba(255, 255, 255, 0.045);
+    color: color-mix(in srgb, var(--action-tone) 70%, white);
+    transform: translateY(-1px);
+  }
+
+  .leisure-action-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 auto;
+    border: 1px solid color-mix(in srgb, var(--action-tone) 30%, transparent);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--action-tone) 14%, rgba(255, 255, 255, 0.035));
+    color: color-mix(in srgb, var(--action-tone) 80%, white);
+    box-shadow: 0 0 30px color-mix(in srgb, var(--action-tone) 16%, transparent);
+  }
+
+  .leisure-action-icon svg {
+    width: 25px;
+    height: 25px;
+    stroke-width: 1.8;
+  }
+
+  .leisure-action-card strong,
+  .leisure-action-card small {
+    display: block;
+  }
+
+  .leisure-action-card strong {
+    font-size: 0.98rem;
+    font-weight: 520;
+    line-height: 1.18;
+  }
+
+  .leisure-action-card small {
+    margin-top: 0.18rem;
+    color: rgba(169, 180, 192, 0.72);
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+
+  .leisure-workspace {
+    display: grid;
+    grid-template-columns: minmax(270px, 330px) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+
+  .saved-places-panel,
+  .featured-place-card {
+    border-radius: 24px;
+  }
+
+  .saved-places-panel {
+    min-height: 560px;
+    max-height: calc(100dvh - 18rem);
+    padding: 1rem;
     overflow: hidden;
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-card);
-    background: var(--surface-1);
-    box-shadow: var(--shadow-soft);
   }
 
-  .places-embed-card iframe {
+  .saved-places-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .saved-places-head h2 {
+    margin: 0;
+    color: rgba(244, 247, 250, 0.78);
+    font-size: 1rem;
+    font-weight: 560;
+  }
+
+  .places-count {
+    display: grid;
+    place-items: center;
+    min-width: 36px;
+    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 999px;
+    color: rgba(169, 180, 192, 0.88);
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .saved-place-list {
+    display: grid;
+    gap: 0.52rem;
+    max-height: calc(100% - 3rem);
+    overflow: auto;
+    padding-right: 0.2rem;
+  }
+
+  .saved-place-list::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  .saved-place-list::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.13);
+  }
+
+  .saved-place-row {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 0.82rem;
+    min-height: 90px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 13px;
+    padding: 0.52rem;
+    background: rgba(8, 14, 23, 0.36);
+    color: var(--text-main);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .saved-place-row:hover,
+  .saved-place-row.active {
+    border-color: rgba(79, 140, 255, 0.55);
+    background:
+      radial-gradient(circle at 0 50%, rgba(79, 140, 255, 0.18), transparent 7rem),
+      rgba(79, 140, 255, 0.065);
+    box-shadow: 0 0 0 1px rgba(79, 140, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .saved-place-media {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    width: 78px;
+    height: 74px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.055);
+  }
+
+  .saved-place-media img,
+  .featured-media img {
     display: block;
     width: 100%;
     height: 100%;
-    border: 0;
-    background: #dfe8dc;
+    object-fit: cover;
   }
 
-  @media (max-width: 980px) {
-    .places-page-header {
+  .saved-place-copy {
+    min-width: 0;
+    display: grid;
+    align-content: center;
+    gap: 0.25rem;
+  }
+
+  .saved-place-copy strong {
+    display: block;
+    overflow: hidden;
+    color: rgba(244, 247, 250, 0.94);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .saved-place-copy small {
+    overflow: hidden;
+    color: rgba(169, 180, 192, 0.7);
+    font-size: 0.76rem;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .place-media-fallback {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0.6rem;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(255, 200, 61, 0.22), transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(79, 140, 255, 0.25), transparent 48%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.018));
+    color: rgba(244, 247, 250, 0.72);
+    text-align: center;
+  }
+
+  .place-media-fallback svg {
+    width: 30px;
+    height: 30px;
+    stroke-width: 1.6;
+  }
+
+  .place-media-fallback.large svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .place-media-fallback.instagram {
+    background:
+      radial-gradient(circle at 22% 12%, rgba(169, 112, 255, 0.26), transparent 44%),
+      radial-gradient(circle at 84% 86%, rgba(79, 140, 255, 0.22), transparent 48%),
+      linear-gradient(135deg, rgba(169, 112, 255, 0.11), rgba(255, 255, 255, 0.022));
+    color: color-mix(in srgb, var(--violet) 76%, white);
+  }
+
+  .place-media-fallback span {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    justify-self: start;
+    width: fit-content;
+    min-height: 24px;
+    border-radius: 8px;
+    padding: 0.17rem 0.48rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .status-pill svg {
+    width: 13px;
+    height: 13px;
+    stroke-width: 2;
+  }
+
+  .status-pill.want {
+    border: 1px solid rgba(255, 200, 61, 0.34);
+    background: rgba(255, 200, 61, 0.1);
+    color: var(--yellow);
+  }
+
+  .status-pill.visited {
+    border: 1px solid rgba(76, 215, 125, 0.31);
+    background: rgba(76, 215, 125, 0.11);
+    color: var(--green);
+  }
+
+  .featured-place-card {
+    min-height: 560px;
+    padding: clamp(0.9rem, 2vw, 1.35rem);
+  }
+
+  .featured-main {
+    display: grid;
+    grid-template-columns: minmax(280px, 1.08fr) minmax(220px, 0.92fr);
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+
+  .featured-main.has-instagram-media {
+    grid-template-columns: minmax(250px, 370px) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .featured-media {
+    display: grid;
+    overflow: hidden;
+    min-height: 245px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .featured-media:has(.instagram-embed-card) {
+    place-items: center;
+    min-height: clamp(480px, 68vh, 660px);
+    padding: 0.62rem;
+    background:
+      radial-gradient(circle at 20% 0, rgba(169, 112, 255, 0.13), transparent 18rem),
+      rgba(255, 255, 255, 0.045);
+  }
+
+  .instagram-embed-card {
+    display: grid;
+    grid-template-rows: minmax(420px, 1fr) auto;
+    width: min(100%, 350px);
+    height: 100%;
+    min-height: 470px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 22px 58px rgba(0, 0, 0, 0.28);
+  }
+
+  .instagram-embed-frame {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    border: 0;
+    background: #ffffff;
+  }
+
+  .instagram-embed-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.48rem;
+    min-height: 42px;
+    padding: 0.55rem 0.7rem;
+    background: rgba(11, 15, 22, 0.96);
+    color: rgba(244, 247, 250, 0.92);
+    font-size: 0.85rem;
+    font-weight: 680;
+  }
+
+  .instagram-embed-link:hover {
+    color: color-mix(in srgb, var(--violet) 78%, white);
+  }
+
+  .instagram-embed-link svg {
+    width: 17px;
+    height: 17px;
+    stroke-width: 1.9;
+  }
+
+  .featured-info {
+    display: grid;
+    align-content: center;
+    min-width: 0;
+  }
+
+  .featured-info h2 {
+    max-width: 720px;
+    margin: 0 0 0.85rem;
+    color: rgba(244, 247, 250, 0.96);
+    font-family: "Onest", "Manrope", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: clamp(1.75rem, 3.2vw, 3rem);
+    font-weight: 330;
+    line-height: 1.02;
+    letter-spacing: 0;
+  }
+
+  .category-badge,
+  .place-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .category-badge {
+    justify-self: start;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(169, 112, 255, 0.26);
+    border-radius: 9px;
+    padding: 0.38rem 0.58rem;
+    background: rgba(169, 112, 255, 0.1);
+    color: color-mix(in srgb, var(--violet) 76%, white);
+    font-size: 0.82rem;
+    font-weight: 650;
+  }
+
+  .category-badge svg,
+  .place-address svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.85;
+  }
+
+  .place-address {
+    margin-bottom: 1rem;
+    color: rgba(169, 180, 192, 0.88);
+    font-size: 0.94rem;
+  }
+
+  .place-address svg {
+    color: rgba(159, 192, 255, 0.9);
+  }
+
+  .featured-description {
+    margin: 0 0 1rem;
+    color: rgba(244, 247, 250, 0.68);
+    font-size: 0.97rem;
+    line-height: 1.55;
+  }
+
+  .status-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.52rem;
+  }
+
+  .compact-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    min-height: 33px;
+    border-radius: 9px;
+    padding: 0.34rem 0.74rem;
+    background: rgba(255, 255, 255, 0.035);
+    color: rgba(244, 247, 250, 0.75);
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .compact-status svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
+  }
+
+  .compact-status.want {
+    border: 1px solid rgba(255, 200, 61, 0.34);
+  }
+
+  .compact-status.visited {
+    border: 1px solid rgba(76, 215, 125, 0.32);
+  }
+
+  .compact-status.want.active,
+  .compact-status.want:hover {
+    background: rgba(255, 200, 61, 0.12);
+    color: var(--yellow);
+  }
+
+  .compact-status.visited.active,
+  .compact-status.visited:hover {
+    background: rgba(76, 215, 125, 0.12);
+    color: var(--green);
+  }
+
+  .route-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1.15rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .route-item {
+    display: flex;
+    gap: 0.85rem;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .route-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(79, 140, 255, 0.32);
+    border-radius: 50%;
+    background: rgba(79, 140, 255, 0.12);
+    color: #83b1ff;
+  }
+
+  .route-icon.metro {
+    border-color: rgba(255, 92, 92, 0.36);
+    background: rgba(255, 92, 92, 0.12);
+    color: #ff7676;
+  }
+
+  .metro-letter {
+    font-family: "Onest", "Manrope", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 1.32rem;
+    font-weight: 760;
+    line-height: 1;
+  }
+
+  .route-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.85;
+  }
+
+  .route-item small,
+  .route-item strong,
+  .route-item em {
+    display: block;
+  }
+
+  .route-item small {
+    color: rgba(169, 180, 192, 0.74);
+    font-size: 0.78rem;
+  }
+
+  .route-item strong {
+    overflow-wrap: anywhere;
+    color: rgba(244, 247, 250, 0.9);
+    font-size: 0.95rem;
+    font-weight: 650;
+  }
+
+  .route-item em {
+    color: rgba(169, 180, 192, 0.72);
+    font-size: 0.82rem;
+    font-style: normal;
+  }
+
+  .impressions-panel {
+    margin-top: 1.15rem;
+    border: 1px solid rgba(169, 112, 255, 0.17);
+    border-radius: 18px;
+    padding: 1rem;
+    background:
+      radial-gradient(circle at 0 0, rgba(169, 112, 255, 0.17), transparent 18rem),
+      linear-gradient(180deg, rgba(169, 112, 255, 0.075), rgba(255, 255, 255, 0.025));
+  }
+
+  .impressions-head {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    margin-bottom: 0.85rem;
+  }
+
+  .impressions-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(169, 112, 255, 0.28);
+    border-radius: 10px;
+    background: rgba(169, 112, 255, 0.11);
+    color: var(--violet);
+  }
+
+  .impressions-icon svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .impressions-head h3 {
+    margin: 0;
+    color: color-mix(in srgb, var(--violet) 74%, white);
+    font-size: 1rem;
+    font-weight: 720;
+  }
+
+  .impressions-head p {
+    margin: 0.18rem 0 0;
+    color: rgba(169, 180, 192, 0.8);
+    font-size: 0.88rem;
+  }
+
+  .impressions-panel textarea {
+    width: 100%;
+    min-height: 118px;
+    resize: vertical;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 0.86rem;
+    background: rgba(6, 12, 21, 0.36);
+    color: var(--text-main);
+    font: inherit;
+    line-height: 1.45;
+  }
+
+  .impressions-panel textarea::placeholder {
+    color: rgba(169, 180, 192, 0.6);
+  }
+
+  .impression-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.7rem;
+  }
+
+  .save-feedback {
+    min-height: 1.2em;
+    color: rgba(169, 180, 192, 0.76);
+    font-size: 0.82rem;
+  }
+
+  .save-impression-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    min-height: 36px;
+    border: 1px solid rgba(169, 112, 255, 0.36);
+    border-radius: 10px;
+    padding: 0.42rem 0.86rem;
+    background: linear-gradient(180deg, rgba(169, 112, 255, 0.27), rgba(169, 112, 255, 0.13));
+    color: rgba(244, 247, 250, 0.94);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 660;
+    cursor: pointer;
+  }
+
+  .save-impression-button:hover {
+    border-color: rgba(169, 112, 255, 0.56);
+    box-shadow: 0 0 30px rgba(169, 112, 255, 0.13);
+  }
+
+  .save-impression-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .place-link-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .place-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.085);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.032);
+    color: rgba(244, 247, 250, 0.88);
+    font-size: 0.88rem;
+    font-weight: 650;
+  }
+
+  .place-link:hover {
+    border-color: rgba(79, 140, 255, 0.28);
+    background: rgba(79, 140, 255, 0.08);
+  }
+
+  .place-link svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .place-link.disabled {
+    color: rgba(169, 180, 192, 0.4);
+    pointer-events: none;
+  }
+
+  .empty-leisure-state {
+    display: grid;
+    place-items: center;
+    min-height: 160px;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    color: rgba(169, 180, 192, 0.74);
+  }
+
+  .empty-leisure-state.large {
+    min-height: 420px;
+  }
+
+  @media (max-width: 1180px) {
+    .leisure-control-zone {
+      grid-template-columns: 1fr;
+    }
+
+    .leisure-quick-actions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .leisure-workspace {
+      grid-template-columns: 1fr;
+    }
+
+    .saved-places-panel {
+      min-height: auto;
+      max-height: none;
+    }
+
+    .saved-place-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+    }
+  }
+
+  @media (max-width: 820px) {
+    .leisure-page {
+      gap: 0.9rem;
+    }
+
+    .leisure-control-zone,
+    .leisure-workspace,
+    .featured-main,
+    .route-strip,
+    .place-link-row {
+      grid-template-columns: 1fr;
+    }
+
+    .featured-main.has-instagram-media {
+      grid-template-columns: 1fr;
+    }
+
+    .leisure-quick-actions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.45rem;
+      padding: 0.7rem;
+    }
+
+    .leisure-action-card {
       display: grid;
-      align-items: stretch;
+      justify-items: center;
+      min-height: 76px;
+      border: 1px solid color-mix(in srgb, var(--action-tone) 22%, rgba(255, 255, 255, 0.08));
+      padding: 0.35rem;
+      text-align: center;
     }
 
-    .places-page-header .inline-button {
-      width: 100%;
+    .leisure-action-card small {
+      display: none;
     }
 
-    .places-embed-card {
-      height: calc(100dvh - 13rem);
-      min-height: 560px;
+    .leisure-action-icon {
+      width: 46px;
+      height: 46px;
+    }
+
+    .saved-place-list {
+      grid-template-columns: 1fr;
+    }
+
+    .featured-media {
+      min-height: 210px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .leisure-hero h1 {
+      font-size: clamp(2.45rem, 9vw, 3.8rem);
+    }
+
+    .leisure-filter-panel,
+    .leisure-quick-actions,
+    .leisure-category-panel,
+    .saved-places-panel,
+    .featured-place-card {
       border-radius: 18px;
+    }
+
+    .leisure-chip {
+      min-height: 36px;
+      padding-inline: 0.58rem;
+      font-size: 0.8rem;
+    }
+
+    .saved-place-row {
+      grid-template-columns: 72px minmax(0, 1fr);
+    }
+
+    .saved-place-media {
+      width: 72px;
+      height: 70px;
+    }
+
+    .featured-place-card {
+      padding: 0.8rem;
     }
   }
 </style>
