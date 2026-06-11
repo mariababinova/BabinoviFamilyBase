@@ -13,6 +13,7 @@
     "agent:metrics": "node scripts/metrics-agent.mjs",
     "agent:tasks": "node scripts/tasks-agent.mjs",
     "agent:doctor-summaries": "node scripts/doctor-summary-agent.mjs",
+    "import:trello:affairs": "node scripts/import-trello-affairs.mjs",
     "update:base": "node scripts/update-base.mjs",
     "agent:all": "node scripts/update-base.mjs",
     "doctor:env": "node scripts/doctor-env.mjs",

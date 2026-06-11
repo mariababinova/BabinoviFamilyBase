@@ -1,50 +1,870 @@
 ---
+import fs from "node:fs";
 import AppLayout from "../layouts/AppLayout.astro";
 import { pageHref } from "../lib/ui";
 
-const categories = [
-  "Личные документы",
-  "Медицинские документы",
-  "Квартира",
-  "Ребёнок",
-  "Страховки",
-  "Договоры",
-  "Платежи",
-  "Гарантии",
-  "Поездки",
-  "Образование",
+type Tone = "blue" | "green" | "yellow" | "violet";
+
+type FamilyDocument = {
+  id: string;
+  person: string;
+  title: string;
+  category: string;
+  group: string;
+  kind: string;
+  formats: string[];
+  file_count: number;
+  sensitive: boolean;
+  status: string;
+  source_files?: string[];
+};
+
+type FamilyDocumentsRegistry = {
+  schema_version: number;
+  updated_at: string;
+  people: string[];
+  documents: FamilyDocument[];
+};
+
+type PersonSection = {
+  key: string;
+  name: string;
+  role: string;
+  tone: Tone;
+  documents: FamilyDocument[];
+  categoryCounts: Array<{ title: string; tone: Tone; count: number }>;
+};
+
+const registryPath = new URL("../../../11 Документы/family_documents.json", import.meta.url);
+const registry = JSON.parse(fs.readFileSync(registryPath, "utf8")) as FamilyDocumentsRegistry;
+
+const peopleConfig: Array<Omit<PersonSection, "documents" | "categoryCounts">> = [
+  { key: "masha", name: "Маша", role: "личные, семейные и бытовые документы", tone: "violet" },
+  { key: "artem", name: "Артём", role: "личные, рабочие, зарубежные и имущественные документы", tone: "green" },
+  { key: "nika", name: "Ника", role: "детские и семейные документы", tone: "yellow" },
 ];
+
+const categoryTones: Record<string, Tone> = {
+  Личные: "blue",
+  Загран: "violet",
+  Недвижимость: "green",
+  Бизнес: "yellow",
+  Водительские: "blue",
+};
+
+const categoryOrder = ["Личные", "Загран", "Недвижимость", "Бизнес", "Водительские"];
+
+function pluralize(count: number, one: string, few: string, many: string) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+}
+
+function documentsLabel(count: number) {
+  return `${count} ${pluralize(count, "документ", "документа", "документов")}`;
+}
+
+function filesLabel(count: number) {
+  return `${count} ${pluralize(count, "файл", "файла", "файлов")}`;
+}
+
+function formatList(formats: string[]) {
+  return formats.join(" + ");
+}
+
+function formatUpdated(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.valueOf())) return value;
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "Asia/Tbilisi",
+  }).format(date);
+}
+
+function documentTone(document: FamilyDocument) {
+  return categoryTones[document.category] || "blue";
+}
+
+const personSections: PersonSection[] = peopleConfig.map((person) => {
+  const documents = registry.documents
+    .filter((document) => document.person === person.name)
+    .sort((a, b) => {
+      const categoryDiff = categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
+      if (categoryDiff !== 0) return categoryDiff;
+      return a.title.localeCompare(b.title, "ru");
+    });
+
+  const categoryCounts = categoryOrder
+    .map((category) => ({
+      title: category,
+      tone: categoryTones[category] || "blue",
+      count: documents.filter((document) => document.category === category).length,
+    }))
+    .filter((category) => category.count > 0);
+
+  return { ...person, documents, categoryCounts };
+});
+
+const defaultPersonKey = personSections.find((person) => person.documents.length > 0)?.key || personSections[0]?.key || "masha";
+const totalDocuments = registry.documents.length;
+const totalFiles = registry.documents.reduce((sum, document) => sum + document.file_count, 0);
+const totalPeopleWithDocuments = personSections.filter((person) => person.documents.length > 0).length;
+
+const iconPaths = {
+  archive: ["M4.5 7.5h15", "M6 7.5v12h12v-12", "M8 4.5h8l1.5 3h-11z", "M10 12h4"],
+  file: ["M6.5 3.5h7l4 4v13h-11z", "M13.5 3.5v4h4", "M9 12h6", "M9 16h5"],
+  folder: ["M3.8 6.5h6l1.7 2h8.7v9.8a2 2 0 0 1-2 2H5.8a2 2 0 0 1-2-2Z", "M3.8 8.5h16.4"],
+  lock: ["M6.5 10.5h11v9h-11z", "M9 10.5V8a3 3 0 0 1 6 0v2.5"],
+  shield: ["M12 21c4.2-1.6 6.5-4.7 6.5-9.3V6.2L12 3.5 5.5 6.2v5.5c0 4.6 2.3 7.7 6.5 9.3Z", "M9 12l2 2 4-4"],
+  stack: ["M7 8.5 12 6l5 2.5-5 2.5z", "M7 12l5 2.5 5-2.5", "M7 15.5l5 2.5 5-2.5"],
+} as const;
 ---
 
-<AppLayout title="Документы · База Бабиновых">
-  <section class="page-header">
-    <p class="eyebrow">Цифровой сейф</p>
-    <h1>Документы</h1>
-    <p>Все документы в одном месте</p>
-    <a class="button secondary inline-button" href={pageHref("/")}>На главную</a>
-  </section>
-
-  <section class="section-grid two">
-    <article>
-      <div class="section-title">
-        <h2>Категории</h2>
-        <span class="muted-text">skeleton</span>
+<AppLayout
+  title="Документы · База Бабиновых"
+  description="Семейный сейф документов"
+  homePortal
+  portalTopbarAction={{ href: pageHref("/"), label: "На главную", icon: "home" }}
+>
+  <div class="family-documents-page">
+    <section class="family-documents-hero" aria-labelledby="family-documents-title">
+      <div>
+        <p class="family-documents-kicker">Семейный сейф</p>
+        <h1 id="family-documents-title">Документы</h1>
+        <p>Личные, зарубежные, имущественные и рабочие документы, разложенные по людям. Оригиналы остаются в локальном хранилище и не публикуются на странице.</p>
       </div>
-      <div class="card-grid">
-        {categories.map((category) => (
-          <article class="card">
-            <span class="eyebrow">Документы</span>
-            <h3>{category}</h3>
-            <p>Раздел подготовлен для будущего наполнения.</p>
-          </article>
+
+      <div class="family-documents-safe-card">
+        <span aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            {iconPaths.shield.map((path) => <path d={path} />)}
+          </svg>
+        </span>
+        <div>
+          <strong>Приватный реестр</strong>
+          <small>обновлено {formatUpdated(registry.updated_at)}</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="family-documents-stats" aria-label="Сводка семейного сейфа">
+      <article class="family-documents-stat tone-blue">
+        <span>В реестре</span>
+        <strong>{totalDocuments}</strong>
+        <small>{documentsLabel(totalDocuments)}</small>
+      </article>
+      <article class="family-documents-stat tone-violet">
+        <span>Оригиналы</span>
+        <strong>{totalFiles}</strong>
+        <small>{filesLabel(totalFiles)}</small>
+      </article>
+      <article class="family-documents-stat tone-green">
+        <span>Заполнено</span>
+        <strong>{totalPeopleWithDocuments}</strong>
+        <small>из {registry.people.length} профилей</small>
+      </article>
+    </section>
+
+    <section class="family-documents-tabs-shell" aria-label="Документы по людям">
+      <div class="family-documents-tabs" role="tablist" aria-label="Выбор человека">
+        {personSections.map((person) => (
+          <button
+            class:list={["family-documents-tab", `tone-${person.tone}`, person.key === defaultPersonKey && "active"]}
+            type="button"
+            role="tab"
+            id={`documents-tab-${person.key}`}
+            aria-controls={`documents-panel-${person.key}`}
+            aria-selected={person.key === defaultPersonKey ? "true" : "false"}
+            data-documents-tab={person.key}
+          >
+            <span class="family-documents-tab-avatar" aria-hidden="true">{person.name.slice(0, 1)}</span>
+            <span>
+              <strong>{person.name}</strong>
+              <small>{documentsLabel(person.documents.length)}</small>
+            </span>
+          </button>
         ))}
       </div>
-    </article>
 
-    <aside class="card">
-      <span class="eyebrow">Контроль сроков</span>
-      <h2>Скоро истекает</h2>
-      <p class="empty">Документы для контроля сроков появятся здесь после наполнения сейфа.</p>
-    </aside>
-  </section>
+      {personSections.map((person) => (
+        <section
+          class:list={["family-documents-panel", `tone-${person.tone}`, person.key !== defaultPersonKey && "is-hidden"]}
+          id={`documents-panel-${person.key}`}
+          role="tabpanel"
+          aria-labelledby={`documents-tab-${person.key}`}
+          data-documents-panel={person.key}
+        >
+          <div class="family-documents-person-head">
+            <div class="family-documents-person-title">
+              <span class="family-documents-person-avatar" aria-hidden="true">{person.name.slice(0, 1)}</span>
+              <div>
+                <h2>{person.name}</h2>
+                <p>{person.role}</p>
+              </div>
+            </div>
+
+            <div class="family-documents-person-meta" aria-label={`Сводка документов: ${person.name}`}>
+              <span>
+                <strong>{person.documents.length}</strong>
+                <small>документов</small>
+              </span>
+              <span>
+                <strong>{person.documents.reduce((sum, document) => sum + document.file_count, 0)}</strong>
+                <small>файлов</small>
+              </span>
+            </div>
+          </div>
+
+          {person.categoryCounts.length > 0 && (
+            <div class="family-documents-category-row" aria-label={`Категории документов: ${person.name}`}>
+              {person.categoryCounts.map((category) => (
+                <article class:list={["family-documents-category", `tone-${category.tone}`]}>
+                  <span>{category.title}</span>
+                  <strong>{category.count}</strong>
+                </article>
+              ))}
+            </div>
+          )}
+
+          <div class="family-documents-list-head">
+            <div>
+              <p class="family-documents-kicker">Реестр</p>
+              <h3>{documentsLabel(person.documents.length)}</h3>
+            </div>
+          </div>
+
+          <div class="family-documents-grid">
+            {person.documents.length ? (
+              person.documents.map((document) => (
+                <article class:list={["family-document-card", `tone-${documentTone(document)}`]}>
+                  <header>
+                    <span class="family-document-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        {iconPaths.file.map((path) => <path d={path} />)}
+                      </svg>
+                    </span>
+                    <span class="family-document-privacy">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        {iconPaths.lock.map((path) => <path d={path} />)}
+                      </svg>
+                      приватно
+                    </span>
+                  </header>
+
+                  <div class="family-document-body">
+                    <p>{document.group}</p>
+                    <h4>{document.title}</h4>
+                  </div>
+
+                  <div class="family-document-meta" aria-label={`Метаданные документа: ${document.title}`}>
+                    <span>{document.category}</span>
+                    <span>{document.kind}</span>
+                    <span>{formatList(document.formats)}</span>
+                  </div>
+
+                  <footer>
+                    <span>{filesLabel(document.file_count)}</span>
+                    <strong>{document.status}</strong>
+                  </footer>
+                </article>
+              ))
+            ) : (
+              <article class="family-documents-empty">
+                <span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    {iconPaths.archive.map((path) => <path d={path} />)}
+                  </svg>
+                </span>
+                <h4>Документов пока нет</h4>
+                <p>Раздел готов, сюда добавим следующие семейные файлы, когда ты их передашь.</p>
+              </article>
+            )}
+          </div>
+        </section>
+      ))}
+    </section>
+  </div>
+
+  <script is:inline define:vars={{ defaultPersonKey }}>
+    const tabs = Array.from(document.querySelectorAll("[data-documents-tab]"));
+    const panels = Array.from(document.querySelectorAll("[data-documents-panel]"));
+
+    function activateDocumentsTab(key) {
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.documentsTab === key;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", String(isActive));
+      });
+
+      panels.forEach((panel) => {
+        const isActive = panel.dataset.documentsPanel === key;
+        panel.classList.toggle("is-hidden", !isActive);
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const key = tab.dataset.documentsTab || defaultPersonKey;
+        activateDocumentsTab(key);
+        history.replaceState(null, "", `#${key}`);
+      });
+    });
+
+    const hashKey = window.location.hash.replace("#", "");
+    if (hashKey && tabs.some((tab) => tab.dataset.documentsTab === hashKey)) {
+      activateDocumentsTab(hashKey);
+    } else {
+      activateDocumentsTab(defaultPersonKey);
+    }
+  </script>
 </AppLayout>
+
+<style>
+  .family-documents-page {
+    display: grid;
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+  }
+
+  .family-documents-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 1rem;
+  }
+
+  .family-documents-kicker {
+    margin: 0 0 0.42rem;
+    color: rgba(169, 180, 192, 0.82);
+    font-size: 0.78rem;
+    font-weight: 720;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .family-documents-hero h1 {
+    max-width: 820px;
+    margin: 0 0 0.65rem;
+    font-family: "Onest", "Manrope", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 4.1rem;
+    font-weight: 330;
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+
+  .family-documents-hero p {
+    max-width: 840px;
+    margin: 0;
+    color: rgba(169, 180, 192, 0.8);
+    font-size: 1.04rem;
+  }
+
+  .family-documents-safe-card,
+  .family-documents-stat,
+  .family-documents-tabs-shell,
+  .family-document-card {
+    border: 1px solid rgba(255, 255, 255, 0.095);
+    background:
+      radial-gradient(circle at 0 0, color-mix(in srgb, var(--documents-tone) 10%, transparent), transparent 10rem),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.024));
+    box-shadow:
+      0 16px 45px rgba(0, 0, 0, 0.23),
+      inset 0 1px 0 rgba(255, 255, 255, 0.055);
+    backdrop-filter: blur(16px);
+  }
+
+  .tone-blue {
+    --documents-tone: var(--blue);
+    --documents-soft: var(--blue-soft);
+  }
+
+  .tone-green {
+    --documents-tone: var(--green);
+    --documents-soft: var(--green-soft);
+  }
+
+  .tone-yellow {
+    --documents-tone: var(--yellow);
+    --documents-soft: var(--yellow-soft);
+  }
+
+  .tone-violet {
+    --documents-tone: var(--violet);
+    --documents-soft: var(--violet-soft);
+  }
+
+  .family-documents-safe-card {
+    --documents-tone: var(--violet);
+    min-width: 250px;
+    min-height: 84px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.95rem;
+    border-radius: 18px;
+  }
+
+  .family-documents-safe-card > span,
+  .family-document-icon,
+  .family-documents-empty span {
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--documents-tone) 30%, transparent);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--documents-tone) 14%, rgba(255, 255, 255, 0.04));
+    color: color-mix(in srgb, var(--documents-tone) 78%, white);
+  }
+
+  .family-documents-safe-card > span {
+    width: 48px;
+    height: 48px;
+  }
+
+  .family-documents-safe-card strong,
+  .family-documents-safe-card small {
+    display: block;
+  }
+
+  .family-documents-safe-card strong {
+    color: var(--text-main);
+    font-weight: 620;
+  }
+
+  .family-documents-safe-card small {
+    color: rgba(169, 180, 192, 0.8);
+    font-size: 0.84rem;
+  }
+
+  .family-documents-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .family-documents-stat {
+    --documents-tone: var(--blue);
+    display: grid;
+    gap: 0.12rem;
+    min-height: 94px;
+    padding: 0.92rem;
+    border-radius: 16px;
+  }
+
+  .family-documents-stat span,
+  .family-documents-stat small {
+    color: rgba(169, 180, 192, 0.82);
+    font-size: 0.84rem;
+  }
+
+  .family-documents-stat strong {
+    color: color-mix(in srgb, var(--documents-tone) 76%, white);
+    font-size: 2rem;
+    font-weight: 520;
+    line-height: 1;
+  }
+
+  .family-documents-tabs-shell {
+    --documents-tone: var(--violet);
+    display: grid;
+    gap: 1.1rem;
+    padding: 1rem;
+    border-radius: 20px;
+  }
+
+  .family-documents-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.62rem;
+  }
+
+  .family-documents-tab {
+    --documents-tone: var(--blue);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.72rem;
+    min-width: 0;
+    min-height: 66px;
+    padding: 0.72rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.032);
+    color: rgba(207, 216, 226, 0.82);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .family-documents-tab.active,
+  .family-documents-tab:hover {
+    border-color: color-mix(in srgb, var(--documents-tone) 34%, rgba(255, 255, 255, 0.12));
+    background:
+      radial-gradient(circle at 0 0, color-mix(in srgb, var(--documents-tone) 15%, transparent), transparent 7rem),
+      rgba(255, 255, 255, 0.048);
+    color: var(--text-main);
+  }
+
+  .family-documents-tab-avatar,
+  .family-documents-person-avatar {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background:
+      radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.14), transparent 34%),
+      color-mix(in srgb, var(--documents-tone) 16%, rgba(255, 255, 255, 0.04));
+    color: color-mix(in srgb, var(--documents-tone) 78%, white);
+  }
+
+  .family-documents-tab-avatar {
+    width: 42px;
+    height: 42px;
+    font-weight: 720;
+  }
+
+  .family-documents-tab strong,
+  .family-documents-tab small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .family-documents-tab strong {
+    font-weight: 620;
+  }
+
+  .family-documents-tab small {
+    color: rgba(169, 180, 192, 0.76);
+    font-size: 0.82rem;
+  }
+
+  .family-documents-panel {
+    --documents-tone: var(--blue);
+    display: grid;
+    gap: 1rem;
+  }
+
+  .family-documents-panel.is-hidden {
+    display: none;
+  }
+
+  .family-documents-person-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.4rem 0.15rem 0;
+  }
+
+  .family-documents-person-title {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .family-documents-person-avatar {
+    width: 72px;
+    height: 72px;
+    flex: 0 0 auto;
+    border: 1px solid color-mix(in srgb, var(--documents-tone) 30%, rgba(255, 255, 255, 0.12));
+    box-shadow: 0 0 38px color-mix(in srgb, var(--documents-tone) 18%, transparent);
+    font-size: 1.25rem;
+    font-weight: 620;
+  }
+
+  .family-documents-person-title h2 {
+    margin: 0 0 0.24rem;
+    font-size: 1.55rem;
+    font-weight: 460;
+    line-height: 1.12;
+  }
+
+  .family-documents-person-title p {
+    margin: 0;
+    color: rgba(169, 180, 192, 0.78);
+    font-size: 0.95rem;
+  }
+
+  .family-documents-person-meta {
+    display: flex;
+    gap: 0.45rem;
+  }
+
+  .family-documents-person-meta span {
+    min-width: 90px;
+    display: grid;
+    gap: 0.06rem;
+    padding: 0.55rem 0.68rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .family-documents-person-meta strong {
+    color: color-mix(in srgb, var(--documents-tone) 78%, white);
+    font-size: 1.2rem;
+    font-weight: 620;
+    line-height: 1;
+  }
+
+  .family-documents-person-meta small {
+    color: rgba(169, 180, 192, 0.74);
+    font-size: 0.75rem;
+  }
+
+  .family-documents-category-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .family-documents-category {
+    --documents-tone: var(--blue);
+    min-height: 70px;
+    display: grid;
+    gap: 0.18rem;
+    padding: 0.68rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 0 0, color-mix(in srgb, var(--documents-tone) 10%, transparent), transparent 6rem),
+      rgba(255, 255, 255, 0.028);
+  }
+
+  .family-documents-category span {
+    overflow: hidden;
+    color: rgba(169, 180, 192, 0.78);
+    font-size: 0.78rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .family-documents-category strong {
+    color: color-mix(in srgb, var(--documents-tone) 78%, white);
+    font-size: 1.28rem;
+    font-weight: 610;
+    line-height: 1;
+  }
+
+  .family-documents-list-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.15rem;
+  }
+
+  .family-documents-list-head h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .family-documents-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.72rem;
+  }
+
+  .family-document-card {
+    --documents-tone: var(--blue);
+    min-width: 0;
+    min-height: 220px;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 0.72rem;
+    padding: 0.86rem;
+    border-left: 3px solid var(--documents-tone);
+    border-radius: 16px;
+  }
+
+  .family-document-card header,
+  .family-document-card footer,
+  .family-document-privacy,
+  .family-document-meta span {
+    display: flex;
+    align-items: center;
+  }
+
+  .family-document-card header {
+    justify-content: space-between;
+    gap: 0.65rem;
+  }
+
+  .family-document-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+  }
+
+  .family-document-privacy {
+    gap: 0.28rem;
+    min-height: 24px;
+    padding: 0.16rem 0.48rem;
+    border: 1px solid color-mix(in srgb, var(--documents-tone) 26%, transparent);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--documents-tone) 10%, transparent);
+    color: color-mix(in srgb, var(--documents-tone) 76%, white);
+    font-size: 0.72rem;
+    font-weight: 720;
+  }
+
+  .family-document-privacy svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .family-document-body p {
+    margin: 0 0 0.42rem;
+    color: rgba(169, 180, 192, 0.76);
+    font-size: 0.78rem;
+    font-weight: 720;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .family-document-body h4 {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 1.02rem;
+    font-weight: 610;
+    line-height: 1.28;
+    overflow-wrap: anywhere;
+  }
+
+  .family-document-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.34rem;
+  }
+
+  .family-document-meta span {
+    min-height: 24px;
+    max-width: 100%;
+    padding: 0.16rem 0.48rem;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-pill);
+    color: rgba(169, 180, 192, 0.82);
+    font-size: 0.72rem;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .family-document-card footer {
+    justify-content: space-between;
+    gap: 0.65rem;
+    margin-top: auto;
+    color: rgba(169, 180, 192, 0.78);
+    font-size: 0.78rem;
+  }
+
+  .family-document-card footer strong {
+    color: color-mix(in srgb, var(--documents-tone) 78%, white);
+    font-size: 0.78rem;
+    font-weight: 720;
+  }
+
+  .family-documents-empty {
+    grid-column: 1 / -1;
+    display: grid;
+    justify-items: center;
+    gap: 0.55rem;
+    min-height: 240px;
+    padding: 2rem;
+    border: 1px dashed var(--border-medium);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.024);
+    text-align: center;
+  }
+
+  .family-documents-empty span {
+    --documents-tone: var(--violet);
+    width: 58px;
+    height: 58px;
+  }
+
+  .family-documents-empty h4,
+  .family-documents-empty p {
+    margin: 0;
+  }
+
+  .family-documents-empty p {
+    color: rgba(169, 180, 192, 0.78);
+  }
+
+  .family-documents-page svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.75;
+  }
+
+  @media (max-width: 1180px) {
+    .family-documents-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .family-documents-category-row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 860px) {
+    .family-documents-hero,
+    .family-documents-person-head {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .family-documents-safe-card {
+      width: 100%;
+    }
+
+    .family-documents-tabs {
+      grid-template-columns: 1fr;
+    }
+
+    .family-documents-person-meta {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 0.1rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .family-documents-hero h1 {
+      font-size: 2.65rem;
+    }
+
+    .family-documents-stats,
+    .family-documents-category-row,
+    .family-documents-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .family-documents-tabs-shell {
+      padding: 0.82rem;
+    }
+
+    .family-documents-person-title {
+      align-items: start;
+    }
+
+    .family-documents-person-avatar {
+      width: 58px;
+      height: 58px;
+    }
+  }
+</style>

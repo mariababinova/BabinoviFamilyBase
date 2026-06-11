@@ -1,57 +1,1063 @@
 ---
+import fs from "node:fs";
 import AppLayout from "../layouts/AppLayout.astro";
 import { pageHref } from "../lib/ui";
 
-const columns = [
-  {
-    title: "Входящие",
-    tone: "unknown",
-    cards: ["Разобрать новые поручения"],
-  },
-  {
-    title: "Нужно уточнить",
-    tone: "week",
-    cards: ["Уточнить контекст задачи"],
-  },
-  {
-    title: "В работе",
-    tone: "month",
-    cards: ["Подготовить список следующих действий"],
-  },
-  {
-    title: "Ожидает ответа",
-    tone: "later",
-    cards: ["Ждём внешнее подтверждение"],
-  },
-  {
-    title: "Готово",
-    tone: "later",
-    cards: ["Закрытые поручения будут здесь"],
-  },
+type Tone = "blue" | "green" | "red" | "yellow" | "violet";
+
+type AffairsLabel = {
+  id: string;
+  name: string;
+  trello_color?: string;
+  tone?: Tone;
+};
+
+type AffairsChecklist = {
+  items_total?: number;
+  items_done?: number;
+};
+
+type AffairsColumn = {
+  id: string;
+  key: string;
+  name: string;
+  kind: string;
+  position: number;
+};
+
+type AffairsTask = {
+  id: string;
+  title: string;
+  description?: string;
+  status?: string;
+  done?: boolean;
+  column_id: string;
+  column_key?: string;
+  column_name?: string;
+  column_kind?: string;
+  position: number;
+  due_at?: string;
+  due_complete?: boolean;
+  last_activity_at?: string;
+  labels?: AffairsLabel[];
+  checklist?: AffairsChecklist;
+  source?: string;
+  trello_card_url?: string;
+  tone?: Tone;
+};
+
+type AffairsData = {
+  updated_at: string;
+  source?: {
+    type?: string;
+    board_id?: string;
+    board_name?: string;
+    board_url?: string;
+  };
+  stats?: {
+    columns?: number;
+    records?: number;
+    open?: number;
+    done?: number;
+    with_due?: number;
+    with_description?: number;
+  };
+  columns?: AffairsColumn[];
+  records?: AffairsTask[];
+};
+
+const dataUrl = new URL("../../../10 Дела/assistant_tasks.json", import.meta.url);
+const affairs = JSON.parse(fs.readFileSync(dataUrl, "utf8")) as AffairsData;
+
+const validTones = new Set<Tone>(["blue", "green", "red", "yellow", "violet"]);
+const columns = [...(affairs.columns || [])].sort((a, b) => (a.position || 0) - (b.position || 0));
+const tasks = [...(affairs.records || [])].sort((a, b) => (a.position || 0) - (b.position || 0));
+const openTasks = tasks.filter((task) => !task.done);
+const doneTasks = tasks.filter((task) => task.done);
+const openDueTasks = openTasks.filter((task) => task.due_at);
+const boardName = affairs.source?.board_name || "Задачи";
+const boardUrl = affairs.source?.board_url || "";
+
+const dateTimeFormatter = new Intl.DateTimeFormat("ru-RU", {
+  day: "2-digit",
+  month: "short",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Asia/Tbilisi",
+});
+
+const updatedFormatter = new Intl.DateTimeFormat("ru-RU", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Asia/Tbilisi",
+});
+
+function toneForKind(kind = ""): Tone {
+  if (kind === "done") return "green";
+  if (kind === "todo" || kind === "active") return "yellow";
+  if (kind === "project" || kind === "recurring") return "violet";
+  if (kind === "idea") return "blue";
+  return "blue";
+}
+
+function safeTone(tone?: string): Tone {
+  return validTones.has(tone as Tone) ? (tone as Tone) : "blue";
+}
+
+function columnHint(column: AffairsColumn) {
+  const hints: Record<string, string> = {
+    done: "Закрытые поручения и уже выполненные покупки.",
+    deferred: "Не горит, но важно не потерять из поля зрения.",
+    recurring: "Повторяющиеся семейные и ассистентские ритмы.",
+    backlog: "Запас задач, идей и будущих поручений.",
+    todo: "Ближайшее, что просится в работу.",
+    active: "Текущие дела Маши и семейные поручения.",
+    project: "Отдельный поток с собственным контекстом.",
+    idea: "Мысли, которые еще дозревают.",
+  };
+
+  return hints[column.kind] || "Задачи из исходного списка Trello.";
+}
+
+function pluralize(count: number, one: string, few: string, many: string) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+}
+
+function taskCountLabel(count: number) {
+  return `${count} ${pluralize(count, "карточка", "карточки", "карточек")}`;
+}
+
+function cleanText(value = "") {
+  return value
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/https?:\/\/\S+/g, "ссылка")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function excerpt(value = "", maxLength = 138) {
+  const clean = cleanText(value);
+  if (!clean) return "";
+  if (clean.length <= maxLength) return clean;
+  return `${clean.slice(0, maxLength).trimEnd()}...`;
+}
+
+function formatDateTime(value?: string) {
+  if (!value) return "";
+  return dateTimeFormatter.format(new Date(value));
+}
+
+function formatUpdated(value?: string) {
+  if (!value) return "нет даты";
+  return updatedFormatter.format(new Date(value));
+}
+
+function dueStatus(task: AffairsTask) {
+  if (!task.due_at) return "";
+  if (task.done || task.due_complete) return "due-done";
+
+  const due = new Date(task.due_at).getTime();
+  const now = Date.now();
+  const weekFromNow = now + 7 * 24 * 60 * 60 * 1000;
+
+  if (due < now) return "due-overdue";
+  if (due <= weekFromNow) return "due-soon";
+  return "due-planned";
+}
+
+function checklistLabel(task: AffairsTask) {
+  const total = task.checklist?.items_total || 0;
+  if (!total) return "";
+  const done = task.checklist?.items_done || 0;
+  return `${done}/${total}`;
+}
+
+const columnSummaries = columns.map((column) => {
+  const columnTasks = tasks.filter((task) => task.column_id === column.id);
+  const columnDone = columnTasks.filter((task) => task.done).length;
+  return {
+    column,
+    tasks: columnTasks,
+    doneCount: columnDone,
+    openCount: columnTasks.length - columnDone,
+    tone: toneForKind(column.kind),
+  };
+});
+
+const dueSoonTasks = [...openDueTasks]
+  .sort((a, b) => new Date(a.due_at || 0).getTime() - new Date(b.due_at || 0).getTime())
+  .slice(0, 5);
+
+const projectSummaries = columnSummaries.filter(({ column }) => column.kind === "project" && column.name);
+const donePercent = tasks.length ? Math.round((doneTasks.length / tasks.length) * 100) : 0;
+const statCards = [
+  { label: "Открытые", value: openTasks.length, meta: "в работе и ожидании", tone: "yellow" as Tone },
+  { label: "Готово", value: doneTasks.length, meta: `${donePercent}% доски`, tone: "green" as Tone },
+  { label: "С дедлайном", value: openDueTasks.length, meta: "активные даты", tone: "blue" as Tone },
+  { label: "Колонки", value: columns.length, meta: "структура Trello", tone: "violet" as Tone },
 ];
+
+const iconPaths = {
+  calendar: ["M5 5.5h14v14H5z", "M8 3.5v4", "M16 3.5v4", "M5 9.5h14"],
+  check: ["M8.5 12.2 11 14.7l4.5-5.4", "M5 4.5h14v15H5z"],
+  clipboard: ["M8 5.5h8", "M9 3.5h6l1 2h3v15H5v-15h3z", "M8.5 11h7", "M8.5 15h5"],
+  external: ["M8 6h10v10", "M18 6 7 17", "M6 9v9h9"],
+  grid: ["M4.5 4.5h5v5h-5z", "M14.5 4.5h5v5h-5z", "M4.5 14.5h5v5h-5z", "M14.5 14.5h5v5h-5z"],
+  tag: ["M4.5 11.5 11.5 4.5H19v7.5l-7 7-7.5-7.5Z", "M15.5 8.5h.1"],
+} as const;
 ---
 
-<AppLayout title="Дела · База Бабиновых">
-  <section class="page-header">
-    <p class="eyebrow">Дела</p>
-    <h1>Дела</h1>
-    <p>Задачи ассистента и семейные поручения: входящие, в работе, ожидание и готово.</p>
-    <a class="button secondary inline-button" href={pageHref("/")}>На главную</a>
-  </section>
+<AppLayout
+  title="Дела · База Бабиновых"
+  description="Канбан ассистентских задач семьи"
+  homePortal
+  portalTopbarAction={{ href: pageHref("/"), label: "На главную", icon: "home" }}
+>
+  <div class="affairs-page">
+    <section class="affairs-hero" aria-labelledby="affairs-title">
+      <div class="affairs-hero-copy">
+        <p class="affairs-kicker">Ассистентский задачник</p>
+        <h1 id="affairs-title">Дела</h1>
+        <p>Канбан семьи: поручения, ожидания, регулярные задачи, проекты и закрытые карточки из Trello.</p>
+      </div>
 
-  <section class="task-board" aria-label="Будущий задачник ассистента">
-    {columns.map((column) => (
-      <div class="task-column">
-        <h3>{column.title}</h3>
-        <div class="task-list">
-          {column.cards.map((card) => (
-            <article class:list={["task-card", column.tone]}>
-              <strong>{card}</strong>
-              <span class="task-meta">skeleton</span>
-            </article>
+      <aside class="affairs-sync-panel" aria-label="Источник задач">
+        <span>Синхронизировано</span>
+        <strong>{formatUpdated(affairs.updated_at)}</strong>
+        {boardUrl && (
+          <a href={boardUrl} target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              {iconPaths.external.map((path) => <path d={path} />)}
+            </svg>
+            <span>Trello: {boardName}</span>
+          </a>
+        )}
+      </aside>
+    </section>
+
+    <section class="affairs-stats" aria-label="Сводка по задачам">
+      {statCards.map((stat) => (
+        <article class:list={["affairs-stat", `tone-${stat.tone}`]}>
+          <span>{stat.label}</span>
+          <strong>{stat.value}</strong>
+          <small>{stat.meta}</small>
+        </article>
+      ))}
+    </section>
+
+    <section class="affairs-board-section" aria-labelledby="affairs-board-title">
+      <div class="affairs-section-head">
+        <div>
+          <p class="affairs-kicker">Kanban</p>
+          <h2 id="affairs-board-title">Доска «{boardName}»</h2>
+        </div>
+        <span>{taskCountLabel(tasks.length)}</span>
+      </div>
+
+      <div class="affairs-board" aria-label="Канбан задач">
+        {columnSummaries.map(({ column, tasks: columnTasks, doneCount, openCount, tone }) => (
+          <section class:list={["affairs-column", `tone-${tone}`]} id={`column-${column.key}`} aria-labelledby={`column-title-${column.key}`}>
+            <header class="affairs-column-head">
+              <div>
+                <span class="affairs-column-dot" aria-hidden="true"></span>
+                <h3 id={`column-title-${column.key}`}>{column.name}</h3>
+              </div>
+              <strong>{columnTasks.length}</strong>
+            </header>
+            <p class="affairs-column-hint">{columnHint(column)}</p>
+            <div class="affairs-column-meta" aria-label="Состояние колонки">
+              <span>{openCount} открыто</span>
+              <span>{doneCount} готово</span>
+            </div>
+
+            <div class="affairs-card-list">
+              {columnTasks.length ? (
+                columnTasks.map((task) => {
+                  const taskTone = safeTone(task.tone || toneForKind(task.column_kind || column.kind));
+                  const description = excerpt(task.description);
+                  const checklist = checklistLabel(task);
+                  const labels = task.labels || [];
+
+                  return (
+                    <article class:list={["affairs-card", `tone-${taskTone}`, task.done && "is-done"]}>
+                      <header class="affairs-card-head">
+                        <h4>{task.title}</h4>
+                        {task.done && (
+                          <span class="affairs-card-state">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              {iconPaths.check.map((path) => <path d={path} />)}
+                            </svg>
+                          </span>
+                        )}
+                      </header>
+
+                      {description && <p class="affairs-card-description">{description}</p>}
+
+                      {labels.length > 0 && (
+                        <div class="affairs-label-row" aria-label="Метки">
+                          {labels.map((label) => (
+                            <span class:list={["affairs-label", `tone-${safeTone(label.tone)}`]}>
+                              {label.name}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <footer class="affairs-card-meta">
+                        {task.due_at && (
+                          <span class:list={["affairs-due", dueStatus(task)]}>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              {iconPaths.calendar.map((path) => <path d={path} />)}
+                            </svg>
+                            <time datetime={task.due_at}>{formatDateTime(task.due_at)}</time>
+                          </span>
+                        )}
+
+                        {checklist && (
+                          <span class="affairs-checklist">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              {iconPaths.clipboard.map((path) => <path d={path} />)}
+                            </svg>
+                            {checklist}
+                          </span>
+                        )}
+
+                        {task.trello_card_url && (
+                          <a class="affairs-card-link" href={task.trello_card_url} target="_blank" rel="noreferrer">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              {iconPaths.external.map((path) => <path d={path} />)}
+                            </svg>
+                            <span>Карточка</span>
+                          </a>
+                        )}
+                      </footer>
+                    </article>
+                  );
+                })
+              ) : (
+                <div class="affairs-empty-column">Пока пусто</div>
+              )}
+            </div>
+          </section>
+        ))}
+      </div>
+    </section>
+
+    <section class="affairs-focus-grid" aria-label="Фокус по делам">
+      <article class="affairs-focus-panel">
+        <header>
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              {iconPaths.calendar.map((path) => <path d={path} />)}
+            </svg>
+            Ближайшие дедлайны
+          </span>
+          <strong>{openDueTasks.length}</strong>
+        </header>
+        <div class="affairs-focus-list">
+          {dueSoonTasks.length ? (
+            dueSoonTasks.map((task) => (
+              <a class:list={["affairs-focus-item", dueStatus(task)]} href={task.trello_card_url || "#"} target={task.trello_card_url ? "_blank" : undefined} rel={task.trello_card_url ? "noreferrer" : undefined}>
+                <span>{task.title}</span>
+                <time datetime={task.due_at}>{formatDateTime(task.due_at)}</time>
+              </a>
+            ))
+          ) : (
+            <p class="affairs-empty-note">Активных дедлайнов сейчас нет.</p>
+          )}
+        </div>
+      </article>
+
+      <article class="affairs-focus-panel">
+        <header>
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              {iconPaths.grid.map((path) => <path d={path} />)}
+            </svg>
+            Проектные потоки
+          </span>
+          <strong>{projectSummaries.length}</strong>
+        </header>
+        <div class="affairs-project-list">
+          {projectSummaries.map(({ column, tasks: columnTasks, openCount, tone }) => (
+            <a class:list={["affairs-project-row", `tone-${tone}`]} href={`#column-${column.key}`}>
+              <span>
+                <strong>{column.name.replace(/^Проект\s+/i, "")}</strong>
+                <small>{taskCountLabel(columnTasks.length)}</small>
+              </span>
+              <em>{openCount}</em>
+            </a>
           ))}
         </div>
-      </div>
-    ))}
-  </section>
+      </article>
+    </section>
+  </div>
 </AppLayout>
+
+<style>
+  .affairs-page {
+    display: grid;
+    gap: 1.35rem;
+    padding-bottom: 2rem;
+  }
+
+  .affairs-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 330px);
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .affairs-hero-copy {
+    min-width: 0;
+  }
+
+  .affairs-kicker {
+    margin: 0 0 0.42rem;
+    color: rgba(169, 180, 192, 0.82);
+    font-size: 0.78rem;
+    font-weight: 720;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .affairs-hero h1 {
+    max-width: 820px;
+    margin: 0 0 0.65rem;
+    font-family: "Onest", "Manrope", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 4.1rem;
+    font-weight: 330;
+    letter-spacing: 0;
+    line-height: 0.98;
+  }
+
+  .affairs-hero p {
+    max-width: 820px;
+    margin: 0;
+    color: rgba(169, 180, 192, 0.8);
+    font-size: 1.04rem;
+  }
+
+  .affairs-sync-panel {
+    display: grid;
+    gap: 0.45rem;
+    min-height: 126px;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.095);
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 100% 0, rgba(79, 140, 255, 0.14), transparent 8rem),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.024));
+    box-shadow:
+      0 18px 55px rgba(0, 0, 0, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px);
+  }
+
+  .affairs-sync-panel span,
+  .affairs-sync-panel a {
+    color: rgba(169, 180, 192, 0.82);
+    font-size: 0.88rem;
+  }
+
+  .affairs-sync-panel strong {
+    color: var(--text-main);
+    font-size: 1.05rem;
+    font-weight: 560;
+  }
+
+  .affairs-sync-panel a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    width: fit-content;
+    margin-top: auto;
+    color: color-mix(in srgb, var(--blue) 78%, white);
+    font-weight: 620;
+  }
+
+  .affairs-sync-panel svg,
+  .affairs-focus-panel svg,
+  .affairs-card svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.75;
+  }
+
+  .affairs-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .affairs-stat,
+  .affairs-focus-panel {
+    border: 1px solid rgba(255, 255, 255, 0.095);
+    background:
+      radial-gradient(circle at 0 0, color-mix(in srgb, var(--affairs-tone) 10%, transparent), transparent 10rem),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.024));
+    box-shadow:
+      0 16px 45px rgba(0, 0, 0, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.055);
+    backdrop-filter: blur(16px);
+  }
+
+  .affairs-stat {
+    --affairs-tone: var(--blue);
+    --affairs-soft: var(--blue-soft);
+    display: grid;
+    gap: 0.12rem;
+    min-height: 98px;
+    padding: 0.95rem;
+    border-radius: 16px;
+  }
+
+  .affairs-stat span,
+  .affairs-stat small {
+    color: rgba(169, 180, 192, 0.82);
+    font-size: 0.84rem;
+  }
+
+  .affairs-stat strong {
+    color: color-mix(in srgb, var(--affairs-tone) 76%, white);
+    font-size: 2rem;
+    font-weight: 520;
+    line-height: 1;
+  }
+
+  .tone-blue {
+    --affairs-tone: var(--blue);
+    --affairs-soft: var(--blue-soft);
+  }
+
+  .tone-green {
+    --affairs-tone: var(--green);
+    --affairs-soft: var(--green-soft);
+  }
+
+  .tone-red {
+    --affairs-tone: var(--red);
+    --affairs-soft: var(--red-soft);
+  }
+
+  .tone-yellow {
+    --affairs-tone: var(--yellow);
+    --affairs-soft: var(--yellow-soft);
+  }
+
+  .tone-violet {
+    --affairs-tone: var(--violet);
+    --affairs-soft: var(--violet-soft);
+  }
+
+  .affairs-focus-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    gap: 0.9rem;
+  }
+
+  .affairs-focus-panel {
+    --affairs-tone: var(--blue);
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.95rem;
+    border-radius: 18px;
+  }
+
+  .affairs-focus-panel header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+
+  .affairs-focus-panel header > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    color: var(--text-main);
+    font-weight: 560;
+  }
+
+  .affairs-focus-panel header strong {
+    min-width: 32px;
+    min-height: 32px;
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--affairs-tone) 30%, transparent);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--affairs-tone) 14%, rgba(255, 255, 255, 0.04));
+    color: color-mix(in srgb, var(--affairs-tone) 78%, white);
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  .affairs-focus-list,
+  .affairs-project-list {
+    display: grid;
+    gap: 0.48rem;
+  }
+
+  .affairs-focus-item,
+  .affairs-project-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0.62rem 0.72rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .affairs-focus-item:hover,
+  .affairs-project-row:hover {
+    border-color: color-mix(in srgb, var(--affairs-tone) 28%, rgba(255, 255, 255, 0.12));
+    color: var(--text-main);
+    background: color-mix(in srgb, var(--affairs-tone) 8%, rgba(255, 255, 255, 0.032));
+  }
+
+  .affairs-focus-item span,
+  .affairs-project-row span {
+    min-width: 0;
+  }
+
+  .affairs-focus-item span {
+    overflow: hidden;
+    color: var(--text-main);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 560;
+  }
+
+  .affairs-focus-item time {
+    flex: 0 0 auto;
+    color: rgba(169, 180, 192, 0.86);
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .affairs-project-row span {
+    display: grid;
+    gap: 0.04rem;
+  }
+
+  .affairs-project-row strong {
+    overflow-wrap: anywhere;
+    color: var(--text-main);
+    font-weight: 560;
+    line-height: 1.2;
+  }
+
+  .affairs-project-row small {
+    color: rgba(169, 180, 192, 0.78);
+    font-size: 0.8rem;
+  }
+
+  .affairs-project-row em {
+    min-width: 30px;
+    min-height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-pill);
+    background: var(--affairs-soft);
+    color: color-mix(in srgb, var(--affairs-tone) 76%, white);
+    font-style: normal;
+    font-weight: 720;
+  }
+
+  .affairs-board-section {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  .affairs-section-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .affairs-section-head h2 {
+    margin: 0;
+    font-size: 1.45rem;
+    font-weight: 460;
+    letter-spacing: 0;
+  }
+
+  .affairs-section-head > span {
+    flex: 0 0 auto;
+    margin-bottom: 0.12rem;
+    color: rgba(169, 180, 192, 0.8);
+    font-size: 0.9rem;
+  }
+
+  .affairs-board {
+    display: grid;
+    grid-auto-columns: minmax(292px, 326px);
+    grid-auto-flow: column;
+    gap: 0.82rem;
+    min-width: 0;
+    overflow-x: auto;
+    padding: 0.1rem 0.1rem 0.95rem;
+    scroll-padding-left: 0.1rem;
+    scroll-snap-type: x proximity;
+    scrollbar-color: rgba(79, 140, 255, 0.36) rgba(255, 255, 255, 0.045);
+  }
+
+  .affairs-column {
+    --affairs-tone: var(--blue);
+    --affairs-soft: var(--blue-soft);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: min(70vh, 690px);
+    min-height: 520px;
+    padding: 0.82rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.095);
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 50% 0, color-mix(in srgb, var(--affairs-tone) 12%, transparent), transparent 11rem),
+      linear-gradient(180deg, rgba(20, 26, 34, 0.92), rgba(10, 15, 22, 0.94));
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    scroll-snap-align: start;
+  }
+
+  .affairs-column-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.7rem;
+  }
+
+  .affairs-column-head > div {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .affairs-column-dot {
+    width: 0.58rem;
+    height: 0.58rem;
+    border-radius: var(--radius-pill);
+    background: var(--affairs-tone);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--affairs-tone) 46%, transparent);
+  }
+
+  .affairs-column h3 {
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 620;
+    line-height: 1.2;
+  }
+
+  .affairs-column-head strong {
+    min-width: 32px;
+    min-height: 28px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: var(--radius-pill);
+    background: var(--affairs-soft);
+    color: color-mix(in srgb, var(--affairs-tone) 78%, white);
+    font-size: 0.82rem;
+    font-weight: 720;
+  }
+
+  .affairs-column-hint {
+    min-height: 42px;
+    margin: 0.58rem 0 0;
+    color: rgba(169, 180, 192, 0.78);
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .affairs-column-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.36rem;
+    margin: 0.64rem 0 0.68rem;
+  }
+
+  .affairs-column-meta span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0.18rem 0.48rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-pill);
+    color: rgba(169, 180, 192, 0.8);
+    font-size: 0.74rem;
+    font-weight: 650;
+  }
+
+  .affairs-card-list {
+    display: grid;
+    gap: 0.58rem;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 0.18rem;
+    scrollbar-color: color-mix(in srgb, var(--affairs-tone) 28%, transparent) transparent;
+  }
+
+  .affairs-card {
+    --affairs-tone: var(--blue);
+    --affairs-soft: var(--blue-soft);
+    display: grid;
+    gap: 0.58rem;
+    padding: 0.78rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--affairs-tone);
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 100% 0, color-mix(in srgb, var(--affairs-tone) 6%, transparent), transparent 6rem),
+      rgba(255, 255, 255, 0.035);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+  }
+
+  .affairs-card:hover {
+    border-color: color-mix(in srgb, var(--affairs-tone) 28%, rgba(255, 255, 255, 0.12));
+    background:
+      radial-gradient(circle at 100% 0, color-mix(in srgb, var(--affairs-tone) 9%, transparent), transparent 7rem),
+      rgba(255, 255, 255, 0.045);
+  }
+
+  .affairs-card.is-done {
+    opacity: 0.76;
+  }
+
+  .affairs-card-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.55rem;
+    align-items: start;
+  }
+
+  .affairs-card h4 {
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--text-main);
+    font-size: 0.94rem;
+    font-weight: 610;
+    line-height: 1.27;
+  }
+
+  .affairs-card-state {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-pill);
+    background: var(--green-soft);
+    color: var(--green);
+  }
+
+  .affairs-card-state svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .affairs-card-description {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: rgba(207, 216, 226, 0.74);
+    font-size: 0.82rem;
+    line-height: 1.42;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .affairs-label-row,
+  .affairs-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.34rem;
+    min-width: 0;
+  }
+
+  .affairs-label {
+    --affairs-tone: var(--blue);
+    --affairs-soft: var(--blue-soft);
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    min-height: 22px;
+    padding: 0.16rem 0.46rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--affairs-tone) 28%, transparent);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--affairs-tone) 12%, rgba(255, 255, 255, 0.025));
+    color: color-mix(in srgb, var(--affairs-tone) 78%, white);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .affairs-card-meta {
+    align-items: center;
+    margin-top: 0.05rem;
+  }
+
+  .affairs-due,
+  .affairs-checklist,
+  .affairs-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    min-height: 24px;
+    padding: 0.16rem 0.45rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-pill);
+    color: rgba(169, 180, 192, 0.84);
+    font-size: 0.73rem;
+    font-weight: 650;
+    line-height: 1.2;
+  }
+
+  .affairs-due svg,
+  .affairs-checklist svg,
+  .affairs-card-link svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .affairs-card-link {
+    margin-left: auto;
+    color: rgba(207, 216, 226, 0.8);
+  }
+
+  .affairs-card-link:hover {
+    border-color: color-mix(in srgb, var(--blue) 34%, transparent);
+    color: var(--blue);
+    background: var(--blue-soft);
+  }
+
+  .due-overdue {
+    border-color: color-mix(in srgb, var(--red) 34%, transparent);
+    background: var(--red-soft);
+    color: color-mix(in srgb, var(--red) 82%, white);
+  }
+
+  .due-soon {
+    border-color: color-mix(in srgb, var(--yellow) 36%, transparent);
+    background: var(--yellow-soft);
+    color: color-mix(in srgb, var(--yellow) 76%, white);
+  }
+
+  .due-planned {
+    border-color: color-mix(in srgb, var(--blue) 34%, transparent);
+    background: var(--blue-soft);
+    color: color-mix(in srgb, var(--blue) 78%, white);
+  }
+
+  .due-done {
+    border-color: color-mix(in srgb, var(--green) 34%, transparent);
+    background: var(--green-soft);
+    color: color-mix(in srgb, var(--green) 78%, white);
+  }
+
+  .affairs-empty-note,
+  .affairs-empty-column {
+    margin: 0;
+    color: rgba(169, 180, 192, 0.72);
+    font-size: 0.88rem;
+  }
+
+  .affairs-empty-column {
+    display: grid;
+    place-items: center;
+    min-height: 96px;
+    border: 1px dashed var(--border-medium);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.024);
+  }
+
+  @media (max-width: 1180px) {
+    .affairs-focus-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .affairs-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 860px) {
+    .affairs-hero {
+      grid-template-columns: 1fr;
+    }
+
+    .affairs-hero h1 {
+      font-size: 3.2rem;
+    }
+
+    .affairs-board {
+      grid-auto-columns: minmax(282px, 84vw);
+    }
+
+    .affairs-column {
+      height: 68vh;
+      min-height: 500px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .affairs-page {
+      gap: 1rem;
+    }
+
+    .affairs-hero h1 {
+      font-size: 2.65rem;
+    }
+
+    .affairs-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.62rem;
+    }
+
+    .affairs-stat {
+      min-height: 88px;
+      padding: 0.78rem;
+    }
+
+    .affairs-section-head {
+      display: grid;
+      align-items: start;
+    }
+
+    .affairs-card-link {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 350px) {
+    .affairs-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

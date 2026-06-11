@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-06-11T09:00:00.000Z",
+  "people": ["Маша", "Артём", "Ника"],
+  "documents": [
+    {
+      "id": "artem-ru-passport",
+      "person": "Артём",
+      "title": "Русский паспорт",
+      "category": "Личные",
+      "group": "Россия",
+      "kind": "Паспорт",
+      "formats": ["PDF", "JPG"],
+      "file_count": 3,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Русские документы/Паспорт/PDF - Русский паспорт А. Бабинов (фото+прописка).pdf",
+        "Артём Бабинов/Русские документы/Паспорт/Русский паспорт А. Бабинов (прописка).jpg",
+        "Артём Бабинов/Русские документы/Паспорт/Русский паспорт А. Бабинов (разворот в фото).jpg"
+      ]
+    },
+    {
+      "id": "artem-snils",
+      "person": "Артём",
+      "title": "СНИЛС",
+      "category": "Личные",
+      "group": "Россия",
+      "kind": "Страховой номер",
+      "formats": ["PDF", "JPG"],
+      "file_count": 2,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Русские документы/Паспорт/PDF - СНИЛС А. Бабинов.pdf",
+        "Артём Бабинов/Русские документы/Паспорт/СНИЛС А. Бабинов.jpg"
+      ]
+    },
+    {
+      "id": "artem-ru-driver-license",
+      "person": "Артём",
+      "title": "Водительское удостоверение РФ",
+      "category": "Водительские",
+      "group": "Россия",
+      "kind": "Права",
+      "formats": ["PDF", "JPG"],
+      "file_count": 2,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Русские документы/Водительские права/PDF - Водительское удостоверение РФ А. Бабинов.pdf",
+        "Артём Бабинов/Русские документы/Водительские права/Водительское удостоверение А. Бабинов.jpg"
+      ]
+    },
+    {
+      "id": "artem-ip-certificate",
+      "person": "Артём",
+      "title": "Свидетельство ИП",
+      "category": "Бизнес",
+      "group": "Россия",
+      "kind": "Регистрация",
+      "formats": ["PDF", "JPG"],
+      "file_count": 2,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Русские документы/ИП/PDF - Свидетельство ИП А. Бабинов.pdf",
+        "Артём Бабинов/Русские документы/ИП/Свидетельство ИП А. Бабинов.jpg"
+      ]
+    },
+    {
+      "id": "artem-moscow-tekstilshchiki",
+      "person": "Артём",
+      "title": "Апартаменты Москва Текстильщики",
+      "category": "Недвижимость",
+      "group": "Москва",
+      "kind": "Объект",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Русские документы/Недвижимость/Апартаменты Москва Текстильщики А. Бабинов.pdf"
+      ]
+    },
+    {
+      "id": "artem-moscow-novokhokhlovskaya",
+      "person": "Артём",
+      "title": "Квартира ПИК Москва Новохохловская",
+      "category": "Недвижимость",
+      "group": "Москва",
+      "kind": "Объект",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Русские документы/Недвижимость/Квартира ПИК Москва Новохохловская А. Бабинов.pdf"
+      ]
+    },
+    {
+      "id": "artem-kg-id",
+      "person": "Артём",
+      "title": "Киргизский ID",
+      "category": "Загран",
+      "group": "Кыргызстан",
+      "kind": "ID карта",
+      "formats": ["PDF", "JPG"],
+      "file_count": 3,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Кыргызстан/PDF - Киргизский ID А. Бабинов.pdf",
+        "Артём Бабинов/Загран. документы/Кыргызстан/Киргизский ID А. Бабинов.jpg",
+        "Артём Бабинов/Загран. документы/Кыргызстан/Киргизский ID А. Бабинов (оборот).jpg"
+      ]
+    },
+    {
+      "id": "artem-kg-passport",
+      "person": "Артём",
+      "title": "Киргизский паспорт",
+      "category": "Загран",
+      "group": "Кыргызстан",
+      "kind": "Паспорт",
+      "formats": ["PDF", "JPG"],
+      "file_count": 2,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Кыргызстан/PDF - Киргизский паспорт А. Бабинов.pdf",
+        "Артём Бабинов/Загран. документы/Кыргызстан/Киргизский паспорт А. Бабинов.jpg"
+      ]
+    },
+    {
+      "id": "artem-ru-international-passport-main",
+      "person": "Артём",
+      "title": "Загранпаспорт РФ основной",
+      "category": "Загран",
+      "group": "Загранпаспорта",
+      "kind": "Паспорт",
+      "formats": ["PDF", "JPG"],
+      "file_count": 2,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Загран. паспорта/PDF - Загран. паспорт А. Бабинов (основной).pdf",
+        "Артём Бабинов/Загран. документы/Загран. паспорта/Загран. паспорт А. Бабинов (основной).jpg"
+      ]
+    },
+    {
+      "id": "artem-ru-international-passport-extra",
+      "person": "Артём",
+      "title": "Загранпаспорт РФ дополнительный",
+      "category": "Загран",
+      "group": "Загранпаспорта",
+      "kind": "Паспорт",
+      "formats": ["PDF", "JPG"],
+      "file_count": 2,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Загран. паспорта/PDF - Загран. паспорт А. Бабинов (дополнительный).pdf",
+        "Артём Бабинов/Загран. документы/Загран. паспорта/Загран. паспорт А. Бабинов (дополнительный).jpg"
+      ]
+    },
+    {
+      "id": "artem-dubai-resident-id",
+      "person": "Артём",
+      "title": "Резидентство Дубай ID карта",
+      "category": "Загран",
+      "group": "Дубай",
+      "kind": "ID карта",
+      "formats": ["PDF", "JPG"],
+      "file_count": 3,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Дубай/PDF - Резидентство Дубай ID карта А. Бабинов.pdf",
+        "Артём Бабинов/Загран. документы/Дубай/Резидентство Дубай ID карта А. Бабинов.jpg",
+        "Артём Бабинов/Загран. документы/Дубай/Резидентство Дубай ID карта А. Бабинов (оборот).jpg"
+      ]
+    },
+    {
+      "id": "artem-dubai-ejari-2026",
+      "person": "Артём",
+      "title": "Ejari 2026 прописка Дубай",
+      "category": "Недвижимость",
+      "group": "Дубай",
+      "kind": "Прописка",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Дубай/Недвижимость/Ejari 2026 Прописка Дубай А. Бабинов.pdf"
+      ]
+    },
+    {
+      "id": "artem-dubai-apartment",
+      "person": "Артём",
+      "title": "Квартира Дубай",
+      "category": "Недвижимость",
+      "group": "Дубай",
+      "kind": "Объект",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Дубай/Недвижимость/Квартира Дубай А. Бабинов.pdf"
+      ]
+    },
+    {
+      "id": "artem-colife-real-estate-2025",
+      "person": "Артём",
+      "title": "Colife Real Estate L.L.C. 2025",
+      "category": "Бизнес",
+      "group": "Дубай",
+      "kind": "Компания",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Дубай/Colife/Colife Real Estate L.L.C. 2025.pdf"
+      ]
+    },
+    {
+      "id": "artem-colife-vacation-homes-license-2025",
+      "person": "Артём",
+      "title": "License Colife Vacation Homes 2025",
+      "category": "Бизнес",
+      "group": "Дубай",
+      "kind": "Лицензия",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Артём Бабинов/Загран. документы/Дубай/Colife/License Colife Vacation Homes. 2025.pdf"
+      ]
+    }
+  ]
+}
