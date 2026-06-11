@@ -50,9 +50,10 @@ const categoryTones: Record<string, Tone> = {
   Недвижимость: "green",
   Бизнес: "yellow",
   Водительские: "blue",
+  Прочее: "blue",
 };
 
-const categoryOrder = ["Личные", "Загран", "Недвижимость", "Бизнес", "Водительские"];
+const categoryOrder = ["Личные", "Загран", "Недвижимость", "Бизнес", "Водительские", "Прочее"];
 
 function pluralize(count: number, one: string, few: string, many: string) {
   const mod10 = count % 10;

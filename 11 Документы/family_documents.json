@@ -4,6 +4,85 @@
   "people": ["Маша", "Артём", "Ника"],
   "documents": [
     {
+      "id": "masha-ru-passport",
+      "person": "Маша",
+      "title": "Русский паспорт",
+      "category": "Личные",
+      "group": "Россия",
+      "kind": "Паспорт",
+      "formats": ["PDF", "JPG"],
+      "file_count": 3,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Downloads/Telegram Desktop/PDF Паспорт Бабинова Мария.pdf",
+        "Downloads/Telegram Desktop/Паспорт_Бабинова_Мария_1_разворот.jpg",
+        "Downloads/Telegram Desktop/Паспорт_Бабинова_Мария_регистрация.jpg"
+      ]
+    },
+    {
+      "id": "masha-snils",
+      "person": "Маша",
+      "title": "СНИЛС",
+      "category": "Личные",
+      "group": "Россия",
+      "kind": "Страховой номер",
+      "formats": ["PDF", "JPG"],
+      "file_count": 3,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Downloads/Telegram Desktop/PDF СНИЛС Бабинова Мария.pdf",
+        "Downloads/Telegram Desktop/СНИЛС 1стр Бабинова Мария.jpg",
+        "Downloads/Telegram Desktop/СНИЛС Бабинова Мария  2стр.jpg"
+      ]
+    },
+    {
+      "id": "masha-resources-atend",
+      "person": "Маша",
+      "title": "Resources atend",
+      "category": "Прочее",
+      "group": "Telegram",
+      "kind": "PDF",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Downloads/Telegram Desktop/¡Resources (atend).pdf"
+      ]
+    },
+    {
+      "id": "nika-scanned-documents",
+      "person": "Ника",
+      "title": "Отсканированные документы",
+      "category": "Личные",
+      "group": "Россия",
+      "kind": "Сканы",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Downloads/Telegram Desktop/Отсканированные документы.pdf"
+      ]
+    },
+    {
+      "id": "nika-citizenship-stamp",
+      "person": "Ника",
+      "title": "Штамп о гражданстве",
+      "category": "Личные",
+      "group": "Россия",
+      "kind": "Гражданство",
+      "formats": ["PDF"],
+      "file_count": 1,
+      "sensitive": true,
+      "status": "В сейфе",
+      "source_files": [
+        "Downloads/Telegram Desktop/Штамп_о_гражданстве_Ника_Бабинова.pdf"
+      ]
+    },
+    {
       "id": "artem-ru-passport",
       "person": "Артём",
       "title": "Русский паспорт",
