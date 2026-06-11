@@ -19,6 +19,13 @@ function statusBadgeLabel(record: any) {
   return record.compactAssessmentLabel || record.assessmentLabel || "Нет данных";
 }
 
+function eventSource(record: any) {
+  return {
+    href: typeof record?.eventHref === "string" ? record.eventHref : "",
+    title: typeof record?.eventTitle === "string" ? record.eventTitle : "",
+  };
+}
+
 const latestStatusLabel = statusBadgeLabel(latest);
 ---
 
@@ -75,25 +82,29 @@ const latestStatusLabel = statusBadgeLabel(latest);
             </tr>
           </thead>
           <tbody>
-            {[...group.records].reverse().map((record) => (
-              <tr>
-                <td>{formatDateShort(record.date)}</td>
-                <td>
-                  <span class="metric-name-cell">
-                    <MetricIcon
-                      metricName={group.metricLabel}
-                      status={record.assessmentStatus}
-                      statusLabel={record.compactAssessmentLabel || record.assessmentLabel}
-                      class="compact"
-                    />
-                    <strong>{record.displayValue}</strong>
-                  </span>
-                </td>
-                <td><span class:list={["metric-status", record.assessmentStatus]}>{record.assessmentLabel}</span></td>
-                <td>{record.referenceDisplay}</td>
-                <td>{record.eventHref ? <a href={record.eventHref}>{record.eventTitle || "событие"}</a> : <span class="muted-text">запись</span>}</td>
-              </tr>
-            ))}
+            {[...group.records].reverse().map((record) => {
+              const source = eventSource(record);
+
+              return (
+                <tr>
+                  <td>{formatDateShort(record.date)}</td>
+                  <td>
+                    <span class="metric-name-cell">
+                      <MetricIcon
+                        metricName={group.metricLabel}
+                        status={record.assessmentStatus}
+                        statusLabel={record.compactAssessmentLabel || record.assessmentLabel}
+                        class="compact"
+                      />
+                      <strong>{record.displayValue}</strong>
+                    </span>
+                  </td>
+                  <td><span class:list={["metric-status", record.assessmentStatus]}>{record.assessmentLabel}</span></td>
+                  <td>{record.referenceDisplay}</td>
+                  <td>{source.href ? <a href={source.href}>{source.title || "событие"}</a> : <span class="muted-text">запись</span>}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
