@@ -7,9 +7,14 @@ interface Props {
   title: string;
   description?: string;
   homePortal?: boolean;
+  portalTopbarAction?: {
+    href: string;
+    label: string;
+    icon?: "home";
+  };
 }
 
-const { title, description = "Семейная база знаний", homePortal = false } = Astro.props;
+const { title, description = "Семейная база знаний", homePortal = false, portalTopbarAction } = Astro.props;
 const lineIconPaths = {
   home: ["M3.5 10.5 12 3.5l8.5 7", "M5.5 10.5V20h13v-9.5", "M9.5 20v-5.5h5V20"],
   heart: ["M20.5 6.8c0 5.2-8.5 10.7-8.5 10.7S3.5 12 3.5 6.8A4.3 4.3 0 0 1 12 5a4.3 4.3 0 0 1 8.5 1.8Z"],
@@ -169,17 +174,26 @@ function isActivePerson(person: { href: string }) {
             )}
             <input id="global-search" type="search" name="q" placeholder={homePortal ? "Поиск по базе: здоровье, документы, задачи, места..." : "Поиск по базе: здоровье, документы, задачи, места"} />
           </form>
-          <div class:list={["topbar-meta", homePortal && "portal-topbar-meta"]}>
-            {homePortal && (
-              <button class="topbar-icon-button" type="button" aria-label="Уведомления">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  {lineIconPaths.bell.map((path) => <path d={path} />)}
-                </svg>
-              </button>
-            )}
-            <span>Обновлено {homePortal ? homeUpdatedAtLabel : new Date(dashboard.generatedAt).toLocaleDateString("ru-RU")}</span>
-            <a class="topbar-avatar" href={pageHref("/owner-guide")} aria-label="Служебный раздел">Б</a>
-          </div>
+          {homePortal && portalTopbarAction ? (
+            <a class="portal-topbar-action" href={portalTopbarAction.href}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                {lineIconPaths[portalTopbarAction.icon || "home"].map((path) => <path d={path} />)}
+              </svg>
+              <span>{portalTopbarAction.label}</span>
+            </a>
+          ) : (
+            <div class:list={["topbar-meta", homePortal && "portal-topbar-meta"]}>
+              {homePortal && (
+                <button class="topbar-icon-button" type="button" aria-label="Уведомления">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    {lineIconPaths.bell.map((path) => <path d={path} />)}
+                  </svg>
+                </button>
+              )}
+              <span>Обновлено {homePortal ? homeUpdatedAtLabel : new Date(dashboard.generatedAt).toLocaleDateString("ru-RU")}</span>
+              <a class="topbar-avatar" href={pageHref("/owner-guide")} aria-label="Служебный раздел">Б</a>
+            </div>
+          )}
         </header>
         <main class="content">
           <slot />

@@ -824,7 +824,9 @@ input::placeholder {
 .portal-home-shell .nav-icon,
 .portal-home-shell .portal-search-icon,
 .portal-home-shell .topbar-icon-button svg,
-.portal-home-page svg {
+.portal-home-shell .portal-topbar-action svg,
+.portal-home-page svg,
+.portal-health-page svg {
   display: block;
   overflow: visible;
   fill: none;
@@ -929,6 +931,35 @@ input::placeholder {
   background: rgba(79, 140, 255, 0.16);
   color: #B8CEFF;
   font-weight: 560;
+}
+
+.portal-topbar-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 50px;
+  padding: 0 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.025));
+  color: rgba(244, 247, 250, 0.9);
+  box-shadow:
+    0 18px 52px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  font-weight: 520;
+}
+
+.portal-topbar-action:hover {
+  border-color: rgba(79, 140, 255, 0.36);
+  background: linear-gradient(180deg, rgba(79, 140, 255, 0.14), rgba(79, 140, 255, 0.06));
+  color: var(--text-main);
+}
+
+.portal-topbar-action svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.65;
 }
 
 .portal-home-shell .content {
@@ -1238,6 +1269,129 @@ input::placeholder {
   color: rgba(169, 180, 192, 0.82);
   font-size: 0.88rem;
   line-height: 1.35;
+}
+
+.portal-health-page {
+  display: grid;
+  gap: 2.25rem;
+}
+
+.portal-health-hero {
+  padding-top: 0.35rem;
+}
+
+.portal-health-hero h1 {
+  max-width: 940px;
+  margin: 0 0 0.75rem;
+  font-family: "Onest", "Manrope", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(3rem, 4.8vw, 4.35rem);
+  font-weight: 330;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.portal-health-hero p {
+  max-width: 860px;
+  margin: 0;
+  color: rgba(169, 180, 192, 0.78);
+  font-size: 1.08rem;
+}
+
+.portal-health-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.portal-health-section h2 {
+  margin: 0;
+  font-size: clamp(1.24rem, 1.6vw, 1.55rem);
+  font-weight: 440;
+}
+
+.health-profile-grid,
+.health-action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.health-profile-card {
+  align-items: center;
+  min-height: 286px;
+  padding: 1.8rem 1.25rem 1.35rem;
+  text-align: center;
+}
+
+.health-profile-avatar-wrap {
+  position: relative;
+  z-index: 1;
+  width: 106px;
+  height: 106px;
+  display: grid;
+  place-items: center;
+  margin: 0.05rem auto 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--portal-tone) 30%, rgba(255, 255, 255, 0.12));
+  border-radius: var(--radius-pill);
+  background:
+    radial-gradient(circle at 35% 24%, rgba(255, 255, 255, 0.12), transparent 36%),
+    color-mix(in srgb, var(--portal-tone) 13%, rgba(255, 255, 255, 0.035));
+  box-shadow:
+    0 0 44px color-mix(in srgb, var(--portal-tone) 20%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.health-profile-avatar {
+  width: 94px;
+  height: 94px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+  background: var(--surface-3);
+  color: color-mix(in srgb, var(--portal-tone) 76%, white);
+  font-size: 1.35rem;
+  font-weight: 540;
+}
+
+.health-profile-card h3 {
+  margin-bottom: 0.4rem;
+}
+
+.health-profile-card .health-profile-age {
+  margin: 0;
+  color: rgba(169, 180, 192, 0.86);
+  font-size: 0.98rem;
+}
+
+.health-profile-footer {
+  justify-content: center;
+  width: 100%;
+  padding-top: 1.1rem;
+}
+
+.health-profile-footer .portal-module-arrow {
+  border: 1px solid color-mix(in srgb, var(--portal-tone) 32%, transparent);
+  background: color-mix(in srgb, var(--portal-tone) 13%, rgba(255, 255, 255, 0.055));
+  color: color-mix(in srgb, var(--portal-tone) 75%, white);
+}
+
+.health-action-card {
+  align-items: center;
+  min-height: 230px;
+  padding: 1.55rem 1.2rem 1.45rem;
+  text-align: center;
+}
+
+.health-action-card .health-action-icon {
+  width: 86px;
+  height: 86px;
+  margin-bottom: 1.1rem;
+}
+
+.health-action-card .health-action-icon svg {
+  width: 42px;
+  height: 42px;
+  stroke-width: 1.55;
 }
 
 .page-header {
@@ -2778,7 +2932,9 @@ openai-chatkit {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .portal-quick-grid {
+  .portal-quick-grid,
+  .health-profile-grid,
+  .health-action-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -2823,8 +2979,22 @@ openai-chatkit {
   }
 
   .portal-module-grid,
-  .portal-quick-grid {
+  .portal-quick-grid,
+  .health-profile-grid,
+  .health-action-grid {
     grid-template-columns: 1fr;
+  }
+
+  .portal-health-page {
+    gap: 1.65rem;
+  }
+
+  .portal-health-hero {
+    padding-top: 0.25rem;
+  }
+
+  .portal-health-hero h1 {
+    font-size: clamp(2.45rem, 9vw, 3.8rem);
   }
 
   .portal-module-card {
@@ -2868,6 +3038,22 @@ openai-chatkit {
   .portal-module-card {
     min-height: 0;
     padding: 1.35rem;
+  }
+
+  .health-profile-card,
+  .health-action-card {
+    min-height: 0;
+  }
+
+  .health-profile-avatar-wrap {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 1.1rem;
+  }
+
+  .health-profile-avatar {
+    width: 84px;
+    height: 84px;
   }
 
   .portal-module-card p,
