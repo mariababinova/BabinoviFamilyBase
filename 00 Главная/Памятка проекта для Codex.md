@@ -38,7 +38,7 @@ Obsidian-папка рядом:
 Основные публичные ссылки:
 
 - GitHub Pages: `https://ulyana19svlv.github.io/MedsDataBase/`
-- Vercel: `https://meds-database-site.vercel.app/`
+- Vercel: `https://babinovifamilybase.vercel.app/`
 
 Git:
 

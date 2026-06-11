@@ -7,7 +7,7 @@ const configuredAllowedOrigins = (process.env.CHATKIT_ALLOWED_ORIGIN || "")
   .map((origin) => origin.trim())
   .filter(Boolean);
 const defaultAllowedOrigins = [
-  "https://meds-database-site.vercel.app",
+  "https://babinovifamilybase.vercel.app",
   "https://ulyana19svlv.github.io",
 ];
 

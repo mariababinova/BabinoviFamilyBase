@@ -73,7 +73,7 @@ const people = dashboard.people || [];
     const submitButton = document.querySelector<HTMLButtonElement>("[data-submit-button]");
 
     const configuredUploadApiBase = import.meta.env.PUBLIC_UPLOAD_API_BASE || "";
-    const defaultProductionApiBase = "https://meds-database-site.vercel.app";
+    const defaultProductionApiBase = "https://babinovifamilybase.vercel.app";
     const apiBase =
       configuredUploadApiBase ||
       (window.location.hostname.endsWith("github.io") ? defaultProductionApiBase : "");

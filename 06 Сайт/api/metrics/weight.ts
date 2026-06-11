@@ -6,7 +6,7 @@ const branch = process.env.MEDS_GITHUB_BRANCH || "main";
 const token = process.env.MEDS_GITHUB_TOKEN;
 const metricsPath = "07 Показатели/metrics.json";
 const defaultAllowedOrigins = [
-  "https://meds-database-site.vercel.app",
+  "https://babinovifamilybase.vercel.app",
   "https://ulyana19svlv.github.io",
   "http://127.0.0.1:4322",
   "http://localhost:4322",

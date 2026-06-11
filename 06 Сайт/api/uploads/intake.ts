@@ -10,7 +10,7 @@ const allowedContentTypes = [
 ];
 const maxUploadSize = Number(process.env.MEDS_UPLOAD_MAX_BYTES || 25 * 1024 * 1024);
 const defaultAllowedOrigins = [
-  "https://meds-database-site.vercel.app",
+  "https://babinovifamilybase.vercel.app",
   "https://ulyana19svlv.github.io",
   "http://127.0.0.1:4322",
   "http://localhost:4322",

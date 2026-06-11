@@ -213,7 +213,7 @@ const latestWeightDateText = latestWeightData?.date ? `на ${formatDateShort(la
     const form = document.querySelector("[data-weight-form]") as HTMLFormElement | null;
     const status = document.querySelector("[data-weight-form-status]") as HTMLElement | null;
     const configuredUploadApiBase = import.meta.env.PUBLIC_UPLOAD_API_BASE || "";
-    const defaultProductionApiBase = "https://meds-database-site.vercel.app";
+    const defaultProductionApiBase = "https://babinovifamilybase.vercel.app";
     const apiBase =
       configuredUploadApiBase ||
       (window.location.hostname.endsWith("github.io") ? defaultProductionApiBase : "");
