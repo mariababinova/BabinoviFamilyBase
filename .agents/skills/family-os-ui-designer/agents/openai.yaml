@@ -1,0 +1,4 @@
+interface:
+  display_name: "Family OS UI Designer"
+  short_description: "Art direction and UX review for the family OS interface."
+  default_prompt: "Use this skill to keep UI work aligned with the premium dark family portal direction."

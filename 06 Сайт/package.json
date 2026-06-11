@@ -23,6 +23,7 @@
     "dev:data": "node scripts/generate-data.mjs --dev-assets",
     "dev": "astro dev --host 127.0.0.1",
     "dev:upload": "node scripts/local-upload-dev-server.mjs",
+    "dev:weight": "node scripts/local-weight-api.mjs",
     "check": "astro check",
     "validate:pages-artifact": "node scripts/validate-pages-artifact.mjs",
     "refresh:derived": "node scripts/tasks-agent.mjs && node scripts/doctor-summary-agent.mjs && node scripts/generate-data.mjs",

@@ -8,13 +8,20 @@ const metricsPath = "07 Показатели/metrics.json";
 const defaultAllowedOrigins = [
   "https://babinovifamilybase.vercel.app",
   "https://ulyana19svlv.github.io",
+  "http://127.0.0.1:4321",
+  "http://localhost:4321",
   "http://127.0.0.1:4322",
   "http://localhost:4322",
+  "http://127.0.0.1:4323",
+  "http://localhost:4323",
   "http://127.0.0.1:4324",
   "http://localhost:4324",
+  "http://127.0.0.1:4327",
+  "http://localhost:4327",
 ];
 
 const people: Record<string, string> = {
+  aleksandr: "Александр",
   artem: "Артём",
   masha: "Маша",
   nika: "Ника",

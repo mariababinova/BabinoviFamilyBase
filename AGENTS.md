@@ -12,6 +12,7 @@ The product language is Russian. Interface labels, headings, empty states, filte
 - Do not commit or push unless explicitly requested.
 - Do not redesign app screens or modify existing UI components unless the user explicitly asks for UI implementation work.
 - Before UI work, read `docs/design-system.md`, `docs/ui-reference.md`, and `.agents/skills/dark-family-os-ui/SKILL.md`.
+- For UI/UX work, use `$family-os-ui-designer` in addition to `$dark-family-os-ui`. The `family-os-ui-designer` skill is responsible for visual direction, anti-admin-dashboard checks, information architecture, card hierarchy, icon usage, and portal/module page composition.
 - Preserve existing content structure and medical/family data conventions unless the requested change requires otherwise.
 
 ## Product Definition
