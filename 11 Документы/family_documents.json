@@ -38,12 +38,12 @@
       ]
     },
     {
-      "id": "masha-resources-atend",
-      "person": "Маша",
-      "title": "Resources atend",
-      "category": "Прочее",
-      "group": "Telegram",
-      "kind": "PDF",
+      "id": "nika-residence-registration-certificate",
+      "person": "Ника",
+      "title": "Свидетельство о регистрации по месту жительства",
+      "category": "Личные",
+      "group": "Россия",
+      "kind": "Регистрация",
       "formats": ["PDF"],
       "file_count": 1,
       "sensitive": true,
