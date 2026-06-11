@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-05-27T19:25:39.187Z",
+  "updated_at": "2026-06-11T06:04:32.256Z",
   "records": [
     {
       "id": "task-aleksandr-2026-07-oncology-control",
@@ -287,6 +287,87 @@
           "source_files": []
         }
       ]
+    },
+    {
+      "id": "task-nika-2026-right-pyelectasia-followup",
+      "type": "doctor_visit",
+      "status": "open",
+      "person": "Ника",
+      "person_id": "nika",
+      "due_date": "",
+      "priority": "medium",
+      "specialty": "Педиатрия",
+      "specialty_id": "pediatriya",
+      "title": "Обсудить умеренную пиелоэктазию справа с педиатром",
+      "action_text": "Обсудить умеренную пиелоэктазию справа с педиатром",
+      "reason": "В УЗИ от 26.05.2026 указаны УЗ-признаки умеренной пиелоэктазии справа.",
+      "source_type": "event",
+      "source_event_id": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+      "source_event_path": "01 Члены семьи/Ника/09 Исследования/09 Исследования 2026/ГБУЗ ДГП 30 ДЗМ/2026-05-26 Ника — УЗИ НСГ ОБП почек ТБС.md",
+      "source_document_id": "manual-nika-2026-05-26-uzi-nsg-obp-pochek-tbs",
+      "source_files": [
+        "2026-05-26 Ника — УЗИ НСГ ОБП почек ТБС.pdf"
+      ],
+      "watchlist_topic_id": "",
+      "source_text": "Заключение по почкам: УЗ-признаки умеренной пиелоэктазии справа.",
+      "extraction_confidence": "high",
+      "dedupe_key": "nika-2026-right-pyelectasia-followup",
+      "source_agent": "codex-manual",
+      "generated_at": "2026-06-11T00:00:00.000Z"
+    },
+    {
+      "id": "task-nika-2027-03-detskiy-hirurg",
+      "type": "doctor_visit",
+      "status": "open",
+      "person": "Ника",
+      "person_id": "nika",
+      "due_date": "2027-03-27",
+      "priority": "low",
+      "specialty": "Хирургия",
+      "specialty_id": "hirurgiya",
+      "title": "Пройти осмотр детского хирурга в 12 месяцев",
+      "action_text": "Пройти осмотр детского хирурга в 12 месяцев",
+      "reason": "В осмотре детского хирурга от 26.05.2026 рекомендован осмотр в 12 месяцев, ранее — при жалобах.",
+      "source_type": "event",
+      "source_event_id": "2026-05-26-nika-detskiy-hirurg",
+      "source_event_path": "01 Члены семьи/Ника/14 Хирург/14 Хирург 2026/ГБУЗ ДГП 30 ДЗМ/2026-05-26 Ника — детский хирург.md",
+      "source_document_id": "manual-nika-2026-05-26-detskiy-hirurg",
+      "source_files": [
+        "2026-05-26 Ника — детский хирург.pdf"
+      ],
+      "watchlist_topic_id": "",
+      "source_text": "Осмотр детского хирурга в 12 месяцев, ранее — при жалобах.",
+      "extraction_confidence": "high",
+      "dedupe_key": "nika-2027-03-detskiy-hirurg",
+      "source_agent": "codex-manual",
+      "generated_at": "2026-06-11T00:00:00.000Z"
+    },
+    {
+      "id": "task-nika-2027-03-detskiy-oftalmolog",
+      "type": "doctor_visit",
+      "status": "open",
+      "person": "Ника",
+      "person_id": "nika",
+      "due_date": "2027-03-27",
+      "priority": "low",
+      "specialty": "Офтальмология",
+      "specialty_id": "oftalmologiya",
+      "title": "Пройти осмотр офтальмолога в 1 год",
+      "action_text": "Пройти осмотр офтальмолога в 1 год",
+      "reason": "В осмотре офтальмолога от 26.05.2026 рекомендована явка в 1 год для оценки развития глаза и его придаточного аппарата.",
+      "source_type": "event",
+      "source_event_id": "2026-05-26-nika-detskiy-oftalmolog",
+      "source_event_path": "01 Члены семьи/Ника/05 Офтальмолог/05 Офтальмолог 2026/ГБУЗ ДГП 30 ДЗМ/2026-05-26 Ника — детский офтальмолог.md",
+      "source_document_id": "manual-nika-2026-05-26-detskiy-oftalmolog",
+      "source_files": [
+        "2026-05-26 Ника — детский офтальмолог.pdf"
+      ],
+      "watchlist_topic_id": "",
+      "source_text": "Явка в 1 год для оценки анатомо-физиологического развития глаза и его придаточного аппарата.",
+      "extraction_confidence": "high",
+      "dedupe_key": "nika-2027-03-detskiy-oftalmolog",
+      "source_agent": "codex-manual",
+      "generated_at": "2026-06-11T00:00:00.000Z"
     },
     {
       "id": "task-artem-2026-07-endocrinology-labs",

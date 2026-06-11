@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-11T00:58:43.909Z",
+  "generated_at": "2026-06-11T06:04:32.786Z",
   "agent": {
     "id": "doctor-summary-agent",
     "name": "Doctor Summary Agent / агент сводок врачу",
@@ -8657,6 +8657,365 @@
       "documents": []
     },
     {
+      "id": "doctor-summary-eff605c7b0f9",
+      "slug": "nika-kardiologiya",
+      "title": "Ника — Кардиология",
+      "person": "Ника",
+      "personSlug": "nika",
+      "specialty": "Кардиология",
+      "routePath": "/doctor-summaries/nika-kardiologiya",
+      "href": "/BabinoviFamilyBase/doctor-summaries/nika-kardiologiya",
+      "markdownPath": "05 Индексы/Сводки врачу/Ника — Кардиология.md",
+      "sourceEventCount": 1,
+      "sourceDocumentCount": 1,
+      "latestEventDate": "2026-05-26",
+      "profileContext": [
+        "Дата рождения: 27.03.2026",
+        "Группа крови: B (III)",
+        "Резус-фактор: положительный"
+      ],
+      "summary": [
+        "2026-05-26: ЧСС 155 в минуту.",
+        "2026-05-26: Левый желудочек: КДР 2.0 см, КСР 1.2 см, КДО 13 мл, УО 9 мл.",
+        "2026-05-26: Фракция выброса 72%, фракция укорочения 42%.",
+        "2026-05-26: Аортальная и митральная регургитации не выявлены.",
+        "2026-05-26: Трикуспидальная регургитация 0–1 степени, давление в правом желудочке 11 мм рт. ст.",
+        "2026-05-26: Лёгочная регургитация 0–1 степени.",
+        "2026-05-26: Камеры сердца не расширены, стенки не утолщены.",
+        "2026-05-26: Дефекты межжелудочковой и межпредсердной перегородок не визуализируются.",
+        "2026-05-26: Створки клапанов не изменены.",
+        "2026-05-26: Отмечен незначительный шунтирующий поток в правое предсердие на уровне овального окна.",
+        "2026-05-26: Отмечены аномально прикреплённые хорды в левом желудочке."
+      ],
+      "summaryEvidence": [
+        {
+          "text": "ЧСС 155 в минуту.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Левый желудочек: КДР 2.0 см, КСР 1.2 см, КДО 13 мл, УО 9 мл.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Фракция выброса 72%, фракция укорочения 42%.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Аортальная и митральная регургитации не выявлены.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Трикуспидальная регургитация 0–1 степени, давление в правом желудочке 11 мм рт. ст.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Лёгочная регургитация 0–1 степени.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Камеры сердца не расширены, стенки не утолщены.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Дефекты межжелудочковой и межпредсердной перегородок не визуализируются.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Створки клапанов не изменены.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Отмечен незначительный шунтирующий поток в правое предсердие на уровне овального окна.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        },
+        {
+          "text": "Отмечены аномально прикреплённые хорды в левом желудочке.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        }
+      ],
+      "track": [
+        "2026-05-26: Сопоставлять с педиатром и предыдущими данными о функционирующем овальном окне."
+      ],
+      "trackEvidence": [
+        {
+          "text": "Сопоставлять с педиатром и предыдущими данными о функционирующем овальном окне.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        }
+      ],
+      "nextActions": [
+        "2026-05-26: Хранить как выполненную ЭхоКГ в 1 месяц."
+      ],
+      "nextActionEvidence": [
+        {
+          "text": "Хранить как выполненную ЭхоКГ в 1 месяц.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-ehokg",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "documentIds": [
+            "8f0f5317effea421"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "id": "2026-05-26-nika-ehokg",
+          "title": "Ника — ЭхоКГ — 26.05.2026",
+          "href": "/BabinoviFamilyBase/events/2026-05-26-nika-ehokg",
+          "date": "2026-05-26",
+          "eventType": "Обследование",
+          "specialty": "Кардиология",
+          "doctor": "Страх А. П.",
+          "clinic": "ГБУЗ ДГП 30 ДЗМ",
+          "markdownPath": "01 Члены семьи/Ника/02 Кардиолог/02 Кардиолог 2026/ГБУЗ ДГП 30 ДЗМ/2026-05-26 Ника — ЭхоКГ.md"
+        }
+      ],
+      "documents": [
+        {
+          "date": "2026-05-26",
+          "fileName": "2026-05-26 Ника — ЭхоКГ.pdf",
+          "displayName": "2026-05-26 Ника — ЭхоКГ.pdf",
+          "href": "/BabinoviFamilyBase/documents/2026-05-26-nika-ehokg-8f0f5317",
+          "eventTitle": "Ника — ЭхоКГ — 26.05.2026"
+        }
+      ]
+    },
+    {
+      "id": "doctor-summary-d82086539d1b",
+      "slug": "nika-oftalmologiya",
+      "title": "Ника — Офтальмология",
+      "person": "Ника",
+      "personSlug": "nika",
+      "specialty": "Офтальмология",
+      "routePath": "/doctor-summaries/nika-oftalmologiya",
+      "href": "/BabinoviFamilyBase/doctor-summaries/nika-oftalmologiya",
+      "markdownPath": "05 Индексы/Сводки врачу/Ника — Офтальмология.md",
+      "sourceEventCount": 1,
+      "sourceDocumentCount": 1,
+      "latestEventDate": "2026-05-26",
+      "profileContext": [
+        "Дата рождения: 27.03.2026",
+        "Группа крови: B (III)",
+        "Резус-фактор: положительный"
+      ],
+      "summary": [
+        "2026-05-26: Жалоб нет.",
+        "2026-05-26: OD/OS: фиксирует и прослеживает предмет, реакция на свет есть.",
+        "2026-05-26: Внутриглазное давление пальпаторно нормальное с обеих сторон.",
+        "2026-05-26: Status oculorum: без патологии по данным осмотра.",
+        "2026-05-26: Офтальмоскопия: патологических изменений не выявлено; диск зрительного нерва бледно-розовый, границы чёткие, макулярный и фовеолярный рефлексы чёткие.",
+        "2026-05-26: Диагноз: Z01.0 — обследование глаз и зрения.",
+        "2026-05-26: Указаны I группа здоровья и I группа для физкультуры."
+      ],
+      "summaryEvidence": [
+        {
+          "text": "Жалоб нет.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        },
+        {
+          "text": "OD/OS: фиксирует и прослеживает предмет, реакция на свет есть.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        },
+        {
+          "text": "Внутриглазное давление пальпаторно нормальное с обеих сторон.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        },
+        {
+          "text": "Status oculorum: без патологии по данным осмотра.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        },
+        {
+          "text": "Офтальмоскопия: патологических изменений не выявлено; диск зрительного нерва бледно-розовый, границы чёткие, макулярный и фовеолярный рефлексы чёткие.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        },
+        {
+          "text": "Диагноз: Z01.0 — обследование глаз и зрения.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        },
+        {
+          "text": "Указаны I группа здоровья и I группа для физкультуры.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        }
+      ],
+      "track": [
+        "2026-05-26: Возрастной контроль развития глаза и его придаточного аппарата."
+      ],
+      "trackEvidence": [
+        {
+          "text": "Возрастной контроль развития глаза и его придаточного аппарата.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        }
+      ],
+      "nextActions": [
+        "2026-05-26: Соблюдать режим зрительной нагрузки, сна и бодрствования.",
+        "2026-05-26: Явка в 1 год для оценки анатомо-физиологического развития глаза и его придаточного аппарата."
+      ],
+      "nextActionEvidence": [
+        {
+          "text": "Соблюдать режим зрительной нагрузки, сна и бодрствования.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        },
+        {
+          "text": "Явка в 1 год для оценки анатомо-физиологического развития глаза и его придаточного аппарата.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-oftalmolog",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "documentIds": [
+            "f814f3ffd4d13cc4"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "id": "2026-05-26-nika-detskiy-oftalmolog",
+          "title": "Ника — детский офтальмолог — 26.05.2026",
+          "href": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-oftalmolog",
+          "date": "2026-05-26",
+          "eventType": "Приём",
+          "specialty": "Офтальмология",
+          "doctor": "Бакаев И. А.",
+          "clinic": "ГБУЗ ДГП 30 ДЗМ",
+          "markdownPath": "01 Члены семьи/Ника/05 Офтальмолог/05 Офтальмолог 2026/ГБУЗ ДГП 30 ДЗМ/2026-05-26 Ника — детский офтальмолог.md"
+        }
+      ],
+      "documents": [
+        {
+          "date": "2026-05-26",
+          "fileName": "2026-05-26 Ника — детский офтальмолог.pdf",
+          "displayName": "2026-05-26 Ника — детский офтальмолог.pdf",
+          "href": "/BabinoviFamilyBase/documents/2026-05-26-nika-detskiy-oftalmolog-f814f3ff",
+          "eventTitle": "Ника — детский офтальмолог — 26.05.2026"
+        }
+      ]
+    },
+    {
       "id": "doctor-summary-97022968ec1a",
       "slug": "nika-pediatriya",
       "title": "Ника — Педиатрия",
@@ -9153,6 +9512,398 @@
           "displayName": "2026-04-10 Ника — Педиатр.pdf",
           "href": "/BabinoviFamilyBase/documents/2026-04-10-nika-pediatr-8b8e34ae",
           "eventTitle": "Ника — педиатр — 10.04.2026"
+        }
+      ]
+    },
+    {
+      "id": "doctor-summary-dcc13a84c345",
+      "slug": "nika-uzi",
+      "title": "Ника — УЗИ",
+      "person": "Ника",
+      "personSlug": "nika",
+      "specialty": "УЗИ",
+      "routePath": "/doctor-summaries/nika-uzi",
+      "href": "/BabinoviFamilyBase/doctor-summaries/nika-uzi",
+      "markdownPath": "05 Индексы/Сводки врачу/Ника — УЗИ.md",
+      "sourceEventCount": 1,
+      "sourceDocumentCount": 1,
+      "latestEventDate": "2026-05-26",
+      "profileContext": [
+        "Дата рождения: 27.03.2026",
+        "Группа крови: B (III)",
+        "Резус-фактор: положительный"
+      ],
+      "summary": [
+        "2026-05-26: Нейросонография: структуры мозга соответствуют возрасту, желудочки не расширены, смещения срединных структур и патологических образований не выявлено.",
+        "2026-05-26: Заключение по НСГ: УЗ-патологии со стороны ЦНС не выявлено.",
+        "2026-05-26: Органы брюшной полости: печень, поджелудочная железа и селезёнка без значимых УЗ-особенностей по протоколу.",
+        "2026-05-26: Желчный пузырь частично сокращён после кормления, отмечен лабильный перегиб.",
+        "2026-05-26: Левая почка: типичное расположение, не увеличена, лоханка 2.0 мм.",
+        "2026-05-26: Правая почка: типичное расположение, не увеличена, ЧЛС расширена; лоханка 4.5 мм, чашечки 2 мм.",
+        "2026-05-26: Мочевой пузырь: объём 12 мл, стенки тонкие.",
+        "2026-05-26: Заключение по почкам: УЗ-признаки умеренной пиелоэктазии справа.",
+        "2026-05-26: Тазобедренные суставы: справа α 69°, β 43°; слева α 67°, β 42°; головки бедренных костей центрированы под нагрузкой.",
+        "2026-05-26: Заключение по ТБС: УЗ-патологии тазобедренных суставов не выявлено."
+      ],
+      "summaryEvidence": [
+        {
+          "text": "Нейросонография: структуры мозга соответствуют возрасту, желудочки не расширены, смещения срединных структур и патологических образований не выявлено.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Заключение по НСГ: УЗ-патологии со стороны ЦНС не выявлено.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Органы брюшной полости: печень, поджелудочная железа и селезёнка без значимых УЗ-особенностей по протоколу.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Желчный пузырь частично сокращён после кормления, отмечен лабильный перегиб.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Левая почка: типичное расположение, не увеличена, лоханка 2.0 мм.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Правая почка: типичное расположение, не увеличена, ЧЛС расширена; лоханка 4.5 мм, чашечки 2 мм.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Мочевой пузырь: объём 12 мл, стенки тонкие.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Заключение по почкам: УЗ-признаки умеренной пиелоэктазии справа.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Тазобедренные суставы: справа α 69°, β 43°; слева α 67°, β 42°; головки бедренных костей центрированы под нагрузкой.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Заключение по ТБС: УЗ-патологии тазобедренных суставов не выявлено.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        }
+      ],
+      "track": [
+        "2026-05-26: УЗ-признаки умеренной пиелоэктазии справа.",
+        "2026-05-26: Сопоставить результат с педиатром и уточнить, нужен ли контроль почек в динамике."
+      ],
+      "trackEvidence": [
+        {
+          "text": "УЗ-признаки умеренной пиелоэктазии справа.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Сопоставить результат с педиатром и уточнить, нужен ли контроль почек в динамике.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        }
+      ],
+      "nextActions": [
+        "2026-05-26: Обсудить умеренную пиелоэктазию справа с педиатром.",
+        "2026-05-26: Хранить как выполненный комплекс обследований в 1 месяц: НСГ, ОБП/почки, ТБС."
+      ],
+      "nextActionEvidence": [
+        {
+          "text": "Обсудить умеренную пиелоэктазию справа с педиатром.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        },
+        {
+          "text": "Хранить как выполненный комплекс обследований в 1 месяц: НСГ, ОБП/почки, ТБС.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "documentIds": [
+            "5d53bcc1adfe8b5c"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "id": "2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "title": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026",
+          "href": "/BabinoviFamilyBase/events/2026-05-26-nika-uzi-nsg-obp-pochek-tbs",
+          "date": "2026-05-26",
+          "eventType": "Обследование",
+          "specialty": "УЗИ",
+          "doctor": "Страх А. П.",
+          "clinic": "ГБУЗ ДГП 30 ДЗМ",
+          "markdownPath": "01 Члены семьи/Ника/09 Исследования/09 Исследования 2026/ГБУЗ ДГП 30 ДЗМ/2026-05-26 Ника — УЗИ НСГ ОБП почек ТБС.md"
+        }
+      ],
+      "documents": [
+        {
+          "date": "2026-05-26",
+          "fileName": "2026-05-26 Ника — УЗИ НСГ ОБП почек ТБС.pdf",
+          "displayName": "2026-05-26 Ника — УЗИ НСГ ОБП почек ТБС.pdf",
+          "href": "/BabinoviFamilyBase/documents/2026-05-26-nika-uzi-nsg-obp-pochek-tbs-5d53bcc1",
+          "eventTitle": "Ника — УЗИ НСГ, ОБП, почек и ТБС — 26.05.2026"
+        }
+      ]
+    },
+    {
+      "id": "doctor-summary-298ce2099593",
+      "slug": "nika-hirurgiya",
+      "title": "Ника — Хирургия",
+      "person": "Ника",
+      "personSlug": "nika",
+      "specialty": "Хирургия",
+      "routePath": "/doctor-summaries/nika-hirurgiya",
+      "href": "/BabinoviFamilyBase/doctor-summaries/nika-hirurgiya",
+      "markdownPath": "05 Индексы/Сводки врачу/Ника — Хирургия.md",
+      "sourceEventCount": 1,
+      "sourceDocumentCount": 1,
+      "latestEventDate": "2026-05-26",
+      "profileContext": [
+        "Дата рождения: 27.03.2026",
+        "Группа крови: B (III)",
+        "Резус-фактор: положительный"
+      ],
+      "summary": [
+        "2026-05-26: Жалоб нет.",
+        "2026-05-26: Общее состояние удовлетворительное.",
+        "2026-05-26: Живот не увеличен в объёме, безболезненный.",
+        "2026-05-26: Пупочное кольцо не расширено.",
+        "2026-05-26: Паховых грыж не выявлено.",
+        "2026-05-26: Мочеиспускание свободное, стул регулярный, патологических примесей нет.",
+        "2026-05-26: Диагноз: Z00.1 — рутинное обследование состояния здоровья ребёнка.",
+        "2026-05-26: Хирургической патологии не выявлено."
+      ],
+      "summaryEvidence": [
+        {
+          "text": "Жалоб нет.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Общее состояние удовлетворительное.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Живот не увеличен в объёме, безболезненный.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Пупочное кольцо не расширено.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Паховых грыж не выявлено.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Мочеиспускание свободное, стул регулярный, патологических примесей нет.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Диагноз: Z00.1 — рутинное обследование состояния здоровья ребёнка.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Хирургической патологии не выявлено.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        }
+      ],
+      "track": [
+        "2026-05-26: Плановый хирургический контроль в 12 месяцев.",
+        "2026-05-26: Обращаться раньше при появлении жалоб."
+      ],
+      "trackEvidence": [
+        {
+          "text": "Плановый хирургический контроль в 12 месяцев.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Обращаться раньше при появлении жалоб.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        }
+      ],
+      "nextActions": [
+        "2026-05-26: Массаж передней брюшной стенки, выкладывание на живот.",
+        "2026-05-26: Осмотр детского хирурга в 12 месяцев, ранее — при жалобах."
+      ],
+      "nextActionEvidence": [
+        {
+          "text": "Массаж передней брюшной стенки, выкладывание на живот.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        },
+        {
+          "text": "Осмотр детского хирурга в 12 месяцев, ранее — при жалобах.",
+          "date": "2026-05-26",
+          "eventId": "2026-05-26-nika-detskiy-hirurg",
+          "eventTitle": "Ника — детский хирург — 26.05.2026",
+          "eventHref": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "documentIds": [
+            "1880f7a09a291436"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "id": "2026-05-26-nika-detskiy-hirurg",
+          "title": "Ника — детский хирург — 26.05.2026",
+          "href": "/BabinoviFamilyBase/events/2026-05-26-nika-detskiy-hirurg",
+          "date": "2026-05-26",
+          "eventType": "Приём",
+          "specialty": "Хирургия",
+          "doctor": "Бабака Д. А.",
+          "clinic": "ГБУЗ ДГП 30 ДЗМ",
+          "markdownPath": "01 Члены семьи/Ника/14 Хирург/14 Хирург 2026/ГБУЗ ДГП 30 ДЗМ/2026-05-26 Ника — детский хирург.md"
+        }
+      ],
+      "documents": [
+        {
+          "date": "2026-05-26",
+          "fileName": "2026-05-26 Ника — детский хирург.pdf",
+          "displayName": "2026-05-26 Ника — детский хирург.pdf",
+          "href": "/BabinoviFamilyBase/documents/2026-05-26-nika-detskiy-hirurg-1880f7a0",
+          "eventTitle": "Ника — детский хирург — 26.05.2026"
         }
       ]
     }
