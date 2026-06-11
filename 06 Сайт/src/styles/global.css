@@ -3013,6 +3013,94 @@ openai-chatkit {
   }
 }
 
+@media (min-width: 761px) and (max-width: 980px) {
+  .portal-home-shell {
+    display: grid;
+    grid-template-columns: 244px minmax(0, 1fr);
+  }
+
+  .portal-home-shell .sidebar {
+    display: block;
+    width: calc(100% - 1rem);
+    height: calc(100vh - 1rem);
+    margin: 0.5rem 0 0.5rem 0.5rem;
+    padding: 1.1rem 0.75rem;
+    border-radius: 22px;
+  }
+
+  .portal-home-shell .brand {
+    gap: 0.7rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .portal-home-shell .brand-mark {
+    width: 44px;
+    height: 44px;
+  }
+
+  .portal-home-shell .nav-link,
+  .portal-home-shell .person-pill {
+    min-height: 42px;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.92rem;
+  }
+
+  .portal-home-shell .topbar {
+    min-height: 82px;
+    padding: 1.2rem 1.6rem 0;
+    border-bottom: 0;
+    background: transparent;
+    backdrop-filter: none;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .portal-home-shell .portal-search-form input {
+    min-height: 52px;
+    padding-left: 3.25rem;
+    font-size: 0.95rem;
+  }
+
+  .portal-home-shell .portal-search-icon {
+    left: 1.2rem;
+    width: 22px;
+    height: 22px;
+  }
+
+  .portal-home-shell .portal-topbar-meta {
+    width: auto;
+    gap: 1rem;
+  }
+
+  .portal-home-shell .content {
+    padding: 1.55rem 1.6rem 3.5rem;
+  }
+
+  .portal-hero h1,
+  .portal-health-hero h1 {
+    font-size: clamp(3rem, 6vw, 4.15rem);
+  }
+
+  .portal-module-grid,
+  .portal-quick-grid,
+  .health-profile-grid,
+  .health-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .portal-module-card {
+    min-height: 260px;
+  }
+
+  .bottom-nav {
+    display: none;
+  }
+
+  .chat-dock {
+    bottom: 1.2rem;
+  }
+}
+
 @media (max-width: 560px) {
   .portal-home-shell .portal-search-form input {
     min-height: 52px;
